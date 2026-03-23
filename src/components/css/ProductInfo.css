@@ -1,0 +1,124 @@
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.product-title {
+    font-size: 2rem;
+    color: #2d2d2d;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.product-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.star-rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.star-rating i {
+    color: #ffc107;
+    font-size: 1rem;
+}
+
+.star-rating .rating-text {
+    color: #666;
+    font-size: 0.9rem;
+    margin-left: 4px;
+}
+
+.product-sku {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.product-price-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1rem 0;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.current-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #CEABB1;
+}
+
+.original-price {
+    font-size: 1.2rem;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.discount-badge {
+    background: #ff4444;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.product-availability {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.stock-status {
+    font-weight: 600;
+    padding: 0.3rem 1rem;
+    border-radius: 4px;
+}
+
+.stock-status.in-stock {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.stock-status.out-of-stock {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.condition {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.product-specs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.spec-item {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.spec-label {
+    font-weight: 600;
+    color: #4a4a4a;
+    min-width: 80px;
+}
+
+.spec-value {
+    color: #666;
+}

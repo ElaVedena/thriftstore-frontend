@@ -1,0 +1,355 @@
+.auth-page {
+    min-height: calc(100vh - var(--navbar-height) - 300px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+}
+
+
+.auth-page {
+    min-height: calc(100vh - var(--navbar-height) - 300px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+}
+
+@media (max-width: 768px) {
+    .auth-page {
+        padding: 1rem;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .auth-page {
+        padding: 1rem;
+    }
+}
+
+.email-confirmation-message {
+    text-align: center;
+    padding: 30px 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.email-confirmation-message .success-icon {
+    width: 60px;
+    height: 60px;
+    background: #4CAF50;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 20px;
+}
+
+.email-confirmation-message h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+}
+
+.email-confirmation-message p {
+    color: #666;
+    margin: 5px 0;
+}
+
+.email-confirmation-message .email-highlight {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #CEABB1;
+    padding: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    margin: 15px 0;
+}
+
+.email-tips {
+    background: #e8f4fd;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.email-tips p {
+    color: #0369a1;
+    margin: 8px 0;
+    font-size: 0.95rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.action-buttons button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-buttons .login-btn {
+    background: #CEABB1;
+    color: white;
+}
+
+.action-buttons .login-btn:hover {
+    background: #b88e96;
+    transform: translateY(-2px);
+}
+
+.action-buttons .resend-btn {
+    background: white;
+    color: #CEABB1;
+    border: 2px solid #CEABB1;
+}
+
+.action-buttons .resend-btn:hover {
+    background: #f8f0f2;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .email-tips {
+        padding: 10px;
+    }
+}
+
+.email-sent-container {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.success-icon {
+    width: 70px;
+    height: 70px;
+    background: #4CAF50;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    margin: 0 auto 20px;
+}
+
+.email-info {
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.email-highlight {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #CEABB1;
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 15px 0;
+    word-break: break-all;
+}
+
+.email-tips {
+    text-align: left;
+    background: #e8f4fd;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+}
+
+.email-tips p {
+    color: #0369a1;
+    margin: 8px 0;
+    font-size: 0.95rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.resend-btn, .back-to-login-btn, .request-new-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.resend-btn {
+    background: #CEABB1;
+    color: white;
+}
+
+.resend-btn:hover:not(:disabled) {
+    background: #b88e96;
+    transform: translateY(-2px);
+}
+
+.resend-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.back-to-login-btn, .request-new-btn {
+    background: white;
+    color: #CEABB1;
+    border: 2px solid #CEABB1;
+}
+
+.back-to-login-btn:hover, .request-new-btn:hover {
+    background: #f8f0f2;
+    transform: translateY(-2px);
+}
+
+.need-help {
+    margin-top: 20px;
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.try-again-link {
+    background: none;
+    border: none;
+    color: #CEABB1;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 5px;
+}
+
+.try-again-link:hover {
+    color: #b88e96;
+}
+
+.password-requirements {
+    margin-top: 5px;
+}
+
+.password-requirements small {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.password-requirements span {
+    margin-left: 10px;
+}
+
+.password-requirements .valid {
+    color: #4CAF50;
+}
+
+.password-requirements .invalid {
+    color: #f44336;
+}
+
+.loading-container {
+    text-align: center;
+    padding: 40px;
+}
+
+.loading-container i {
+    color: #CEABB1;
+    margin-bottom: 15px;
+}
+
+.loading-container p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.error-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.error-container .error-icon {
+    width: 70px;
+    height: 70px;
+    background: #f44336;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    margin: 0 auto 20px;
+}
+
+.error-container h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: #f44336;
+    margin-bottom: 20px;
+}
+
+.security-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff3cd;
+    border-radius: 6px;
+    color: #856404;
+    font-size: 0.9rem;
+}
+
+.security-note i {
+    font-size: 1.2rem;
+}
+
+.security-note p {
+    margin: 0;
+    text-align: left;
+}
+
+@media (max-width: 480px) {
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .email-tips {
+        padding: 10px;
+    }
+    
+    .security-note {
+        flex-direction: column;
+        text-align: center;
+    }
+}

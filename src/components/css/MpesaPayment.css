@@ -1,0 +1,281 @@
+.mpesa-payment {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+.mpesa-payment:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+.payment-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.payment-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #00a859, #007e44);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: white;
+    font-size: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 168, 89, 0.3);
+}
+
+.payment-header h3 {
+    font-size: 1.5rem;
+    color: #2d2d2d;
+    margin-bottom: 0.3rem;
+}
+
+.payment-subtitle {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.payment-amount-display {
+    background: linear-gradient(135deg, #f9f9f9, #f0f0f0);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+}
+
+.amount-label {
+    color: #4a4a4a;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.amount-value {
+    color: #00a859;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.payment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: #4a4a4a;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-group label i {
+    color: #00a859;
+    font-size: 1rem;
+}
+
+.phone-input {
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+}
+
+.phone-input:focus {
+    outline: none;
+    border-color: #00a859;
+    box-shadow: 0 0 0 3px rgba(0, 168, 89, 0.1);
+}
+
+.phone-input.error {
+    border-color: #ff4444;
+    background: #fff8f8;
+}
+
+.phone-input:disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.error-text {
+    color: #ff4444;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
+.help-text {
+    color: #999;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
+.mpesa-pay-btn {
+    background: #00a859;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 10px rgba(0, 168, 89, 0.2);
+}
+
+.mpesa-pay-btn:hover:not(:disabled) {
+    background: #008c4a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 168, 89, 0.3);
+}
+
+.mpesa-pay-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background: #cccccc;
+}
+
+.mpesa-pay-btn i {
+    font-size: 1.2rem;
+}
+
+.payment-features {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.feature i {
+    color: #00a859;
+    font-size: 1.2rem;
+}
+
+.mpesa-instructions {
+    background: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.mpesa-instructions h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #2d2d2d;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.mpesa-instructions h4 i {
+    color: #00a859;
+}
+
+.mpesa-instructions ol {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: #4a4a4a;
+    font-size: 0.9rem;
+}
+
+.mpesa-instructions li {
+    margin-bottom: 0.5rem;
+}
+
+.note {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.note.warning {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.note.info {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.security-badge {
+    text-align: center;
+    color: #4caf50;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.security-badge i {
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .mpesa-payment {
+        padding: 1.5rem;
+    }
+
+    .amount-value {
+        font-size: 1.3rem;
+    }
+
+    .payment-features {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .feature {
+        flex: 1;
+        min-width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-amount-display {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}

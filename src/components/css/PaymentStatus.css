@@ -1,0 +1,133 @@
+.payment-status-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    max-width: 400px;
+    margin: 2rem auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.status-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.status-icon i {
+    animation: none;
+}
+
+.status-icon .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+.status-title {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem;
+    color: #333;
+}
+
+.status-message {
+    color: #666;
+    margin: 0 0 1.5rem;
+    line-height: 1.6;
+}
+
+.order-info, .amount-info {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.order-info p, .amount-info p {
+    margin: 0;
+    color: #333;
+}
+
+.retry-btn, .check-orders-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0.5rem;
+}
+
+.retry-btn {
+    background: linear-gradient(135deg, #CEABB1 0%, #b88e96 100%);
+    color: white;
+}
+
+.retry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(206, 171, 177, 0.3);
+}
+
+.check-orders-btn {
+    background: #f8f9fa;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.check-orders-btn:hover {
+    background: #e9ecef;
+}
+
+.timeout-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.payment-status-card.processing .status-icon {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .payment-status-card {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .status-icon {
+        font-size: 3rem;
+    }
+
+    .status-title {
+        font-size: 1.25rem;
+    }
+
+    .retry-btn, .check-orders-btn {
+        width: 100%;
+        margin: 0.25rem 0;
+    }
+
+    .timeout-actions {
+        flex-direction: column;
+    }
+}

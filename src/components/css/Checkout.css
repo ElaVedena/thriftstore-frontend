@@ -1,0 +1,258 @@
+.checkout-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.checkout-header {
+    margin-bottom: 2rem;
+}
+
+.checkout-header h1 {
+    font-size: 2rem;
+    color: #2d2d2d;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.checkout-header h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #CEABB1, transparent);
+}
+
+.checkout-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    position: relative;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.step-label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.step.active .step-number {
+    background: #CEABB1;
+    border-color: #CEABB1;
+    color: white;
+}
+
+.step.active .step-label {
+    color: #CEABB1;
+    font-weight: 600;
+}
+
+.step.completed .step-number {
+    background: #4caf50;
+    border-color: #4caf50;
+    color: white;
+}
+
+.step-line {
+    width: 100px;
+    height: 2px;
+    background: #ddd;
+    margin: 0 1rem;
+}
+
+.step-line.active {
+    background: #CEABB1;
+}
+
+.checkout-container {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2rem;
+}
+
+.checkout-main {
+    min-width: 0;
+}
+
+@media (max-width: 1024px) {
+    .checkout-container {
+        grid-template-columns: 1fr 320px;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .checkout-page {
+        padding: 1rem;
+    }
+    
+    .checkout-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .checkout-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .checkout-steps {
+        margin: 1.5rem 0;
+    }
+    
+    .step-line {
+        width: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .checkout-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .step-number {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .step-label {
+        font-size: 0.8rem;
+    }
+    
+    .step-line {
+        width: 30px;
+        margin: 0 0.5rem;
+    }
+}
+.payment-error-container {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.payment-error i {
+    font-size: 4rem;
+    color: #ff4444;
+    margin-bottom: 1rem;
+}
+
+.payment-error h3 {
+    font-size: 1.5rem;
+    color: #2d2d2d;
+    margin-bottom: 0.5rem;
+}
+
+.payment-error p {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.retry-btn {
+    padding: 0.8rem 2rem;
+    background: #CEABB1;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+    background: #b88e96;
+    transform: translateY(-2px);
+}
+
+.email-notice-card {
+    background: #e8f4fd;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+}
+
+.email-notice-card i {
+    font-size: 24px;
+    color: #0369a1;
+}
+
+.email-notice-content {
+    flex: 1;
+}
+
+.email-label {
+    font-size: 0.9rem;
+    color: #0369a1;
+    margin: 0 0 3px 0;
+}
+
+.email-address {
+    font-weight: 600;
+    color: #0369a1;
+    margin: 0;
+    word-break: break-all;
+}
+
+.email-confirm-card {
+    background: #e8f4fd;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+}
+
+.email-confirm-card i {
+    font-size: 30px;
+    color: #4CAF50;
+}
+
+.email-sent-title {
+    font-weight: 600;
+    color: #0369a1;
+    margin: 0 0 5px 0;
+}
+
+.email-sent-detail {
+    color: #0369a1;
+    margin: 0 0 3px 0;
+    word-break: break-all;
+}
+
+.email-spam-note {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0;
+}

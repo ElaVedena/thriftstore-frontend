@@ -1,0 +1,149 @@
+.review-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.review-modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+.review-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.review-modal-close:hover {
+    background: #f0f0f0;
+    color: #CEABB1;
+}
+
+.review-modal-header {
+    padding: 30px 30px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.review-modal-header h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.review-product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #f8f5f6;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.review-product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.review-product-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .review-modal-content {
+        margin: 10px;
+    }
+    
+    .review-modal-header {
+        padding: 20px;
+    }
+    
+    .review-modal-header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .review-product-info {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+.review-error {
+    padding: 40px;
+    text-align: center;
+    color: #d32f2f;
+}
+
+.review-error p {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.close-error-btn {
+    background: #CEABB1;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+.close-error-btn:hover {
+    background: #b88e96;
+}

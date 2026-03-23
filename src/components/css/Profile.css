@@ -1,0 +1,36 @@
+.profile-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.profile-header {
+    margin-bottom: 2rem;
+}
+
+.profile-header h1 {
+    font-size: 2rem;
+    color: #2d2d2d;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.profile-header h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #CEABB1, transparent);
+}
+
+@media (max-width: 768px) {
+    .profile-page {
+        padding: 1rem;
+    }
+    
+    .profile-header h1 {
+        font-size: 1.8rem;
+    }
+}

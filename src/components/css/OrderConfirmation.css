@@ -1,0 +1,288 @@
+.confirmation-page {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.confirmation-page.error {
+    text-align: center;
+    padding: 4rem 1rem;
+}
+
+.confirmation-page.error i {
+    font-size: 4rem;
+    color: #ff4444;
+    margin-bottom: 1rem;
+}
+
+.confirmation-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.success-icon i {
+    font-size: 5rem;
+    color: #4caf50;
+    margin-bottom: 1rem;
+}
+
+.confirmation-header h1 {
+    font-size: 2rem;
+    color: #2d2d2d;
+    margin-bottom: 0.5rem;
+}
+
+.confirmation-header p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.confirmation-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.order-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem;
+    background: #f9f9f9;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-info span {
+    color: #666;
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+}
+
+.order-info strong {
+    color: #2d2d2d;
+    font-size: 1rem;
+}
+
+.order-details {
+    padding: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-details h3,
+.delivery-info h3,
+.payment-info h3 {
+    font-size: 1.2rem;
+    color: #2d2d2d;
+    margin: 0 0 1.5rem 0;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.order-details h3::after,
+.delivery-info h3::after,
+.payment-info h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: #CEABB1;
+}
+
+.order-items {
+    margin-bottom: 1.5rem;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.item-info {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.item-info img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.item-info h4 {
+    font-size: 1rem;
+    margin: 0 0 0.2rem 0;
+    color: #2d2d2d;
+}
+
+.item-size {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.item-quantity-price {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.item-quantity {
+    color: #666;
+}
+
+.item-price {
+    font-weight: 600;
+    color: #CEABB1;
+}
+
+.order-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 2px solid #f0f0f0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.order-total strong {
+    color: #CEABB1;
+}
+
+.delivery-info,
+.payment-info {
+    padding: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.payment-info {
+    border-bottom: none;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.info-item i {
+    width: 20px;
+    color: #CEABB1;
+    font-size: 1.1rem;
+    margin-top: 0.2rem;
+}
+
+.info-item div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 0.95rem;
+    color: #2d2d2d;
+    font-weight: 500;
+}
+
+.confirmation-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.continue-shopping-btn,
+.print-btn {
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.continue-shopping-btn {
+    background: #CEABB1;
+    color: white;
+    border: none;
+}
+
+.continue-shopping-btn:hover {
+    background: #b88e96;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(206, 171, 177, 0.3);
+}
+
+.print-btn {
+    background: white;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.print-btn:hover {
+    background: #f5f5f5;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .confirmation-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .order-info {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .confirmation-actions {
+        flex-direction: column;
+    }
+    
+    .continue-shopping-btn,
+    .print-btn {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .order-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .item-quantity-price {
+        align-self: flex-end;
+    }
+}

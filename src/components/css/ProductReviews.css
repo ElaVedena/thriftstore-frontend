@@ -1,0 +1,140 @@
+.product-reviews {
+    margin: 2rem 0;
+}
+
+.reviews-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.average-rating {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.big-rating {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2d2d2d;
+}
+
+.average-rating .stars i {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+
+.total-reviews {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.reviews-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reviews-filter select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-item {
+    padding: 1.5rem;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.reviewer-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.reviewer-name {
+    font-weight: 600;
+    color: #2d2d2d;
+}
+
+.review-date {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.review-rating i {
+    color: #ffc107;
+    margin-right: 2px;
+}
+
+.review-comment {
+    color: #4a4a4a;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.review-images {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.review-images img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.write-review-btn {
+    width: 100%;
+    padding: 1rem;
+    background: white;
+    border: 2px solid #CEABB1;
+    color: #CEABB1;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.write-review-btn:hover {
+    background: #CEABB1;
+    color: white;
+}
+
+.product-reviews .write-review-btn,
+.write-review-btn,
+button:has(.fa-pen),
+button:contains("Write a Review") {
+    display: none !important;
+}
