@@ -56,6 +56,9 @@ function App() {
                             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                             <meta name="robots" content="index, follow" />
                             
+                            {/* Google Search Console Verification */}
+                            <meta name="google-site-verification" content="W4wlUBlsCstR0lMSj1cRTu7yn4_Mq0afsSRC5dRB_aI" />
+                            
                             {/* Open Graph / Facebook */}
                             <meta property="og:title" content="VedaThrifts - Thrift Store Kenya" />
                             <meta property="og:description" content="Shop affordable secondhand fashion. Quality pre-loved clothing, vintage items, and sustainable fashion in Kenya." />
