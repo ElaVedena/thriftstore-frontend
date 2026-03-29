@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../hooks/useNotification';
 import RegisterForm from '../components/auth/RegisterForm';
@@ -104,55 +105,97 @@ function Register() {
 
     // Don't render form if already authenticated
     if (isAuthenticated) {
-        return null;
+        return (
+            <>
+                <Helmet>
+                    <title>Redirecting | VedaThrifts</title>
+                    <meta name="robots" content="noindex, nofollow" />
+                </Helmet>
+                <div className="auth-page loading">
+                    <div className="spinner">
+                        <i className="fas fa-spinner fa-spin"></i>
+                        <p>Redirecting...</p>
+                    </div>
+                </div>
+            </>
+        );
     }
 
     return (
-        <div className="auth-page">
-            <div className="auth-container">
-                <h2>Create Account</h2>
-                <p>Join Vedathrifts today</p>
+        <>
+            <Helmet>
+                {/* Primary SEO */}
+                <title>Register | VedaThrifts - Create Account</title>
+                <meta name="description" content="Create your VedaThrifts account today. Join Kenya's sustainable thrift store community. Save favorites, track orders, and enjoy a personalized shopping experience." />
+                <meta name="keywords" content="register, sign up, create account, VedaThrifts account, thrift store registration, sustainable fashion Kenya" />
+                <meta name="author" content="VedaThrifts" />
+                <meta name="robots" content="noindex, follow" />
                 
-                {registeredEmail ? (
-                    <div className="email-confirmation-message">
-                        <div className="success-icon">✓</div>
-                        <h3>Account Created Successfully!</h3>
-                        <p>A welcome email has been sent to:</p>
-                        <p className="email-highlight">{registeredEmail}</p>
-                        
-                        <div className="email-tips">
-                            <p> Check your inbox (and spam folder)</p>
-                            <p>Add <strong>noreply@vedathrifts.com</strong> to your contacts</p>
-                            <p>You can now log in with your credentials</p>
-                        </div>
-                        
-                        <div className="action-buttons">
-                            <button 
-                                onClick={() => navigate('/login', { 
-                                    state: { email: registeredEmail }
-                                })} 
-                                className="login-btn"
-                            >
-                                Go to Login
-                            </button>
+                {/* Open Graph / Facebook / WhatsApp */}
+                <meta property="og:title" content="Register | VedaThrifts - Create Account" />
+                <meta property="og:description" content="Create your VedaThrifts account today. Join Kenya's sustainable thrift store community. Save favorites and track orders." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://vedathrifts.com/register" />
+                <meta property="og:image" content="https://vedathrifts.com/og-image-register.jpg" />
+                <meta property="og:site_name" content="VedaThrifts" />
+                <meta property="og:locale" content="en_KE" />
+                
+                {/* Twitter Card */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Register | VedaThrifts - Create Account" />
+                <meta name="twitter:description" content="Create your VedaThrifts account today. Join Kenya's sustainable thrift store community." />
+                <meta name="twitter:image" content="https://vedathrifts.com/og-image-register.jpg" />
+                
+                {/* Canonical URL */}
+                <link rel="canonical" href="https://vedathrifts.com/register" />
+            </Helmet>
+
+            <div className="auth-page">
+                <div className="auth-container">
+                    <h2>Create Account</h2>
+                    <p>Join Vedathrifts today</p>
+                    
+                    {registeredEmail ? (
+                        <div className="email-confirmation-message">
+                            <div className="success-icon">✓</div>
+                            <h3>Account Created Successfully!</h3>
+                            <p>A welcome email has been sent to:</p>
+                            <p className="email-highlight">{registeredEmail}</p>
                             
-                            <button 
-                                onClick={handleResendWelcomeEmail} 
-                                className="resend-btn"
-                            >
-                                Resend Welcome Email
-                            </button>
+                            <div className="email-tips">
+                                <p>📧 Check your inbox (and spam folder)</p>
+                                <p>⭐ Add <strong>noreply@vedathrifts.com</strong> to your contacts</p>
+                                <p>🔐 You can now log in with your credentials</p>
+                            </div>
+                            
+                            <div className="action-buttons">
+                                <button 
+                                    onClick={() => navigate('/login', { 
+                                        state: { email: registeredEmail }
+                                    })} 
+                                    className="login-btn"
+                                >
+                                    Go to Login
+                                </button>
+                                
+                                <button 
+                                    onClick={handleResendWelcomeEmail} 
+                                    className="resend-btn"
+                                >
+                                    Resend Welcome Email
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ) : (
-                    <RegisterForm 
-                        onSubmit={handleRegister}
-                        isLoading={isLoading}
-                        error={error}
-                    />
-                )}
+                    ) : (
+                        <RegisterForm 
+                            onSubmit={handleRegister}
+                            isLoading={isLoading}
+                            error={error}
+                        />
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 
