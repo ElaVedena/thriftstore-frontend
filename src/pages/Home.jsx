@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import ProductCard from "../components/products/ProductCard";
 import CategoryCard from "../components/products/CategoryCard";
 import { productService } from '../services/productService';
@@ -84,108 +85,159 @@ function Home() {
 
   if (loading) {
     return (
-      <div className="home-loading">
-        <div className="spinner">
-          <i className="fas fa-spinner fa-spin"></i>
-          <p>Loading Vedathrifts...</p>
+      <>
+        <Helmet>
+          <title>Loading... | VedaThrifts</title>
+        </Helmet>
+        <div className="home-loading">
+          <div className="spinner">
+            <i className="fas fa-spinner fa-spin"></i>
+            <p>Loading Vedathrifts...</p>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (error) {
     return (
-      <div className="home-error">
-        <i className="fas fa-exclamation-circle"></i>
-        <p>{error}</p>
-        <button onClick={() => window.location.reload()} className="retry-btn">
-          Retry
-        </button>
-      </div>
+      <>
+        <Helmet>
+          <title>Error | VedaThrifts</title>
+          <meta name="robots" content="noindex, nofollow" />
+        </Helmet>
+        <div className="home-error">
+          <i className="fas fa-exclamation-circle"></i>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()} className="retry-btn">
+            Retry
+          </button>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="home">
-      {/* Hero section with background image */}
-      <section className="hero">
-        <div className="hero-content">
-          <h1>Welcome to Vedathrifts</h1>
-          <p>Curated vintage • Sustainable style • One-of-a-kind finds</p>
-          <Link to="/shop" className="btn">Shop Now</Link>
-        </div>
-      </section>
+    <>
+      <Helmet>
+        {/* Primary SEO */}
+        <title>VedaThrifts - Best Thrift Store in Kenya | Affordable Secondhand Fashion</title>
+        <meta name="description" content="Discover Kenya's best thrift store. Shop quality secondhand clothes, vintage dresses, and sustainable fashion at unbeatable prices. Free delivery available in Nairobi and across Kenya." />
+        <meta name="keywords" content="thrift store Kenya, secondhand fashion, vintage clothing, affordable clothes, sustainable fashion, pre-loved items, VedaThrifts, thrift shopping Nairobi" />
+        <meta name="author" content="VedaThrifts" />
+        <meta name="robots" content="index, follow" />
+        
+        {/* Open Graph / Facebook / WhatsApp */}
+        <meta property="og:title" content="VedaThrifts - Best Thrift Store in Kenya" />
+        <meta property="og:description" content="Discover Kenya's best thrift store. Shop quality secondhand clothes, vintage dresses, and sustainable fashion at unbeatable prices." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://vedathrifts.com" />
+        <meta property="og:image" content="https://vedathrifts.com/og-image-home.jpg" />
+        <meta property="og:image:alt" content="VedaThrifts - Affordable Secondhand Fashion" />
+        <meta property="og:site_name" content="VedaThrifts" />
+        <meta property="og:locale" content="en_KE" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="VedaThrifts - Best Thrift Store in Kenya" />
+        <meta name="twitter:description" content="Discover Kenya's best thrift store. Shop quality secondhand clothes, vintage dresses, and sustainable fashion at unbeatable prices." />
+        <meta name="twitter:image" content="https://vedathrifts.com/og-image-home.jpg" />
+        <meta name="twitter:site" content="@VedaThrifts" />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://vedathrifts.com" />
+        
+        {/* Alternate language versions (if you add Swahili later) */}
+        <link rel="alternate" href="https://vedathrifts.com" hrefLang="x-default" />
+        
+        {/* Additional SEO */}
+        <meta name="geo.region" content="KE" />
+        <meta name="geo.placename" content="Nairobi" />
+        <meta name="geo.position" content="-1.286389;36.817223" />
+        <meta name="ICBM" content="-1.286389, 36.817223" />
+      </Helmet>
 
-      {/* Categories Section */}
-      {categories.length > 0 && (
-        <section className="categories-section">
-          <div className="section-header">
-            <h2>Shop by Category</h2>
-            <Link to="/categories" className="view-all-link">
-              View All <i className="fas fa-arrow-right"></i>
-            </Link>
+      <div className="home">
+        {/* Hero section with background image */}
+        <section className="hero">
+          <div className="hero-content">
+            <h1>Welcome to Vedathrifts</h1>
+            <p>Curated vintage • Sustainable style • One-of-a-kind finds</p>
+            <Link to="/shop" className="btn">Shop Now</Link>
           </div>
-          
-          <div className="categories-slider-container">
-            <button className="scroll-btn scroll-left" onClick={scrollLeft}>
-              <i className="fas fa-chevron-left"></i>
-            </button>
-            
-            <div className="categories-grid-scroll">
-              {categories.map(category => (
-                <div key={`category-${category.id}`} className="category-slide">
-                  <CategoryCard category={category} />
-                </div>
-              ))}
+        </section>
+
+        {/* Categories Section */}
+        {categories.length > 0 && (
+          <section className="categories-section">
+            <div className="section-header">
+              <h2>Shop by Category</h2>
+              <Link to="/categories" className="view-all-link">
+                View All <i className="fas fa-arrow-right"></i>
+              </Link>
             </div>
             
-            <button className="scroll-btn scroll-right" onClick={scrollRight}>
-              <i className="fas fa-chevron-right"></i>
-            </button>
-          </div>
-        </section>
-      )}
+            <div className="categories-slider-container">
+              <button className="scroll-btn scroll-left" onClick={scrollLeft}>
+                <i className="fas fa-chevron-left"></i>
+              </button>
+              
+              <div className="categories-grid-scroll">
+                {categories.map(category => (
+                  <div key={`category-${category.id}`} className="category-slide">
+                    <CategoryCard category={category} />
+                  </div>
+                ))}
+              </div>
+              
+              <button className="scroll-btn scroll-right" onClick={scrollRight}>
+                <i className="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </section>
+        )}
 
-      {/* Featured products */}
-      {featuredProducts.length > 0 && (
-        <section className="featured">
-          <h2>Featured Products</h2>
-          <div className="product-grid">
-            {featuredProducts.slice(0, 4).map(product => (
-              <ProductCard 
-                key={`featured-${product.id}`} 
-                product={product} 
-              />
-            ))}
-          </div>
-          <div className="section-footer">
-            <Link to="/shop" className="view-all-link">
-              View All Products <i className="fas fa-arrow-right"></i>
-            </Link>
-          </div>
-        </section>
-      )}
+        {/* Featured products */}
+        {featuredProducts.length > 0 && (
+          <section className="featured">
+            <h2>Featured Products</h2>
+            <div className="product-grid">
+              {featuredProducts.slice(0, 4).map(product => (
+                <ProductCard 
+                  key={`featured-${product.id}`} 
+                  product={product} 
+                />
+              ))}
+            </div>
+            <div className="section-footer">
+              <Link to="/shop" className="view-all-link">
+                View All Products <i className="fas fa-arrow-right"></i>
+              </Link>
+            </div>
+          </section>
+        )}
 
-      {/* New arrivals */}
-      {newArrivals.length > 0 && (
-        <section className="new-arrivals">
-          <h2>New Arrivals</h2>
-          <div className="product-grid">
-            {newArrivals.slice(0, 4).map(product => (
-              <ProductCard 
-                key={`new-${product.id}`} 
-                product={product} 
-              />
-            ))}
-          </div>
-          <div className="section-footer">
-            <Link to="/shop?sort=newest" className="view-all-link">
-              View All New Arrivals <i className="fas fa-arrow-right"></i>
-            </Link>
-          </div>
-        </section>
-      )}
-    </div>
+        {/* New arrivals */}
+        {newArrivals.length > 0 && (
+          <section className="new-arrivals">
+            <h2>New Arrivals</h2>
+            <div className="product-grid">
+              {newArrivals.slice(0, 4).map(product => (
+                <ProductCard 
+                  key={`new-${product.id}`} 
+                  product={product} 
+                />
+              ))}
+            </div>
+            <div className="section-footer">
+              <Link to="/shop?sort=newest" className="view-all-link">
+                View All New Arrivals <i className="fas fa-arrow-right"></i>
+              </Link>
+            </div>
+          </section>
+        )}
+      </div>
+    </>
   );
 }
 
