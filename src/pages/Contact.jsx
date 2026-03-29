@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { contactService } from '../services/contactService';
 import { useNotification } from '../hooks/useNotification';
 import '../components/css/Contact.css';
@@ -109,198 +110,235 @@ function Contact() {
     };
 
     return (
-        <div className="contact-page">
-            {/* Hero Section */}
-            <div className="contact-hero">
-                <div className="hero-content">
-                    <span className="hero-badge">Get in Touch</span>
-                    <h1>Let's Create Something <span>Amazing</span> Together</h1>
-                    <p>Have a question, idea, or just want to say hello? We're all ears!</p>
-                </div>
-            </div>
+        <>
+            <Helmet>
+                {/* Primary SEO */}
+                <title>Contact Us - VedaThrifts | Get in Touch with Kenya's Thrift Store</title>
+                <meta name="description" content="Have questions about thrift shopping? Need help with an order? Contact VedaThrifts - Kenya's sustainable thrift store. We're here to help! Reach out via email, phone, or social media." />
+                <meta name="keywords" content="contact VedaThrifts, thrift store Kenya, customer support, sustainable fashion contact, thrift shopping help, Nairobi thrift store" />
+                <meta name="author" content="VedaThrifts" />
+                <meta name="robots" content="index, follow" />
+                
+                {/* Open Graph / Facebook / WhatsApp */}
+                <meta property="og:title" content="Contact Us - VedaThrifts | Get in Touch" />
+                <meta property="og:description" content="Have questions about thrift shopping? Need help with an order? Contact VedaThrifts - Kenya's sustainable thrift store. We're here to help!" />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://vedathrifts.com/contact" />
+                <meta property="og:image" content="https://vedathrifts.com/og-image-contact.jpg" />
+                <meta property="og:image:alt" content="Contact VedaThrifts - Sustainable Fashion Kenya" />
+                <meta property="og:site_name" content="VedaThrifts" />
+                <meta property="og:locale" content="en_KE" />
+                
+                {/* Twitter Card */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Contact Us - VedaThrifts | Get in Touch" />
+                <meta name="twitter:description" content="Have questions about thrift shopping? Need help with an order? Contact VedaThrifts - Kenya's sustainable thrift store." />
+                <meta name="twitter:image" content="https://vedathrifts.com/og-image-contact.jpg" />
+                
+                {/* Canonical URL */}
+                <link rel="canonical" href="https://vedathrifts.com/contact" />
+                
+                {/* Business Contact Info for Local SEO */}
+                <meta name="business:contact_data:street" content="123 Thrift Street" />
+                <meta name="business:contact_data:city" content="Nairobi" />
+                <meta name="business:contact_data:country" content="Kenya" />
+                <meta name="business:contact_data:phone" content="+254716139821" />
+                <meta name="business:contact_data:email" content="hello@vedathrifts.com" />
+            </Helmet>
 
-            <div className="contact-container">
-                {/* Fun Quote Section */}
-                <div className="quote-section">
-                    <div className="quote-bubble">
-                        <i className="fas fa-quote-left"></i>
-                        <p>Every thrifted piece has a story. We'd love to hear yours!</p>
-                        <div className="quote-author">— The VedaThrifts Team</div>
+            <div className="contact-page">
+                {/* Hero Section */}
+                <div className="contact-hero">
+                    <div className="hero-content">
+                        <span className="hero-badge">Get in Touch</span>
+                        <h1>Let's Create Something <span>Amazing</span> Together</h1>
+                        <p>Have a question, idea, or just want to say hello? We're all ears!</p>
                     </div>
                 </div>
 
-                {/* Main Content */}
-                <div className="contact-grid">
-                    {/* Left Side - Fun Info Cards */}
-                    <div className="contact-fun-side">
-                        <div className="fun-card floating">
-                            <div className="fun-icon">
-                                <i className="fas fa-comment-dots"></i>
-                            </div>
-                            <h3>Quick Response</h3>
-                            <p>We reply within 24 hours, usually much faster! Our team is always ready to help.</p>
-                            <div className="fun-stats">
-                                <span>⭐ 98% customer satisfaction</span>
-                            </div>
-                        </div>
-
-                        <div className="fun-card floating delay-1">
-                            <div className="fun-icon">
-                                <i className="fas fa-heart"></i>
-                            </div>
-                            <h3>Love What You Do</h3>
-                            <p>We're passionate about sustainable fashion and helping you find your perfect style.</p>
-                            <div className="fun-stats">
-                                <span>❤️ 5000+ happy thrifters</span>
-                            </div>
-                        </div>
-
-                        <div className="fun-card floating delay-2">
-                            <div className="fun-icon">
-                                <i className="fas fa-clock"></i>
-                            </div>
-                            <h3>Always Here</h3>
-                            <p>Whether it's styling advice or order help, we're just a message away.</p>
-                            <div className="fun-stats">
-                                <span>📞 24/7 Support</span>
-                            </div>
+                <div className="contact-container">
+                    {/* Fun Quote Section */}
+                    <div className="quote-section">
+                        <div className="quote-bubble">
+                            <i className="fas fa-quote-left"></i>
+                            <p>Every thrifted piece has a story. We'd love to hear yours!</p>
+                            <div className="quote-author">— The VedaThrifts Team</div>
                         </div>
                     </div>
 
-                    {/* Right Side - Contact Form */}
-                    <div className="contact-form-wrapper">
-                        <div className="form-header">
-                            <h2>Send us a Message</h2>
-                            <p>We'd love to hear from you! Fill out the form and we'll get back to you soon.</p>
-                        </div>
-                        
-                        {submitStatus === 'success' && (
-                            <div className="alert-fun success">
-                                <i className="fas fa-check-circle"></i>
-                                <div>
-                                    <strong>Message sent!</strong>
-                                    <p>Thanks for reaching out. We'll get back to you soon!</p>
+                    {/* Main Content */}
+                    <div className="contact-grid">
+                        {/* Left Side - Fun Info Cards */}
+                        <div className="contact-fun-side">
+                            <div className="fun-card floating">
+                                <div className="fun-icon">
+                                    <i className="fas fa-comment-dots"></i>
+                                </div>
+                                <h3>Quick Response</h3>
+                                <p>We reply within 24 hours, usually much faster! Our team is always ready to help.</p>
+                                <div className="fun-stats">
+                                    <span>⭐ 98% customer satisfaction</span>
                                 </div>
                             </div>
-                        )}
-                        
-                        {submitStatus === 'error' && (
-                            <div className="alert-fun error">
-                                <i className="fas fa-exclamation-circle"></i>
-                                <div>
-                                    <strong>Oops!</strong>
-                                    <p>Something went wrong. Please try again.</p>
+
+                            <div className="fun-card floating delay-1">
+                                <div className="fun-icon">
+                                    <i className="fas fa-heart"></i>
+                                </div>
+                                <h3>Love What You Do</h3>
+                                <p>We're passionate about sustainable fashion and helping you find your perfect style.</p>
+                                <div className="fun-stats">
+                                    <span>❤️ 5000+ happy thrifters</span>
                                 </div>
                             </div>
-                        )}
 
-                        <form onSubmit={handleSubmit} className="fun-form">
-                            <div className="input-group">
-                                <i className="fas fa-user input-icon"></i>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Your name (minimum 2 characters)"
-                                    className={validationErrors.name ? 'error' : ''}
-                                />
-                                {validationErrors.name && (
-                                    <span className="validation-error">{validationErrors.name}</span>
-                                )}
+                            <div className="fun-card floating delay-2">
+                                <div className="fun-icon">
+                                    <i className="fas fa-clock"></i>
+                                </div>
+                                <h3>Always Here</h3>
+                                <p>Whether it's styling advice or order help, we're just a message away.</p>
+                                <div className="fun-stats">
+                                    <span>📞 24/7 Support</span>
+                                </div>
                             </div>
+                        </div>
 
-                            <div className="input-group">
-                                <i className="fas fa-envelope input-icon"></i>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Your email (e.g., name@example.com)"
-                                    className={validationErrors.email ? 'error' : ''}
-                                />
-                                {validationErrors.email && (
-                                    <span className="validation-error">{validationErrors.email}</span>
-                                )}
+                        {/* Right Side - Contact Form */}
+                        <div className="contact-form-wrapper">
+                            <div className="form-header">
+                                <h2>Send us a Message</h2>
+                                <p>We'd love to hear from you! Fill out the form and we'll get back to you soon.</p>
                             </div>
+                            
+                            {submitStatus === 'success' && (
+                                <div className="alert-fun success">
+                                    <i className="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Message sent!</strong>
+                                        <p>Thanks for reaching out. We'll get back to you soon!</p>
+                                    </div>
+                                </div>
+                            )}
+                            
+                            {submitStatus === 'error' && (
+                                <div className="alert-fun error">
+                                    <i className="fas fa-exclamation-circle"></i>
+                                    <div>
+                                        <strong>Oops!</strong>
+                                        <p>Something went wrong. Please try again.</p>
+                                    </div>
+                                </div>
+                            )}
 
-                            <div className="input-group">
-                                <i className="fas fa-comment input-icon"></i>
-                                <textarea
-                                    name="message"
-                                    value={formData.message}
-                                    onChange={handleChange}
-                                    required
-                                    rows="5"
-                                    placeholder="Your message (minimum 10 characters)"
-                                    className={validationErrors.message ? 'error' : ''}
-                                ></textarea>
-                                {validationErrors.message && (
-                                    <span className="validation-error">{validationErrors.message}</span>
-                                )}
-                            </div>
+                            <form onSubmit={handleSubmit} className="fun-form">
+                                <div className="input-group">
+                                    <i className="fas fa-user input-icon"></i>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Your name (minimum 2 characters)"
+                                        className={validationErrors.name ? 'error' : ''}
+                                    />
+                                    {validationErrors.name && (
+                                        <span className="validation-error">{validationErrors.name}</span>
+                                    )}
+                                </div>
 
-                            <button type="submit" className="submit-fun-btn" disabled={isSubmitting}>
-                                {isSubmitting ? (
-                                    <>
-                                        <i className="fas fa-spinner fa-spin"></i>
-                                        Sending...
-                                    </>
-                                ) : (
-                                    <>
-                                        <span>Send Message</span>
-                                        <i className="fas fa-paper-plane"></i>
-                                    </>
-                                )}
-                            </button>
-                        </form>
+                                <div className="input-group">
+                                    <i className="fas fa-envelope input-icon"></i>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Your email (e.g., name@example.com)"
+                                        className={validationErrors.email ? 'error' : ''}
+                                    />
+                                    {validationErrors.email && (
+                                        <span className="validation-error">{validationErrors.email}</span>
+                                    )}
+                                </div>
 
-                        <div className="form-footer">
-                            <p>Or reach us directly at <strong>hello@vedathrifts.com</strong></p>
-                            <div className="social-fun">
-                                <a href="https://www.facebook.com/share/1FwRLUUYSV/" target="_blank" rel="noopener noreferrer">
-                                    <i className="fab fa-facebook-f"></i>
-                                </a>
-                                <a href="https://www.instagram.com/vashvedena?igsh=MWV5ajRoZGZsajNyYw==" target="_blank" rel="noopener noreferrer">
-                                    <i className="fab fa-instagram"></i>
-                                </a>
-                                <a href="https://www.tiktok.com/@elavedena?_r=1&_t=ZS-93xifmcPOFu" target="_blank" rel="noopener noreferrer">
-                                    <i className="fab fa-tiktok"></i>
-                                </a>
+                                <div className="input-group">
+                                    <i className="fas fa-comment input-icon"></i>
+                                    <textarea
+                                        name="message"
+                                        value={formData.message}
+                                        onChange={handleChange}
+                                        required
+                                        rows="5"
+                                        placeholder="Your message (minimum 10 characters)"
+                                        className={validationErrors.message ? 'error' : ''}
+                                    ></textarea>
+                                    {validationErrors.message && (
+                                        <span className="validation-error">{validationErrors.message}</span>
+                                    )}
+                                </div>
+
+                                <button type="submit" className="submit-fun-btn" disabled={isSubmitting}>
+                                    {isSubmitting ? (
+                                        <>
+                                            <i className="fas fa-spinner fa-spin"></i>
+                                            Sending...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span>Send Message</span>
+                                            <i className="fas fa-paper-plane"></i>
+                                        </>
+                                    )}
+                                </button>
+                            </form>
+
+                            <div className="form-footer">
+                                <p>Or reach us directly at <strong>hello@vedathrifts.com</strong></p>
+                                <div className="social-fun">
+                                    <a href="https://www.facebook.com/share/1FwRLUUYSV/" target="_blank" rel="noopener noreferrer">
+                                        <i className="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a href="https://www.instagram.com/vashvedena?igsh=MWV5ajRoZGZsajNyYw==" target="_blank" rel="noopener noreferrer">
+                                        <i className="fab fa-instagram"></i>
+                                    </a>
+                                    <a href="https://www.tiktok.com/@elavedena?_r=1&_t=ZS-93xifmcPOFu" target="_blank" rel="noopener noreferrer">
+                                        <i className="fab fa-tiktok"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Contact Info Bar */}
-                <div className="contact-info-bar">
-                    <div className="info-item">
-                        <i className="fas fa-map-marker-alt"></i>
-                        <div>
-                            <h4>Visit Us</h4>
-                            <p>123 Thrift Street, Nairobi, Kenya</p>
+                    {/* Contact Info Bar */}
+                    <div className="contact-info-bar">
+                        <div className="info-item">
+                            <i className="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Visit Us</h4>
+                                <p>123 Thrift Street, Nairobi, Kenya</p>
+                            </div>
                         </div>
-                    </div>
-                    <div className="info-item">
-                        <i className="fas fa-phone-alt"></i>
-                        <div>
-                            <h4>Call Us</h4>
-                            <p>+254 716 139 821</p>
+                        <div className="info-item">
+                            <i className="fas fa-phone-alt"></i>
+                            <div>
+                                <h4>Call Us</h4>
+                                <p>+254 716 139 821</p>
+                            </div>
                         </div>
-                    </div>
-                    <div className="info-item">
-                        <i className="fas fa-clock"></i>
-                        <div>
-                            <h4>Store Hours</h4>
-                            <p>Mon - Sat: 9am - 6pm</p>
+                        <div className="info-item">
+                            <i className="fas fa-clock"></i>
+                            <div>
+                                <h4>Store Hours</h4>
+                                <p>Mon - Sat: 9am - 6pm</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 
