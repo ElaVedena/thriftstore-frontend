@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { productService } from '../services/productService';
 import { useNotification } from '../hooks/useNotification';
 import AdvancedSearch from '../components/products/AdvancedSearch';
@@ -227,88 +228,134 @@ function Shop() {
     return 'Shop All Products';
   };
 
+  const getPageDescription = () => {
+    if (filters.category) {
+      const categoryName = filters.category.charAt(0).toUpperCase() + filters.category.slice(1);
+      return `Shop ${categoryName} products at VedaThrifts. Find quality secondhand ${filters.category.toLowerCase()}, vintage pieces, and sustainable fashion at affordable prices in Kenya.`;
+    }
+    return 'Shop all products at VedaThrifts. Discover quality secondhand clothing, vintage fashion, and sustainable style. Affordable thrift shopping in Kenya.';
+  };
+
+  const getPageKeywords = () => {
+    const baseKeywords = 'thrift store Kenya, secondhand fashion, vintage clothing, sustainable fashion, affordable clothes';
+    if (filters.category) {
+      return `${filters.category.toLowerCase()}, ${baseKeywords}`;
+    }
+    return baseKeywords;
+  };
+
   return (
-    <div className="shop-page">
-      <div className="shop-header">
-        <h1>{getPageTitle()}</h1>
-        {filters.category && (
-          <p className="category-description">
-            Showing products in category: <strong>{filters.category.charAt(0).toUpperCase() + filters.category.slice(1)}</strong>
-          </p>
-        )}
-        <div className="search-section">
-          <AdvancedSearch 
-            onSearch={handleAdvancedSearch}
-            initialFilters={{
-              search: searchTerm,
-              category: filters.category,
-              priceMin: filters.minPrice,
-              priceMax: filters.maxPrice,
-              size: filters.size ? [filters.size] : [],
-              condition: filters.condition ? [filters.condition] : [],
-              brand: filters.brand ? [filters.brand] : [],
-              color: filters.color ? [filters.color] : [],
-              era: filters.era ? [filters.era] : [],
-              material: filters.material ? [filters.material] : [],
-              pattern: filters.pattern ? [filters.pattern] : [],
-              minRating: filters.rating,
-              inStockOnly: filters.inStockOnly,
-              onSaleOnly: filters.onSaleOnly,
-              sortBy: sortBy
-            }}
+    <>
+      <Helmet>
+        {/* Primary SEO */}
+        <title>{getPageTitle()} | VedaThrifts - Thrift Store Kenya</title>
+        <meta name="description" content={getPageDescription()} />
+        <meta name="keywords" content={getPageKeywords()} />
+        <meta name="author" content="VedaThrifts" />
+        <meta name="robots" content="index, follow" />
+        
+        {/* Open Graph / Facebook / WhatsApp */}
+        <meta property="og:title" content={`${getPageTitle()} | VedaThrifts`} />
+        <meta property="og:description" content={getPageDescription()} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://vedathrifts.com/shop${window.location.search}`} />
+        <meta property="og:image" content="https://vedathrifts.com/og-image-shop.jpg" />
+        <meta property="og:image:alt" content="Shop Secondhand Fashion at VedaThrifts" />
+        <meta property="og:site_name" content="VedaThrifts" />
+        <meta property="og:locale" content="en_KE" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${getPageTitle()} | VedaThrifts`} />
+        <meta name="twitter:description" content={getPageDescription()} />
+        <meta name="twitter:image" content="https://vedathrifts.com/og-image-shop.jpg" />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href={`https://vedathrifts.com/shop${window.location.search}`} />
+      </Helmet>
+
+      <div className="shop-page">
+        <div className="shop-header">
+          <h1>{getPageTitle()}</h1>
+          {filters.category && (
+            <p className="category-description">
+              Showing products in category: <strong>{filters.category.charAt(0).toUpperCase() + filters.category.slice(1)}</strong>
+            </p>
+          )}
+          <div className="search-section">
+            <AdvancedSearch 
+              onSearch={handleAdvancedSearch}
+              initialFilters={{
+                search: searchTerm,
+                category: filters.category,
+                priceMin: filters.minPrice,
+                priceMax: filters.maxPrice,
+                size: filters.size ? [filters.size] : [],
+                condition: filters.condition ? [filters.condition] : [],
+                brand: filters.brand ? [filters.brand] : [],
+                color: filters.color ? [filters.color] : [],
+                era: filters.era ? [filters.era] : [],
+                material: filters.material ? [filters.material] : [],
+                pattern: filters.pattern ? [filters.pattern] : [],
+                minRating: filters.rating,
+                inStockOnly: filters.inStockOnly,
+                onSaleOnly: filters.onSaleOnly,
+                sortBy: sortBy
+              }}
+            />
+            <SavedSearches />
+          </div>
+        </div>
+
+        <div className="shop-content">
+          <Filters
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onClearFilters={clearFilters}
+            products={displayedProducts}
           />
-          <SavedSearches />
+          
+          <main className="shop-main">
+            <SortBar
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              totalProducts={totalProducts}
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+            />
+
+            {loading ? (
+              <div className="products-loading">
+                <i className="fas fa-spinner fa-spin"></i>
+                <p>Loading products...</p>
+              </div>
+            ) : displayedProducts.length === 0 ? (
+              <div className="no-products">
+                <i className="fas fa-box-open"></i>
+                <h3>No products found</h3>
+                <p>Try adjusting your filters or search term</p>
+                <button onClick={clearFilters} className="clear-filters-btn">
+                  Clear All Filters
+                </button>
+              </div>
+            ) : (
+              <ProductGrid 
+                products={displayedProducts} 
+                onAddToCart={handleAddToCart}
+              />
+            )}
+            
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage + 1}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
+          </main>
         </div>
       </div>
-
-      <div className="shop-content">
-        <Filters
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          onClearFilters={clearFilters}
-          products={displayedProducts}
-        />
-        
-        <main className="shop-main">
-          <SortBar
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-            totalProducts={totalProducts}
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-          />
-
-          {loading ? (
-            <div className="products-loading">
-              <i className="fas fa-spinner fa-spin"></i>
-              <p>Loading products...</p>
-            </div>
-          ) : displayedProducts.length === 0 ? (
-            <div className="no-products">
-              <i className="fas fa-box-open"></i>
-              <h3>No products found</h3>
-              <p>Try adjusting your filters or search term</p>
-              <button onClick={clearFilters} className="clear-filters-btn">
-                Clear All Filters
-              </button>
-            </div>
-          ) : (
-            <ProductGrid 
-              products={displayedProducts} 
-              onAddToCart={handleAddToCart}
-            />
-          )}
-          
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage + 1}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          )}
-        </main>
-      </div>
-    </div>
+    </>
   );
 }
 
