@@ -117,7 +117,39 @@ body {
     width: 80%;
 }
 
-/* ===== HAMBURGER MENU BUTTON (Mobile) ===== */
+/* ===== CORE NAVIGATION LINKS (Always visible on mobile) ===== */
+.nav-core-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.core-link {
+    display: flex;
+    align-items: center;
+    color: #CEABB1;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.core-link:hover {
+    background: rgba(206, 171, 177, 0.1);
+    color: #ffd7db;
+}
+
+.core-link.active {
+    background: rgba(206, 171, 177, 0.2);
+    color: #ffd7db;
+}
+
+.core-link-text {
+    margin-left: 4px;
+}
+
+/* ===== HAMBURGER MENU BUTTON ===== */
 .hamburger {
     display: none;
     flex-direction: column;
@@ -151,7 +183,135 @@ body {
     transform: translateY(-9px) rotate(-45deg);
 }
 
-/* ===== MOBILE RESPONSIVE STYLES ===== */
+/* ===== FULL MENU OVERLAY ===== */
+.nav-full-menu {
+    position: fixed;
+    top: var(--navbar-height);
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - var(--navbar-height));
+    background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+    transition: left 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.nav-full-menu.active {
+    left: 0;
+}
+
+.nav-full-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(206, 171, 177, 0.3);
+}
+
+.nav-full-menu-header h3 {
+    color: #CEABB1;
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.close-menu {
+    background: none;
+    border: none;
+    color: #CEABB1;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-full-menu ul {
+    display: flex !important;
+    flex-direction: column;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-full-menu li {
+    width: 100%;
+    border-bottom: 1px solid rgba(206, 171, 177, 0.1);
+}
+
+.nav-full-menu li a,
+.nav-full-menu .logout-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    color: #CEABB1;
+    text-decoration: none;
+    font-size: 1rem;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-full-menu li a i,
+.nav-full-menu .logout-link i {
+    width: 24px;
+    font-size: 1.1rem;
+}
+
+.nav-full-menu li a:hover,
+.nav-full-menu .logout-link:hover {
+    background: rgba(206, 171, 177, 0.1);
+    color: #ffd7db;
+}
+
+.nav-full-menu li.active a {
+    background: rgba(206, 171, 177, 0.2);
+    color: #ffd7db;
+}
+
+.nav-full-menu .logout-link {
+    color: #ff8888;
+}
+
+.nav-full-menu .logout-link:hover {
+    background: rgba(255, 68, 68, 0.1);
+    color: #ff8888;
+}
+
+/* ===== DESKTOP STYLES (min-width: 769px) ===== */
+@media (min-width: 769px) {
+    .hamburger {
+        display: none !important;
+    }
+    
+    .nav-core-links {
+        gap: 1rem;
+    }
+    
+    .core-link {
+        padding: 14px 16px;
+    }
+    
+    .nav-full-menu {
+        display: none !important;
+    }
+    
+    .navbar ul {
+        display: flex !important;
+        position: static;
+        width: auto;
+        height: auto;
+        background: none;
+        flex-direction: row;
+        padding: 0;
+    }
+}
+
+/* ===== MOBILE STYLES (up to 768px) ===== */
 @media (max-width: 768px) {
     .navbar {
         padding: 0.75rem 1rem;
@@ -161,48 +321,50 @@ body {
         font-size: 1.5rem;
     }
     
-    /* Show hamburger button */
+    /* Hide the old desktop navigation */
+    .navbar ul {
+        display: none !important;
+    }
+    
+    .nav-core-links {
+        gap: 0.25rem;
+    }
+    
+    .core-link {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+    
+    .core-link .cart-icon i {
+        font-size: 1rem;
+    }
+    
+    .core-link-text {
+        display: none;
+    }
+    
+    /* Show cart icon only on core links */
+    .core-link.cart-link-wrapper .core-link-text {
+        display: none;
+    }
+    
+    /* User menu in core links area */
+    .core-user-menu {
+        margin-left: 0;
+    }
+    
+    .core-user-menu .user-menu-btn {
+        padding: 6px 8px;
+    }
+    
+    .core-user-menu .user-name {
+        display: none;
+    }
+    
+    /* Hamburger button */
     .hamburger {
         display: flex;
-    }
-    
-    /* Hide desktop navigation initially */
-    .navbar ul {
-        position: fixed;
-        top: var(--navbar-height);
-        left: -100%;
-        width: 100%;
-        height: calc(100vh - var(--navbar-height));
-        background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
-        flex-direction: column;
-        justify-content: flex-start;
-        gap: 0;
-        transition: left 0.3s ease;
-        overflow-y: auto;
-        padding: 1rem 0;
-        z-index: 999;
-    }
-    
-    /* Show menu when active */
-    .navbar ul.active {
-        left: 0;
-    }
-    
-    .navbar li {
-        width: 100%;
-        height: auto;
-    }
-    
-    .navbar a {
-        width: 100%;
-        padding: 1rem 1.5rem;
-        justify-content: center;
-        font-size: 1.1rem;
-    }
-    
-    .navbar li.active a,
-    .navbar li:hover a {
-        background: linear-gradient(145deg, #3a3a3a 0%, #2a2a2a 100%);
+        margin-left: 4px;
     }
     
     /* Cart link styling on mobile */
@@ -242,12 +404,6 @@ body {
         padding: 0.8rem 2rem;
         justify-content: center;
     }
-    
-    /* Login/Register buttons on mobile */
-    .navbar li:last-child a,
-    .navbar li:nth-last-child(2) a {
-        border-bottom: none;
-    }
 }
 
 /* ===== SMALL MOBILE (up to 480px) ===== */
@@ -256,9 +412,19 @@ body {
         font-size: 1.2rem;
     }
     
-    .navbar a {
-        font-size: 1rem;
-        padding: 0.875rem 1rem;
+    .core-link {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+    }
+    
+    .core-link .cart-icon i {
+        font-size: 0.9rem;
+    }
+    
+    .nav-full-menu li a,
+    .nav-full-menu .logout-link {
+        padding: 0.875rem 1.2rem;
+        font-size: 0.95rem;
     }
     
     .cart-badge {
@@ -267,6 +433,23 @@ body {
         font-size: 0.6rem;
         top: -6px;
         right: -6px;
+    }
+    
+    .navbar a {
+        font-size: 1rem;
+        padding: 0.875rem 1rem;
+    }
+}
+
+/* ===== TABLET (481px - 768px) ===== */
+@media (min-width: 481px) and (max-width: 768px) {
+    .core-link {
+        padding: 8px 12px;
+        font-size: 1rem;
+    }
+    
+    .core-link .cart-icon i {
+        font-size: 1.1rem;
     }
 }
 

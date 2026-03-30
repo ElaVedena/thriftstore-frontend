@@ -67,36 +67,27 @@ export default function Navbar() {
     <nav className="navbar" ref={navbarRef}>
       <Link to="/" className="site-title" onClick={handleLinkClick}>VedaThrifts</Link>
       
-      {/* Hamburger Button */}
-      <button 
-        className={`hamburger ${isMenuOpen ? 'active' : ''}`} 
-        onClick={toggleMenu}
-        aria-label="Toggle menu"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      
-      {/* Navigation Links */}
-      <ul className={isMenuOpen ? 'active' : ''}>
-        <CustomLink to="/" onClick={handleLinkClick}>Home</CustomLink>
-        <CustomLink to="/shop" onClick={handleLinkClick}>Shop</CustomLink>
-        <CustomLink to="/beauty" onClick={handleLinkClick}>Beauty</CustomLink>
-        <CustomLink to="/about" onClick={handleLinkClick}>About</CustomLink>
-        <CustomLink to="/contact" onClick={handleLinkClick}>Contact</CustomLink>
-        <CustomLink to="/cart" className="cart-link-wrapper" onClick={handleLinkClick}>
+      {/* Core Navigation Links - Always visible on mobile */}
+      <div className="nav-core-links">
+        <CustomLink to="/" className="core-link" onClick={handleLinkClick}>Home</CustomLink>
+        <CustomLink to="/shop" className="core-link" onClick={handleLinkClick}>Shop</CustomLink>
+        <CustomLink to="/beauty" className="core-link" onClick={handleLinkClick}>Beauty</CustomLink>
+        <CustomLink to="/cart" className="core-link cart-link-wrapper" onClick={handleLinkClick}>
           <span className="cart-icon">
             <i className="fas fa-shopping-cart"></i>
             {totalItems > 0 && (
               <span className="cart-badge">{totalItems}</span>
             )}
           </span>
-          Cart
+          <span className="core-link-text">Cart</span>
         </CustomLink>
         
-        {isAuthenticated ? (
-          <li className="user-menu-container">
+        {!isAuthenticated && (
+          <CustomLink to="/login" className="core-link" onClick={handleLinkClick}>Login</CustomLink>
+        )}
+        
+        {isAuthenticated && (
+          <li className="user-menu-container core-user-menu">
             <button 
               className="user-menu-btn"
               onClick={() => setShowUserMenu(!showUserMenu)}
@@ -130,23 +121,69 @@ export default function Navbar() {
               </div>
             )}
           </li>
-        ) : (
-          <>
-            <CustomLink to="/login" onClick={handleLinkClick}>Login</CustomLink>
-            <CustomLink to="/register" onClick={handleLinkClick}>Sign Up</CustomLink>
-          </>
         )}
-      </ul>
+        
+        {/* Hamburger Button */}
+        <button 
+          className={`hamburger ${isMenuOpen ? 'active' : ''}`} 
+          onClick={toggleMenu}
+          aria-label="More menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      
+      {/* Full Navigation Menu (Hidden by default, opens with hamburger) */}
+      <div className={`nav-full-menu ${isMenuOpen ? 'active' : ''}`}>
+        <div className="nav-full-menu-header">
+          <h3>Menu</h3>
+          <button className="close-menu" onClick={toggleMenu}>
+            <i className="fas fa-times"></i>
+          </button>
+        </div>
+        <ul>
+          <CustomLink to="/" onClick={handleLinkClick}>Home</CustomLink>
+          <CustomLink to="/shop" onClick={handleLinkClick}>Shop</CustomLink>
+          <CustomLink to="/beauty" onClick={handleLinkClick}>Beauty</CustomLink>
+          <CustomLink to="/about" onClick={handleLinkClick}>About</CustomLink>
+          <CustomLink to="/contact" onClick={handleLinkClick}>Contact</CustomLink>
+          <CustomLink to="/cart" className="cart-link-wrapper" onClick={handleLinkClick}>
+            <span className="cart-icon">
+              <i className="fas fa-shopping-cart"></i>
+              {totalItems > 0 && (
+                <span className="cart-badge">{totalItems}</span>
+              )}
+            </span>
+            Cart
+          </CustomLink>
+          
+          {!isAuthenticated ? (
+            <>
+              <CustomLink to="/login" onClick={handleLinkClick}>Login</CustomLink>
+              <CustomLink to="/register" onClick={handleLinkClick}>Sign Up</CustomLink>
+            </>
+          ) : (
+            <>
+              <CustomLink to="/profile" onClick={handleLinkClick}>My Profile</CustomLink>
+              <CustomLink to="/orders" onClick={handleLinkClick}>My Orders</CustomLink>
+              <CustomLink to="/wishlist" onClick={handleLinkClick}>Wishlist</CustomLink>
+              <button onClick={handleLogout} className="logout-link">Logout</button>
+            </>
+          )}
+        </ul>
+      </div>
     </nav>
   );
 }
 
-function CustomLink({ to, children, onClick, ...props }) {
+function CustomLink({ to, children, className, onClick, ...props }) {
   const resolvedPath = useResolvedPath(to);
   const isActive = useMatch({ path: resolvedPath.pathname, end: true });
   
   return (
-    <li className={isActive ? "active" : ""}>
+    <li className={`${isActive ? "active" : ""} ${className || ''}`}>
       <Link to={to} onClick={onClick} {...props}>
         {children}
       </Link>
