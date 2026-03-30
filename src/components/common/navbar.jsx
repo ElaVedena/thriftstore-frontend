@@ -87,7 +87,7 @@ export default function Navbar() {
         )}
         
         {isAuthenticated && (
-          <li className="user-menu-container core-user-menu">
+          <div className="user-menu-container core-user-menu">
             <button 
               className="user-menu-btn"
               onClick={() => setShowUserMenu(!showUserMenu)}
@@ -120,7 +120,7 @@ export default function Navbar() {
                 </button>
               </div>
             )}
-          </li>
+          </div>
         )}
         
         {/* Hamburger Button */}
@@ -144,32 +144,73 @@ export default function Navbar() {
           </button>
         </div>
         <ul>
-          <CustomLink to="/" onClick={handleLinkClick}>Home</CustomLink>
-          <CustomLink to="/shop" onClick={handleLinkClick}>Shop</CustomLink>
-          <CustomLink to="/beauty" onClick={handleLinkClick}>Beauty</CustomLink>
-          <CustomLink to="/about" onClick={handleLinkClick}>About</CustomLink>
-          <CustomLink to="/contact" onClick={handleLinkClick}>Contact</CustomLink>
-          <CustomLink to="/cart" className="cart-link-wrapper" onClick={handleLinkClick}>
-            <span className="cart-icon">
-              <i className="fas fa-shopping-cart"></i>
+          <li className={location.pathname === '/' ? 'active' : ''}>
+            <Link to="/" onClick={handleLinkClick}>
+              <i className="fas fa-home"></i> Home
+            </Link>
+          </li>
+          <li className={location.pathname === '/shop' ? 'active' : ''}>
+            <Link to="/shop" onClick={handleLinkClick}>
+              <i className="fas fa-store"></i> Shop
+            </Link>
+          </li>
+          <li className={location.pathname === '/beauty' ? 'active' : ''}>
+            <Link to="/beauty" onClick={handleLinkClick}>
+              <i className="fas fa-spa"></i> Beauty
+            </Link>
+          </li>
+          <li className={location.pathname === '/about' ? 'active' : ''}>
+            <Link to="/about" onClick={handleLinkClick}>
+              <i className="fas fa-info-circle"></i> About
+            </Link>
+          </li>
+          <li className={location.pathname === '/contact' ? 'active' : ''}>
+            <Link to="/contact" onClick={handleLinkClick}>
+              <i className="fas fa-envelope"></i> Contact
+            </Link>
+          </li>
+          <li className={location.pathname === '/cart' ? 'active' : ''}>
+            <Link to="/cart" onClick={handleLinkClick}>
+              <i className="fas fa-shopping-cart"></i> Cart
               {totalItems > 0 && (
-                <span className="cart-badge">{totalItems}</span>
+                <span className="cart-badge-menu">{totalItems}</span>
               )}
-            </span>
-            Cart
-          </CustomLink>
+            </Link>
+          </li>
           
           {!isAuthenticated ? (
             <>
-              <CustomLink to="/login" onClick={handleLinkClick}>Login</CustomLink>
-              <CustomLink to="/register" onClick={handleLinkClick}>Sign Up</CustomLink>
+              <li className={location.pathname === '/login' ? 'active' : ''}>
+                <Link to="/login" onClick={handleLinkClick}>
+                  <i className="fas fa-sign-in-alt"></i> Login
+                </Link>
+              </li>
+              <li className={location.pathname === '/register' ? 'active' : ''}>
+                <Link to="/register" onClick={handleLinkClick}>
+                  <i className="fas fa-user-plus"></i> Sign Up
+                </Link>
+              </li>
             </>
           ) : (
             <>
-              <CustomLink to="/profile" onClick={handleLinkClick}>My Profile</CustomLink>
-              <CustomLink to="/orders" onClick={handleLinkClick}>My Orders</CustomLink>
-              <CustomLink to="/wishlist" onClick={handleLinkClick}>Wishlist</CustomLink>
-              <button onClick={handleLogout} className="logout-link">Logout</button>
+              <li className={location.pathname === '/profile' ? 'active' : ''}>
+                <Link to="/profile" onClick={handleLinkClick}>
+                  <i className="fas fa-user"></i> My Profile
+                </Link>
+              </li>
+              <li className={location.pathname === '/orders' ? 'active' : ''}>
+                <Link to="/orders" onClick={handleLinkClick}>
+                  <i className="fas fa-shopping-bag"></i> My Orders
+                </Link>
+              </li>
+              <li className={location.pathname === '/wishlist' ? 'active' : ''}>
+                <Link to="/wishlist" onClick={handleLinkClick}>
+                  <i className="fas fa-heart"></i> Wishlist
+                </Link>
+              </li>
+              <button onClick={handleLogout} className="logout-link">
+                <i className="fas fa-sign-out-alt"></i> Logout
+              </button>
             </>
           )}
         </ul>

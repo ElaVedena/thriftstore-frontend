@@ -282,6 +282,26 @@ body {
     color: #ff8888;
 }
 
+/* ===== CART BADGE IN FULL MENU ===== */
+.cart-badge-menu {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #CEABB1;
+    color: #1a1a1a;
+    font-size: 0.7rem;
+    font-weight: 600;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-left: 8px;
+    padding: 0 4px;
+}
+
+.nav-full-menu li.active .cart-badge-menu {
+    background: #ffd7db;
+}
+
 /* ===== DESKTOP STYLES (min-width: 769px) ===== */
 @media (min-width: 769px) {
     .hamburger {
