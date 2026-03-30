@@ -1,11 +1,10 @@
-// components/products/Filters.jsx
 import { useState } from 'react';
 import '../../components/css/Filters.css';
 
 function Filters({ filters, onFilterChange, onClearFilters, products }) {
     const [isExpanded, setIsExpanded] = useState(false);
 
-    // Get unique values from products - THIS is what the filter should use
+    // Get unique values from products
     const categories = products && products.length > 0 
         ? [...new Set(products.map(p => p?.category).filter(Boolean))]
         : [];
@@ -24,10 +23,10 @@ function Filters({ filters, onFilterChange, onClearFilters, products }) {
 
     // Price range presets
     const priceRanges = [
-        { label: 'Under KSh 250', min: 0, max: 25 },
-        { label: 'KSh 250 - KSh 500', min: 250, max: 500 },
-        { label: 'KSh 500 - KSh 1000', min: 500, max: 1000 },
-        { label: 'Over KSh 1000', min: 1000, max: 10000}
+        { label: 'Under KSh 250', min: 0, max: 250 },
+        { label: 'KSh 250 - 500', min: 250, max: 500 },
+        { label: 'KSh 500 - 1000', min: 500, max: 1000 },
+        { label: 'Over KSh 1000', min: 1000, max: 10000 }
     ];
 
     const handlePriceRangeClick = (min, max) => {
@@ -39,87 +38,103 @@ function Filters({ filters, onFilterChange, onClearFilters, products }) {
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
 
+    const hasActiveFilters = () => {
+        return filters.category || filters.size || filters.condition || 
+               filters.brand || filters.minPrice || filters.maxPrice || filters.rating;
+    };
+
     return (
         <div className={`filters-sidebar ${isExpanded ? 'expanded' : ''}`}>
             <div className="filters-header">
                 <h2>Filters</h2>
-                <button onClick={onClearFilters} className="clear-filters">
-                    Clear All
-                </button>
+                {hasActiveFilters() && (
+                    <button onClick={onClearFilters} className="clear-filters">
+                        Clear All
+                    </button>
+                )}
                 <button 
                     className="mobile-toggle" 
                     onClick={() => setIsExpanded(!isExpanded)}
+                    aria-label="Toggle filters"
                 >
                     <i className={`fas fa-${isExpanded ? 'times' : 'sliders-h'}`}></i>
                 </button>
             </div>
 
             <div className="filters-content">
-                {/* Category Filter*/}
-                <div className="filter-section">
-                    <h3>Category</h3>
-                    <select
-                        value={filters.category || ''}
-                        onChange={(e) => onFilterChange({ category: e.target.value })}
-                    >
-                        <option value="">All Categories</option>
-                        {categories.map(cat => (
-                            <option key={cat} value={cat}>
-                                {capitalize(cat)}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {/* Category Filter */}
+                {categories.length > 0 && (
+                    <div className="filter-section">
+                        <h3>Category</h3>
+                        <select
+                            value={filters.category || ''}
+                            onChange={(e) => onFilterChange({ category: e.target.value })}
+                        >
+                            <option value="">All Categories</option>
+                            {categories.map(cat => (
+                                <option key={cat} value={cat}>
+                                    {capitalize(cat)}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
 
                 {/* Size Filter */}
-                <div className="filter-section">
-                    <h3>Size</h3>
-                    <select
-                        value={filters.size || ''}
-                        onChange={(e) => onFilterChange({ size: e.target.value })}
-                    >
-                        <option value="">All Sizes</option>
-                        {sizes.map(size => (
-                            <option key={size} value={size}>{size}</option>
-                        ))}
-                    </select>
-                </div>
+                {sizes.length > 0 && (
+                    <div className="filter-section">
+                        <h3>Size</h3>
+                        <select
+                            value={filters.size || ''}
+                            onChange={(e) => onFilterChange({ size: e.target.value })}
+                        >
+                            <option value="">All Sizes</option>
+                            {sizes.map(size => (
+                                <option key={size} value={size}>{size}</option>
+                            ))}
+                        </select>
+                    </div>
+                )}
 
                 {/* Condition Filter */}
-                <div className="filter-section">
-                    <h3>Condition</h3>
-                    <select
-                        value={filters.condition || ''}
-                        onChange={(e) => onFilterChange({ condition: e.target.value })}
-                    >
-                        <option value="">All Conditions</option>
-                        {conditions.map(condition => (
-                            <option key={condition} value={condition}>
-                                {capitalize(condition)}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {conditions.length > 0 && (
+                    <div className="filter-section">
+                        <h3>Condition</h3>
+                        <select
+                            value={filters.condition || ''}
+                            onChange={(e) => onFilterChange({ condition: e.target.value })}
+                        >
+                            <option value="">All Conditions</option>
+                            {conditions.map(condition => (
+                                <option key={condition} value={condition}>
+                                    {capitalize(condition)}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
 
                 {/* Brand Filter */}
-                <div className="filter-section">
-                    <h3>Brand</h3>
-                    <select
-                        value={filters.brand || ''}
-                        onChange={(e) => onFilterChange({ brand: e.target.value })}
-                    >
-                        <option value="">All Brands</option>
-                        {brands.map(brand => (
-                            <option key={brand} value={brand}>
-                                {capitalize(brand)}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {brands.length > 0 && (
+                    <div className="filter-section">
+                        <h3>Brand</h3>
+                        <select
+                            value={filters.brand || ''}
+                            onChange={(e) => onFilterChange({ brand: e.target.value })}
+                        >
+                            <option value="">All Brands</option>
+                            {brands.map(brand => (
+                                <option key={brand} value={brand}>
+                                    {capitalize(brand)}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
 
                 {/* Price Range Filter */}
                 <div className="filter-section">
-                    <h3>Price Range</h3>
+                    <h3>Price Range (KES)</h3>
                     <div className="price-inputs">
                         <input
                             type="number"
@@ -127,7 +142,7 @@ function Filters({ filters, onFilterChange, onClearFilters, products }) {
                             value={filters.minPrice || ''}
                             onChange={(e) => onFilterChange({ minPrice: e.target.value })}
                             min="0"
-                            step="0.01"
+                            step="10"
                         />
                         <span>-</span>
                         <input
@@ -136,7 +151,7 @@ function Filters({ filters, onFilterChange, onClearFilters, products }) {
                             value={filters.maxPrice || ''}
                             onChange={(e) => onFilterChange({ maxPrice: e.target.value })}
                             min="0"
-                            step="0.01"
+                            step="10"
                         />
                     </div>
                     
@@ -145,7 +160,7 @@ function Filters({ filters, onFilterChange, onClearFilters, products }) {
                             <button
                                 key={index}
                                 onClick={() => handlePriceRangeClick(range.min, range.max)}
-                                className="price-preset-btn"
+                                className={`price-preset-btn ${filters.minPrice == range.min && filters.maxPrice == range.max ? 'active' : ''}`}
                                 type="button"
                             >
                                 {range.label}
