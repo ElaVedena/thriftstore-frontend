@@ -51,6 +51,7 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     setShowUserMenu(false);
+    setIsMobileMenuOpen(false);
   };
 
   const toggleMobileMenu = () => {
@@ -128,7 +129,7 @@ export default function Navbar() {
           <Link to="/" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
           <Link to="/shop" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>Shop</Link>
           <Link to="/beauty" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>Beauty</Link>
-          <Link to="/cart" className="mobile-core-link cart-link-wrapper" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/cart" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>
             <span className="cart-icon">
               <i className="fas fa-shopping-cart"></i>
               {totalItems > 0 && (
@@ -150,7 +151,7 @@ export default function Navbar() {
         
         {/* Hamburger Button */}
         <button 
-          className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`} 
+          className="hamburger" 
           onClick={toggleMobileMenu}
           aria-label="Menu"
         >
