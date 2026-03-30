@@ -26,26 +26,28 @@ function Home() {
         
         console.log('Fetching home data from database...');
         
-        // Fetch all data in parallel
+        // Fetch only 4 products for featured and new arrivals
         const [featuredRes, newArrivalsRes, categoriesRes] = await Promise.allSettled([
           productService.getFeaturedProducts(4),
           productService.getNewArrivals(4),
           categoryService.getAllCategories()
         ]);
 
-        // Handle featured products
+        // Handle featured products - limit to 4
         if (featuredRes.status === 'fulfilled' && featuredRes.value?.success) {
-          setFeaturedProducts(featuredRes.value.data || []);
-          console.log('Featured products loaded:', featuredRes.value.data?.length);
+          const products = featuredRes.value.data || [];
+          setFeaturedProducts(products.slice(0, 4));
+          console.log('Featured products loaded:', products.slice(0, 4).length);
         } else {
           console.warn('Failed to load featured products');
           setFeaturedProducts([]);
         }
 
-        // Handle new arrivals
+        // Handle new arrivals - limit to 4
         if (newArrivalsRes.status === 'fulfilled' && newArrivalsRes.value?.success) {
-          setNewArrivals(newArrivalsRes.value.data || []);
-          console.log('New arrivals loaded:', newArrivalsRes.value.data?.length);
+          const products = newArrivalsRes.value.data || [];
+          setNewArrivals(products.slice(0, 4));
+          console.log('New arrivals loaded:', products.slice(0, 4).length);
         } else {
           console.warn('Failed to load new arrivals');
           setNewArrivals([]);
