@@ -38,9 +38,34 @@ function Shop() {
   const [viewMode, setViewMode] = useState('grid');
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const productsPerPage = 8;
+  
+  // Mobile: 2 products per row = 4 products per page (2 rows)
+  // Desktop: 4 products per row = 8 products per page (2 rows)
+  // Use responsive products per page based on screen size
+  const [productsPerPage, setProductsPerPage] = useState(8);
   
   const { showError } = useNotification();
+
+  // Detect screen size and adjust products per page
+  useEffect(() => {
+    const updateProductsPerPage = () => {
+      const width = window.innerWidth;
+      if (width <= 768) {
+        // Mobile: 2 columns x 2 rows = 4 products
+        setProductsPerPage(4);
+      } else if (width <= 1024) {
+        // Tablet: 3 columns x 2 rows = 6 products
+        setProductsPerPage(6);
+      } else {
+        // Desktop: 4 columns x 2 rows = 8 products
+        setProductsPerPage(8);
+      }
+    };
+    
+    updateProductsPerPage();
+    window.addEventListener('resize', updateProductsPerPage);
+    return () => window.removeEventListener('resize', updateProductsPerPage);
+  }, []);
 
   // Load filters from URL on initial mount
   useEffect(() => {
@@ -161,7 +186,7 @@ function Shop() {
     const paginatedProducts = filtered.slice(start, start + productsPerPage);
     setDisplayedProducts(paginatedProducts);
 
-  }, [allProducts, filters, sortBy, currentPage, searchTerm]);
+  }, [allProducts, filters, sortBy, currentPage, searchTerm, productsPerPage]);
 
   // Sync advanced search with sidebar filters
   const handleAdvancedSearch = (searchFilters) => {
@@ -276,12 +301,14 @@ function Shop() {
 
       <div className="shop-page">
         <div className="shop-header">
-          <h1>{getPageTitle()}</h1>
-          {filters.category && (
-            <p className="category-description">
-              Showing products in category: <strong>{filters.category.charAt(0).toUpperCase() + filters.category.slice(1)}</strong>
-            </p>
-          )}
+          <div className="shop-header-left">
+            <h1>{getPageTitle()}</h1>
+            {filters.category && (
+              <p className="category-description">
+                Showing products in category: <strong>{filters.category.charAt(0).toUpperCase() + filters.category.slice(1)}</strong>
+              </p>
+            )}
+          </div>
           <div className="search-section">
             <AdvancedSearch 
               onSearch={handleAdvancedSearch}
