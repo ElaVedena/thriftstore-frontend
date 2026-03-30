@@ -19,7 +19,7 @@ function Footer() {
                     </ul>
                 </div>
                 
-                {/* Column 2: Legal & Support */}
+                {/* Column 2: Support & Legal */}
                 <div className="footer-section">
                     <h3>Support</h3>
                     <ul>
@@ -28,14 +28,14 @@ function Footer() {
                         <li><Link to="/shipping-policy">Shipping Policy</Link></li>
                     </ul>
                     
-                    <h3 style={{ marginTop: '2rem' }}>Legal</h3>
+                    <h3 className="legal-heading">Legal</h3>
                     <ul>
                         <li><Link to="/terms">Terms of Service</Link></li>
                         <li><Link to="/privacy">Privacy Policy</Link></li>
                     </ul>
                 </div>
                 
-                {/* Column 3: Connect With Us - Updated with actual links */}
+                {/* Column 3: Connect With Us */}
                 <div className="footer-section">
                     <h3>Connect With Us</h3>
                     <div className="social-links">
@@ -54,7 +54,7 @@ function Footer() {
                     </div>
                 </div>
 
-                {/* Column 4: Newsletter Only */}
+                {/* Column 4: Newsletter */}
                 <div className="footer-section newsletter-section">
                     <h3>Newsletter</h3>
                     <div className="newsletter">
