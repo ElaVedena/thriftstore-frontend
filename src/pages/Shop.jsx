@@ -161,7 +161,13 @@ function Shop() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setSearchTerm(e.target.search.value);
+    const searchValue = e.target.search.value;
+    setSearchTerm(searchValue);
+    setCurrentPage(0);
+  };
+
+  const handleSortChange = (newSort) => {
+    setSortBy(newSort);
     setCurrentPage(0);
   };
 
@@ -288,7 +294,7 @@ function Shop() {
           <main className="shop-main">
             <SortBar
               sortBy={sortBy}
-              onSortChange={setSortBy}
+              onSortChange={handleSortChange}
               totalProducts={totalProducts}
               viewMode={viewMode}
               onViewModeChange={setViewMode}
