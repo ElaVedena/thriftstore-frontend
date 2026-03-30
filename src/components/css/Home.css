@@ -218,6 +218,15 @@
     border-radius: 2px;
 }
 
+/* Hide View All button in categories section */
+.section-header.no-view-all {
+    justify-content: center;
+}
+
+.section-header.no-view-all .view-all-link {
+    display: none;
+}
+
 .categories-slider-container {
     position: relative;
     display: flex;

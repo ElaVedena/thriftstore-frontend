@@ -28,8 +28,8 @@ function Home() {
         
         // Fetch all data in parallel
         const [featuredRes, newArrivalsRes, categoriesRes] = await Promise.allSettled([
-          productService.getFeaturedProducts(8),
-          productService.getNewArrivals(8),
+          productService.getFeaturedProducts(4),
+          productService.getNewArrivals(4),
           categoryService.getAllCategories()
         ]);
 
@@ -177,9 +177,6 @@ function Home() {
         {/* Canonical URL */}
         <link rel="canonical" href="https://vedathrifts.com" />
         
-        {/* Alternate language versions (if you add Swahili later) */}
-        <link rel="alternate" href="https://vedathrifts.com" hrefLang="x-default" />
-        
         {/* Additional SEO */}
         <meta name="geo.region" content="KE" />
         <meta name="geo.placename" content="Nairobi" />
@@ -197,14 +194,11 @@ function Home() {
           </div>
         </section>
 
-        {/* Categories Section - Keep as is with slider */}
+        {/* Categories Section - No View All button */}
         {categories.length > 0 && (
           <section className="categories-section">
-            <div className="section-header">
+            <div className="section-header no-view-all">
               <h2>Shop by Category</h2>
-              <Link to="/categories" className="view-all-link">
-                View All <i className="fas fa-arrow-right"></i>
-              </Link>
             </div>
             
             <div className="categories-slider-container">
@@ -227,7 +221,7 @@ function Home() {
           </section>
         )}
 
-        {/* Featured products - Now with horizontal scroll on mobile */}
+        {/* Featured products - Only 4 products */}
         {featuredProducts.length > 0 && (
           <section className="featured">
             <div className="section-header">
@@ -237,9 +231,9 @@ function Home() {
               </Link>
             </div>
             
-            {/* Desktop grid view */}
+            {/* Desktop grid view - 4 products */}
             <div className="product-grid desktop-grid">
-              {featuredProducts.slice(0, 4).map(product => (
+              {featuredProducts.map(product => (
                 <ProductCard 
                   key={`featured-${product.id}`} 
                   product={product} 
@@ -247,7 +241,7 @@ function Home() {
               ))}
             </div>
             
-            {/* Mobile horizontal scroll view */}
+            {/* Mobile horizontal scroll view - 4 products */}
             <div className="product-slider-container mobile-scroll">
               <button className="scroll-btn scroll-left" onClick={scrollFeaturedLeft}>
                 <i className="fas fa-chevron-left"></i>
@@ -268,7 +262,7 @@ function Home() {
           </section>
         )}
 
-        {/* New arrivals - Now with horizontal scroll on mobile */}
+        {/* New arrivals - Only 4 products */}
         {newArrivals.length > 0 && (
           <section className="new-arrivals">
             <div className="section-header">
@@ -278,9 +272,9 @@ function Home() {
               </Link>
             </div>
             
-            {/* Desktop grid view */}
+            {/* Desktop grid view - 4 products */}
             <div className="product-grid desktop-grid">
-              {newArrivals.slice(0, 4).map(product => (
+              {newArrivals.map(product => (
                 <ProductCard 
                   key={`new-${product.id}`} 
                   product={product} 
@@ -288,7 +282,7 @@ function Home() {
               ))}
             </div>
             
-            {/* Mobile horizontal scroll view */}
+            {/* Mobile horizontal scroll view - 4 products */}
             <div className="product-slider-container mobile-scroll">
               <button className="scroll-btn scroll-left" onClick={scrollNewArrivalsLeft}>
                 <i className="fas fa-chevron-left"></i>
