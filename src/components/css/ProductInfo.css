@@ -22,7 +22,6 @@
     display: flex;
     align-items: center;
     gap: 2px;
-    flex-wrap: wrap;
 }
 
 .star-rating i {
@@ -83,7 +82,6 @@
     font-weight: 600;
     padding: 0.3rem 1rem;
     border-radius: 4px;
-    font-size: 0.9rem;
 }
 
 .stock-status.in-stock {
@@ -98,7 +96,7 @@
 
 .condition {
     color: #666;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 .product-specs {
@@ -113,7 +111,6 @@
 .spec-item {
     display: flex;
     gap: 0.5rem;
-    flex-wrap: wrap;
 }
 
 .spec-label {
@@ -124,198 +121,4 @@
 
 .spec-value {
     color: #666;
-}
-
-/* ===== RESPONSIVE BREAKPOINTS ===== */
-
-/* Tablet (max-width: 1024px) */
-@media (max-width: 1024px) {
-    .product-title {
-        font-size: 1.8rem;
-    }
-    
-    .current-price {
-        font-size: 1.8rem;
-    }
-}
-
-/* Mobile (max-width: 768px) */
-@media (max-width: 768px) {
-    .product-info {
-        gap: 1rem;
-    }
-    
-    .product-title {
-        font-size: 1.5rem;
-        line-height: 1.3;
-    }
-    
-    .product-meta {
-        gap: 0.75rem;
-    }
-    
-    .star-rating i {
-        font-size: 0.9rem;
-    }
-    
-    .star-rating .rating-text {
-        font-size: 0.85rem;
-    }
-    
-    .product-sku {
-        font-size: 0.85rem;
-    }
-    
-    .product-price-section {
-        padding: 0.8rem 0;
-        gap: 0.8rem;
-    }
-    
-    .current-price {
-        font-size: 1.5rem;
-    }
-    
-    .original-price {
-        font-size: 1rem;
-    }
-    
-    .discount-badge {
-        padding: 0.25rem 0.6rem;
-        font-size: 0.8rem;
-    }
-    
-    .product-availability {
-        gap: 0.8rem;
-    }
-    
-    .stock-status {
-        padding: 0.25rem 0.8rem;
-        font-size: 0.85rem;
-    }
-    
-    .condition {
-        font-size: 0.85rem;
-    }
-    
-    .product-specs {
-        padding: 0.8rem;
-        gap: 0.4rem;
-    }
-    
-    .spec-label {
-        min-width: 70px;
-        font-size: 0.9rem;
-    }
-    
-    .spec-value {
-        font-size: 0.9rem;
-    }
-}
-
-/* Small Mobile (max-width: 480px) */
-@media (max-width: 480px) {
-    .product-info {
-        gap: 0.8rem;
-    }
-    
-    .product-title {
-        font-size: 1.2rem;
-    }
-    
-    .product-meta {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-    
-    .star-rating {
-        width: 100%;
-    }
-    
-    .star-rating i {
-        font-size: 0.85rem;
-    }
-    
-    .star-rating .rating-text {
-        font-size: 0.8rem;
-        margin-left: 6px;
-    }
-    
-    .product-sku {
-        font-size: 0.8rem;
-        width: 100%;
-    }
-    
-    .product-price-section {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-        padding: 0.8rem 0;
-    }
-    
-    .current-price {
-        font-size: 1.3rem;
-    }
-    
-    .original-price {
-        font-size: 0.9rem;
-    }
-    
-    .discount-badge {
-        padding: 0.2rem 0.5rem;
-        font-size: 0.75rem;
-    }
-    
-    .product-availability {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-    
-    .stock-status {
-        padding: 0.2rem 0.7rem;
-        font-size: 0.8rem;
-    }
-    
-    .condition {
-        font-size: 0.8rem;
-    }
-    
-    .product-specs {
-        padding: 0.7rem;
-    }
-    
-    .spec-item {
-        flex-direction: column;
-        gap: 0.2rem;
-    }
-    
-    .spec-label {
-        min-width: auto;
-        font-size: 0.85rem;
-    }
-    
-    .spec-value {
-        font-size: 0.85rem;
-        word-break: break-word;
-    }
-}
-
-/* Extra Small Mobile (max-width: 360px) */
-@media (max-width: 360px) {
-    .product-title {
-        font-size: 1.1rem;
-    }
-    
-    .current-price {
-        font-size: 1.2rem;
-    }
-    
-    .star-rating i {
-        font-size: 0.8rem;
-    }
-    
-    .star-rating .rating-text {
-        font-size: 0.75rem;
-    }
 }

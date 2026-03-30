@@ -35,10 +35,10 @@ function ProductInfo({ product }) {
             </div>
 
             <div className="product-price-section">
-                <span className="current-price">KES {product.price?.toLocaleString() || '0'}</span>
+                <span className="current-price">${product.price?.toFixed(2) || '0.00'}</span>
                 {product.originalPrice && (
                     <>
-                        <span className="original-price">KES {product.originalPrice.toLocaleString()}</span>
+                        <span className="original-price">${product.originalPrice.toFixed(2)}</span>
                         <span className="discount-badge">
                             {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
                         </span>
