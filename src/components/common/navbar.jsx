@@ -9,13 +9,13 @@ export default function Navbar() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, logout } = useAuth(); 
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
-  // Close dropdown and menu when route changes
+  // Close dropdown and mobile menu when route changes
   useEffect(() => {
     setShowUserMenu(false);
-    setIsMenuOpen(false);
+    setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
   // Close dropdown when clicking outside
@@ -31,11 +31,6 @@ export default function Navbar() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showUserMenu]);
-
-  // Close mobile menu when clicking a link
-  const handleLinkClick = () => {
-    setIsMenuOpen(false);
-  };
 
   useEffect(() => {
     const setNavbarHeight = () => {
@@ -56,38 +51,35 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     setShowUserMenu(false);
-    setIsMenuOpen(false);
   };
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
     <nav className="navbar" ref={navbarRef}>
-      <Link to="/" className="site-title" onClick={handleLinkClick}>VedaThrifts</Link>
+      <Link to="/" className="site-title">VedaThrifts</Link>
       
-      {/* Core Navigation Links - Always visible on mobile */}
-      <div className="nav-core-links">
-        <CustomLink to="/" className="core-link" onClick={handleLinkClick}>Home</CustomLink>
-        <CustomLink to="/shop" className="core-link" onClick={handleLinkClick}>Shop</CustomLink>
-        <CustomLink to="/beauty" className="core-link" onClick={handleLinkClick}>Beauty</CustomLink>
-        <CustomLink to="/cart" className="core-link cart-link-wrapper" onClick={handleLinkClick}>
+      {/* Desktop Navigation - Full menu */}
+      <ul className="desktop-nav">
+        <CustomLink to="/">Home</CustomLink>
+        <CustomLink to="/shop">Shop</CustomLink>
+        <CustomLink to="/beauty">Beauty</CustomLink>
+        <CustomLink to="/about">About</CustomLink>
+        <CustomLink to="/contact">Contact</CustomLink>
+        <CustomLink to="/cart" className="cart-link-wrapper">
           <span className="cart-icon">
             <i className="fas fa-shopping-cart"></i>
             {totalItems > 0 && (
               <span className="cart-badge">{totalItems}</span>
             )}
           </span>
-          <span className="core-link-text">Cart</span>
+          Cart
         </CustomLink>
         
-        {!isAuthenticated && (
-          <CustomLink to="/login" className="core-link" onClick={handleLinkClick}>Login</CustomLink>
-        )}
-        
-        {isAuthenticated && (
-          <div className="user-menu-container core-user-menu">
+        {isAuthenticated ? (
+          <li className="user-menu-container">
             <button 
               className="user-menu-btn"
               onClick={() => setShowUserMenu(!showUserMenu)}
@@ -101,15 +93,15 @@ export default function Navbar() {
             
             {showUserMenu && (
               <div className="user-dropdown">
-                <Link to="/profile" className="dropdown-item" onClick={() => { setShowUserMenu(false); handleLinkClick(); }}>
+                <Link to="/profile" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                   <i className="fas fa-user"></i>
                   My Profile
                 </Link>
-                <Link to="/orders" className="dropdown-item" onClick={() => { setShowUserMenu(false); handleLinkClick(); }}>
+                <Link to="/orders" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                   <i className="fas fa-shopping-bag"></i>
                   My Orders
                 </Link>
-                <Link to="/wishlist" className="dropdown-item" onClick={() => { setShowUserMenu(false); handleLinkClick(); }}>
+                <Link to="/wishlist" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                   <i className="fas fa-heart"></i>
                   Wishlist
                 </Link>
@@ -120,14 +112,47 @@ export default function Navbar() {
                 </button>
               </div>
             )}
-          </div>
+          </li>
+        ) : (
+          <>
+            <CustomLink to="/login">Login</CustomLink>
+            <CustomLink to="/register">Sign Up</CustomLink>
+          </>
         )}
+      </ul>
+
+      {/* Mobile Navigation */}
+      <div className="mobile-nav">
+        {/* Core Links - Always visible on mobile */}
+        <div className="mobile-core-links">
+          <CustomLinkMobile to="/">Home</CustomLinkMobile>
+          <CustomLinkMobile to="/shop">Shop</CustomLinkMobile>
+          <CustomLinkMobile to="/beauty">Beauty</CustomLinkMobile>
+          <CustomLinkMobile to="/cart" className="cart-link-wrapper">
+            <span className="cart-icon">
+              <i className="fas fa-shopping-cart"></i>
+              {totalItems > 0 && (
+                <span className="cart-badge">{totalItems}</span>
+              )}
+            </span>
+          </CustomLinkMobile>
+          
+          {!isAuthenticated && (
+            <CustomLinkMobile to="/login">Login</CustomLinkMobile>
+          )}
+          
+          {isAuthenticated && (
+            <div className="mobile-user-icon" onClick={() => setShowUserMenu(!showUserMenu)}>
+              <i className="fas fa-user-circle"></i>
+            </div>
+          )}
+        </div>
         
         {/* Hamburger Button */}
         <button 
-          className={`hamburger ${isMenuOpen ? 'active' : ''}`} 
-          onClick={toggleMenu}
-          aria-label="More menu"
+          className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`} 
+          onClick={toggleMobileMenu}
+          aria-label="Menu"
         >
           <span></span>
           <span></span>
@@ -135,83 +160,26 @@ export default function Navbar() {
         </button>
       </div>
       
-      {/* Full Navigation Menu (Hidden by default, opens with hamburger) */}
-      <div className={`nav-full-menu ${isMenuOpen ? 'active' : ''}`}>
-        <div className="nav-full-menu-header">
+      {/* Mobile Full Menu (Hidden by default) */}
+      <div className={`mobile-full-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+        <div className="mobile-menu-header">
           <h3>Menu</h3>
-          <button className="close-menu" onClick={toggleMenu}>
+          <button className="close-menu" onClick={toggleMobileMenu}>
             <i className="fas fa-times"></i>
           </button>
         </div>
         <ul>
-          <li className={location.pathname === '/' ? 'active' : ''}>
-            <Link to="/" onClick={handleLinkClick}>
-              <i className="fas fa-home"></i> Home
-            </Link>
-          </li>
-          <li className={location.pathname === '/shop' ? 'active' : ''}>
-            <Link to="/shop" onClick={handleLinkClick}>
-              <i className="fas fa-store"></i> Shop
-            </Link>
-          </li>
-          <li className={location.pathname === '/beauty' ? 'active' : ''}>
-            <Link to="/beauty" onClick={handleLinkClick}>
-              <i className="fas fa-spa"></i> Beauty
-            </Link>
-          </li>
-          <li className={location.pathname === '/about' ? 'active' : ''}>
-            <Link to="/about" onClick={handleLinkClick}>
-              <i className="fas fa-info-circle"></i> About
-            </Link>
-          </li>
-          <li className={location.pathname === '/contact' ? 'active' : ''}>
-            <Link to="/contact" onClick={handleLinkClick}>
-              <i className="fas fa-envelope"></i> Contact
-            </Link>
-          </li>
-          <li className={location.pathname === '/cart' ? 'active' : ''}>
-            <Link to="/cart" onClick={handleLinkClick}>
-              <i className="fas fa-shopping-cart"></i> Cart
-              {totalItems > 0 && (
-                <span className="cart-badge-menu">{totalItems}</span>
-              )}
-            </Link>
-          </li>
-          
-          {!isAuthenticated ? (
+          <li><Link to="/about" onClick={toggleMobileMenu}>About</Link></li>
+          <li><Link to="/contact" onClick={toggleMobileMenu}>Contact</Link></li>
+          {isAuthenticated ? (
             <>
-              <li className={location.pathname === '/login' ? 'active' : ''}>
-                <Link to="/login" onClick={handleLinkClick}>
-                  <i className="fas fa-sign-in-alt"></i> Login
-                </Link>
-              </li>
-              <li className={location.pathname === '/register' ? 'active' : ''}>
-                <Link to="/register" onClick={handleLinkClick}>
-                  <i className="fas fa-user-plus"></i> Sign Up
-                </Link>
-              </li>
+              <li><Link to="/profile" onClick={toggleMobileMenu}>My Profile</Link></li>
+              <li><Link to="/orders" onClick={toggleMobileMenu}>My Orders</Link></li>
+              <li><Link to="/wishlist" onClick={toggleMobileMenu}>Wishlist</Link></li>
+              <li><button onClick={() => { handleLogout(); toggleMobileMenu(); }} className="logout-btn">Logout</button></li>
             </>
           ) : (
-            <>
-              <li className={location.pathname === '/profile' ? 'active' : ''}>
-                <Link to="/profile" onClick={handleLinkClick}>
-                  <i className="fas fa-user"></i> My Profile
-                </Link>
-              </li>
-              <li className={location.pathname === '/orders' ? 'active' : ''}>
-                <Link to="/orders" onClick={handleLinkClick}>
-                  <i className="fas fa-shopping-bag"></i> My Orders
-                </Link>
-              </li>
-              <li className={location.pathname === '/wishlist' ? 'active' : ''}>
-                <Link to="/wishlist" onClick={handleLinkClick}>
-                  <i className="fas fa-heart"></i> Wishlist
-                </Link>
-              </li>
-              <button onClick={handleLogout} className="logout-link">
-                <i className="fas fa-sign-out-alt"></i> Logout
-              </button>
-            </>
+            <li><Link to="/register" onClick={toggleMobileMenu}>Sign Up</Link></li>
           )}
         </ul>
       </div>
@@ -219,15 +187,28 @@ export default function Navbar() {
   );
 }
 
-function CustomLink({ to, children, className, onClick, ...props }) {
+// Desktop CustomLink (unchanged)
+function CustomLink({ to, children, ...props }) {
   const resolvedPath = useResolvedPath(to);
   const isActive = useMatch({ path: resolvedPath.pathname, end: true });
   
   return (
-    <li className={`${isActive ? "active" : ""} ${className || ''}`}>
-      <Link to={to} onClick={onClick} {...props}>
+    <li className={isActive ? "active" : ""}>
+      <Link to={to} {...props}>
         {children}
       </Link>
     </li>
+  );
+}
+
+// Mobile CustomLink (without li wrapper for core links)
+function CustomLinkMobile({ to, children, className, ...props }) {
+  const resolvedPath = useResolvedPath(to);
+  const isActive = useMatch({ path: resolvedPath.pathname, end: true });
+  
+  return (
+    <Link to={to} className={`mobile-core-link ${isActive ? 'active' : ''} ${className || ''}`} {...props}>
+      {children}
+    </Link>
   );
 }
