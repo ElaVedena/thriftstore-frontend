@@ -234,7 +234,7 @@ body {
     
     /* Hamburger button */
     .hamburger {
-        display: flex;
+        display: flex !important;
         flex-direction: column;
         justify-content: space-between;
         width: 28px;
@@ -360,35 +360,6 @@ body {
         min-width: 16px;
         height: 16px;
         font-size: 0.6rem;
-    }
-    
-    /* User dropdown on mobile */
-    .user-dropdown {
-        position: fixed;
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        border-radius: 8px 8px 0 0;
-        animation: slideUp 0.3s ease;
-    }
-    
-    @keyframes slideUp {
-        from {
-            transform: translateY(100%);
-        }
-        to {
-            transform: translateY(0);
-        }
-    }
-    
-    .user-menu-btn {
-        padding: 0.5rem;
-    }
-    
-    .user-name {
-        display: none;
     }
 }
 

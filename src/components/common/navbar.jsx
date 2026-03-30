@@ -125,20 +125,20 @@ export default function Navbar() {
       <div className="mobile-nav">
         {/* Core Links - Always visible on mobile */}
         <div className="mobile-core-links">
-          <CustomLinkMobile to="/">Home</CustomLinkMobile>
-          <CustomLinkMobile to="/shop">Shop</CustomLinkMobile>
-          <CustomLinkMobile to="/beauty">Beauty</CustomLinkMobile>
-          <CustomLinkMobile to="/cart" className="cart-link-wrapper">
+          <Link to="/" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+          <Link to="/shop" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>Shop</Link>
+          <Link to="/beauty" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>Beauty</Link>
+          <Link to="/cart" className="mobile-core-link cart-link-wrapper" onClick={() => setIsMobileMenuOpen(false)}>
             <span className="cart-icon">
               <i className="fas fa-shopping-cart"></i>
               {totalItems > 0 && (
                 <span className="cart-badge">{totalItems}</span>
               )}
             </span>
-          </CustomLinkMobile>
+          </Link>
           
           {!isAuthenticated && (
-            <CustomLinkMobile to="/login">Login</CustomLinkMobile>
+            <Link to="/login" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
           )}
           
           {isAuthenticated && (
@@ -198,17 +198,5 @@ function CustomLink({ to, children, ...props }) {
         {children}
       </Link>
     </li>
-  );
-}
-
-// Mobile CustomLink (without li wrapper for core links)
-function CustomLinkMobile({ to, children, className, ...props }) {
-  const resolvedPath = useResolvedPath(to);
-  const isActive = useMatch({ path: resolvedPath.pathname, end: true });
-  
-  return (
-    <Link to={to} className={`mobile-core-link ${isActive ? 'active' : ''} ${className || ''}`} {...props}>
-      {children}
-    </Link>
   );
 }
