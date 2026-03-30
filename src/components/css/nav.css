@@ -350,13 +350,16 @@ body {
 @media (max-width: 768px) {
     /* Reduce navbar padding and gap for mobile */
     .navbar {
-        padding: 0 0.5rem;
-        gap: 0.5rem;
+        padding: 0 0.4rem;
+        gap: 0.2rem;
     }
     
     /* Smaller site title on mobile */
     .site-title {
-        font-size: 1.3rem;
+        font-size: 0.9rem;
+        padding: 0;
+        margin: 0;
+        white-space: nowrap;
     }
     
     /* Hide desktop navigation */
@@ -369,7 +372,7 @@ body {
         display: flex !important;
         align-items: center;
         justify-content: flex-end;
-        gap: 0.25rem;
+        gap: 0.15rem;
         flex: 1;
     }
     
@@ -377,8 +380,16 @@ body {
     .mobile-core-links {
         display: flex !important;
         align-items: center;
-        gap: 0.25rem;
+        gap: 0.15rem;
         flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    .mobile-core-links::-webkit-scrollbar {
+        display: none;
     }
     
     /* Individual core links - smaller padding for mobile */
@@ -387,8 +398,8 @@ body {
         align-items: center;
         color: #CEABB1;
         text-decoration: none;
-        padding: 6px 8px;
-        font-size: 0.85rem;
+        padding: 4px 4px;
+        font-size: 0.75rem;
         border-radius: 4px;
         transition: all 0.3s ease;
         position: relative;
@@ -396,6 +407,7 @@ body {
         background: transparent;
         border: none;
         cursor: pointer;
+        flex-shrink: 0;
     }
     
     .mobile-core-link:hover {
@@ -413,13 +425,13 @@ body {
         display: flex !important;
         align-items: center;
         gap: 0;
-        padding: 6px 6px;
+        padding: 4px 3px;
     }
     
     /* Login link styling */
     .mobile-core-link[href="/login"] {
         display: flex !important;
-        padding: 6px 8px;
+        padding: 4px 4px;
     }
     
     /* Cart icon styling in mobile */
@@ -429,19 +441,19 @@ body {
     }
     
     .mobile-core-link .cart-icon i {
-        font-size: 1rem;
+        font-size: 0.85rem;
     }
     
     .mobile-core-link .cart-badge {
         position: absolute;
         top: -6px;
-        right: -10px;
+        right: -8px;
         background: #CEABB1;
         color: #1a1a1a;
-        font-size: 0.6rem;
+        font-size: 0.55rem;
         font-weight: 600;
-        min-width: 16px;
-        height: 16px;
+        min-width: 14px;
+        height: 14px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -454,10 +466,10 @@ body {
         display: flex !important;
         align-items: center;
         justify-content: center;
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         color: #CEABB1;
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         cursor: pointer;
         border-radius: 50%;
         transition: all 0.3s ease;
@@ -476,14 +488,14 @@ body {
         display: flex !important;
         flex-direction: column;
         justify-content: space-between;
-        width: 24px;
-        height: 18px;
+        width: 22px;
+        height: 16px;
         background: transparent;
         border: none;
         cursor: pointer;
         padding: 0;
         flex-shrink: 0;
-        margin-left: 0;
+        margin-left: 2px;
     }
     
     .hamburger span {
@@ -495,7 +507,7 @@ body {
     }
     
     .hamburger.active span:nth-child(1) {
-        transform: translateY(8px) rotate(45deg);
+        transform: translateY(7px) rotate(45deg);
     }
     
     .hamburger.active span:nth-child(2) {
@@ -503,7 +515,7 @@ body {
     }
     
     .hamburger.active span:nth-child(3) {
-        transform: translateY(-8px) rotate(-45deg);
+        transform: translateY(-7px) rotate(-45deg);
     }
     
     /* Full menu overlay - slides in from left */
@@ -626,111 +638,37 @@ body {
 
 /* ===== SMALL MOBILE (up to 480px) ===== */
 @media (max-width: 480px) {
-    .site-title {
-        font-size: 1.1rem;
-    }
-    
     .navbar {
-        padding: 0 0.4rem;
-        gap: 0.3rem;
+        padding: 0 0.3rem;
     }
     
-    .mobile-core-link {
-        padding: 5px 6px;
-        font-size: 0.75rem;
-    }
-    
-    .mobile-core-link .cart-icon i {
+    .site-title {
         font-size: 0.85rem;
     }
     
-    .mobile-core-link[href="/cart"] {
-        padding: 5px 4px;
-    }
-    
-    .mobile-core-link[href="/login"] {
-        padding: 5px 6px;
-    }
-    
-    .hamburger {
-        width: 22px;
-        height: 16px;
-    }
-    
-    .hamburger.active span:nth-child(1) {
-        transform: translateY(7px) rotate(45deg);
-    }
-    
-    .hamburger.active span:nth-child(3) {
-        transform: translateY(-7px) rotate(-45deg);
-    }
-    
-    .mobile-user-icon {
-        width: 28px;
-        height: 28px;
-        font-size: 0.95rem;
-    }
-    
-    .mobile-core-links {
-        gap: 0.15rem;
-    }
-    
-    .mobile-nav {
-        gap: 0.15rem;
-    }
-    
-    .mobile-full-menu li a,
-    .mobile-full-menu .logout-btn {
-        padding: 0.9rem 1.2rem;
-        font-size: 0.95rem;
-    }
-    
-    .mobile-full-menu li a i,
-    .mobile-full-menu .logout-btn i {
-        width: 22px;
-        font-size: 1rem;
-    }
-    
-    .mobile-menu-header {
-        padding: 0.8rem 1.2rem;
-    }
-    
-    .mobile-menu-header h3 {
-        font-size: 1.1rem;
-    }
-}
-
-/* ===== VERY SMALL MOBILE (up to 360px) ===== */
-@media (max-width: 360px) {
-    .site-title {
-        font-size: 1rem;
-    }
-    
     .mobile-core-link {
-        padding: 4px 5px;
+        padding: 3px 3px;
         font-size: 0.7rem;
     }
     
     .mobile-core-link .cart-icon i {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
     
     .mobile-core-link[href="/cart"] {
-        padding: 4px 3px;
+        padding: 3px 2px;
     }
     
     .mobile-core-link[href="/login"] {
-        padding: 4px 5px;
+        padding: 3px 3px;
     }
     
-    .mobile-core-links {
-        gap: 0.1rem;
-    }
-    
-    .mobile-user-icon {
-        width: 26px;
-        height: 26px;
-        font-size: 0.9rem;
+    .mobile-core-link .cart-badge {
+        min-width: 12px;
+        height: 12px;
+        font-size: 0.5rem;
+        top: -5px;
+        right: -7px;
     }
     
     .hamburger {
@@ -738,7 +676,68 @@ body {
         height: 14px;
     }
     
+    .hamburger.active span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+    }
+    
+    .hamburger.active span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+    }
+    
+    .mobile-user-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 0.85rem;
+    }
+    
+    .mobile-core-links {
+        gap: 0.1rem;
+    }
+    
     .mobile-nav {
         gap: 0.1rem;
+    }
+}
+
+/* ===== VERY SMALL MOBILE (up to 360px) ===== */
+@media (max-width: 360px) {
+    .site-title {
+        font-size: 0.75rem;
+    }
+    
+    .mobile-core-link {
+        padding: 2px 2px;
+        font-size: 0.65rem;
+    }
+    
+    .mobile-core-link .cart-icon i {
+        font-size: 0.7rem;
+    }
+    
+    .mobile-core-link[href="/cart"] {
+        padding: 2px 1px;
+    }
+    
+    .mobile-core-link[href="/login"] {
+        padding: 2px 2px;
+    }
+    
+    .mobile-core-link .cart-badge {
+        min-width: 10px;
+        height: 10px;
+        font-size: 0.45rem;
+        top: -4px;
+        right: -6px;
+    }
+    
+    .hamburger {
+        width: 18px;
+        height: 12px;
+    }
+    
+    .mobile-user-icon {
+        width: 22px;
+        height: 22px;
+        font-size: 0.8rem;
     }
 }
