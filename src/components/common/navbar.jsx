@@ -32,6 +32,18 @@ export default function Navbar() {
     };
   }, [showUserMenu]);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
   useEffect(() => {
     const setNavbarHeight = () => {
       if (navbarRef.current) {
@@ -62,7 +74,7 @@ export default function Navbar() {
     <nav className="navbar" ref={navbarRef}>
       <Link to="/" className="site-title">VedaThrifts</Link>
       
-      {/* Desktop Navigation - Full menu */}
+      {/* Desktop Navigation - Full menu (hidden on mobile) */}
       <ul className="desktop-nav">
         <CustomLink to="/">Home</CustomLink>
         <CustomLink to="/shop">Shop</CustomLink>
@@ -84,6 +96,7 @@ export default function Navbar() {
             <button 
               className="user-menu-btn"
               onClick={() => setShowUserMenu(!showUserMenu)}
+              aria-label="User menu"
             >
               <i className="fas fa-user-circle"></i>
               <span className="user-name">
@@ -126,10 +139,32 @@ export default function Navbar() {
       <div className="mobile-nav">
         {/* Core Links - Always visible on mobile */}
         <div className="mobile-core-links">
-          <Link to="/" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-          <Link to="/shop" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>Shop</Link>
-          <Link to="/beauty" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>Beauty</Link>
-          <Link to="/cart" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link 
+            to="/" 
+            className={`mobile-core-link ${location.pathname === '/' ? 'active' : ''}`}
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Home
+          </Link>
+          <Link 
+            to="/shop" 
+            className={`mobile-core-link ${location.pathname === '/shop' ? 'active' : ''}`}
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Shop
+          </Link>
+          <Link 
+            to="/beauty" 
+            className={`mobile-core-link ${location.pathname === '/beauty' ? 'active' : ''}`}
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Beauty
+          </Link>
+          <Link 
+            to="/cart" 
+            className="mobile-core-link" 
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
             <span className="cart-icon">
               <i className="fas fa-shopping-cart"></i>
               {totalItems > 0 && (
@@ -138,12 +173,20 @@ export default function Navbar() {
             </span>
           </Link>
           
-          {!isAuthenticated && (
-            <Link to="/login" className="mobile-core-link" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
-          )}
-          
-          {isAuthenticated && (
-            <div className="mobile-user-icon" onClick={() => setShowUserMenu(!showUserMenu)}>
+          {!isAuthenticated ? (
+            <Link 
+              to="/login" 
+              className="mobile-core-link" 
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Login
+            </Link>
+          ) : (
+            <div 
+              className="mobile-user-icon" 
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              aria-label="User menu"
+            >
               <i className="fas fa-user-circle"></i>
             </div>
           )}
@@ -151,7 +194,7 @@ export default function Navbar() {
         
         {/* Hamburger Button */}
         <button 
-          className="hamburger" 
+          className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`} 
           onClick={toggleMobileMenu}
           aria-label="Menu"
         >
@@ -161,26 +204,64 @@ export default function Navbar() {
         </button>
       </div>
       
-      {/* Mobile Full Menu (Hidden by default) */}
+      {/* Mobile Full Menu (Slides in from left) */}
       <div className={`mobile-full-menu ${isMobileMenuOpen ? 'active' : ''}`}>
         <div className="mobile-menu-header">
           <h3>Menu</h3>
-          <button className="close-menu" onClick={toggleMobileMenu}>
+          <button className="close-menu" onClick={toggleMobileMenu} aria-label="Close menu">
             <i className="fas fa-times"></i>
           </button>
         </div>
         <ul>
-          <li><Link to="/about" onClick={toggleMobileMenu}>About</Link></li>
-          <li><Link to="/contact" onClick={toggleMobileMenu}>Contact</Link></li>
-          {isAuthenticated ? (
+          <li>
+            <Link to="/about" onClick={toggleMobileMenu}>
+              <i className="fas fa-info-circle"></i>
+              About
+            </Link>
+          </li>
+          <li>
+            <Link to="/contact" onClick={toggleMobileMenu}>
+              <i className="fas fa-envelope"></i>
+              Contact
+            </Link>
+          </li>
+          
+          {isAuthenticated && (
             <>
-              <li><Link to="/profile" onClick={toggleMobileMenu}>My Profile</Link></li>
-              <li><Link to="/orders" onClick={toggleMobileMenu}>My Orders</Link></li>
-              <li><Link to="/wishlist" onClick={toggleMobileMenu}>Wishlist</Link></li>
-              <li><button onClick={() => { handleLogout(); toggleMobileMenu(); }} className="logout-btn">Logout</button></li>
+              <li>
+                <Link to="/profile" onClick={toggleMobileMenu}>
+                  <i className="fas fa-user"></i>
+                  My Profile
+                </Link>
+              </li>
+              <li>
+                <Link to="/orders" onClick={toggleMobileMenu}>
+                  <i className="fas fa-shopping-bag"></i>
+                  My Orders
+                </Link>
+              </li>
+              <li>
+                <Link to="/wishlist" onClick={toggleMobileMenu}>
+                  <i className="fas fa-heart"></i>
+                  Wishlist
+                </Link>
+              </li>
+              <li>
+                <button onClick={() => { handleLogout(); toggleMobileMenu(); }} className="logout-btn">
+                  <i className="fas fa-sign-out-alt"></i>
+                  Logout
+                </button>
+              </li>
             </>
-          ) : (
-            <li><Link to="/register" onClick={toggleMobileMenu}>Sign Up</Link></li>
+          )}
+          
+          {!isAuthenticated && (
+            <li>
+              <Link to="/register" onClick={toggleMobileMenu}>
+                <i className="fas fa-user-plus"></i>
+                Sign Up
+              </Link>
+            </li>
           )}
         </ul>
       </div>
@@ -188,7 +269,7 @@ export default function Navbar() {
   );
 }
 
-// Desktop CustomLink (unchanged)
+// Desktop CustomLink
 function CustomLink({ to, children, ...props }) {
   const resolvedPath = useResolvedPath(to);
   const isActive = useMatch({ path: resolvedPath.pathname, end: true });
