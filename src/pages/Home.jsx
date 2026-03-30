@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import ProductCard from "../components/products/ProductCard";
@@ -14,6 +14,10 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Refs for scroll containers
+  const featuredScrollRef = useRef(null);
+  const newArrivalsScrollRef = useRef(null);
+
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
@@ -24,8 +28,8 @@ function Home() {
         
         // Fetch all data in parallel
         const [featuredRes, newArrivalsRes, categoriesRes] = await Promise.allSettled([
-          productService.getFeaturedProducts(4),
-          productService.getNewArrivals(4),
+          productService.getFeaturedProducts(8),
+          productService.getNewArrivals(8),
           categoryService.getAllCategories()
         ]);
 
@@ -69,17 +73,43 @@ function Home() {
   }, []);
 
   // Scroll handlers for category slider
-  const scrollLeft = () => {
+  const scrollCategoriesLeft = () => {
     const container = document.querySelector('.categories-grid-scroll');
     if (container) {
       container.scrollBy({ left: -300, behavior: 'smooth' });
     }
   };
 
-  const scrollRight = () => {
+  const scrollCategoriesRight = () => {
     const container = document.querySelector('.categories-grid-scroll');
     if (container) {
       container.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
+
+  // Scroll handlers for featured products
+  const scrollFeaturedLeft = () => {
+    if (featuredScrollRef.current) {
+      featuredScrollRef.current.scrollBy({ left: -280, behavior: 'smooth' });
+    }
+  };
+
+  const scrollFeaturedRight = () => {
+    if (featuredScrollRef.current) {
+      featuredScrollRef.current.scrollBy({ left: 280, behavior: 'smooth' });
+    }
+  };
+
+  // Scroll handlers for new arrivals
+  const scrollNewArrivalsLeft = () => {
+    if (newArrivalsScrollRef.current) {
+      newArrivalsScrollRef.current.scrollBy({ left: -280, behavior: 'smooth' });
+    }
+  };
+
+  const scrollNewArrivalsRight = () => {
+    if (newArrivalsScrollRef.current) {
+      newArrivalsScrollRef.current.scrollBy({ left: 280, behavior: 'smooth' });
     }
   };
 
@@ -167,7 +197,7 @@ function Home() {
           </div>
         </section>
 
-        {/* Categories Section */}
+        {/* Categories Section - Keep as is with slider */}
         {categories.length > 0 && (
           <section className="categories-section">
             <div className="section-header">
@@ -178,7 +208,7 @@ function Home() {
             </div>
             
             <div className="categories-slider-container">
-              <button className="scroll-btn scroll-left" onClick={scrollLeft}>
+              <button className="scroll-btn scroll-left" onClick={scrollCategoriesLeft}>
                 <i className="fas fa-chevron-left"></i>
               </button>
               
@@ -190,18 +220,25 @@ function Home() {
                 ))}
               </div>
               
-              <button className="scroll-btn scroll-right" onClick={scrollRight}>
+              <button className="scroll-btn scroll-right" onClick={scrollCategoriesRight}>
                 <i className="fas fa-chevron-right"></i>
               </button>
             </div>
           </section>
         )}
 
-        {/* Featured products */}
+        {/* Featured products - Now with horizontal scroll on mobile */}
         {featuredProducts.length > 0 && (
           <section className="featured">
-            <h2>Featured Products</h2>
-            <div className="product-grid">
+            <div className="section-header">
+              <h2>Featured Products</h2>
+              <Link to="/shop" className="view-all-link">
+                View All <i className="fas fa-arrow-right"></i>
+              </Link>
+            </div>
+            
+            {/* Desktop grid view */}
+            <div className="product-grid desktop-grid">
               {featuredProducts.slice(0, 4).map(product => (
                 <ProductCard 
                   key={`featured-${product.id}`} 
@@ -209,19 +246,40 @@ function Home() {
                 />
               ))}
             </div>
-            <div className="section-footer">
-              <Link to="/shop" className="view-all-link">
-                View All Products <i className="fas fa-arrow-right"></i>
-              </Link>
+            
+            {/* Mobile horizontal scroll view */}
+            <div className="product-slider-container mobile-scroll">
+              <button className="scroll-btn scroll-left" onClick={scrollFeaturedLeft}>
+                <i className="fas fa-chevron-left"></i>
+              </button>
+              
+              <div className="product-scroll" ref={featuredScrollRef}>
+                {featuredProducts.map(product => (
+                  <div key={`featured-mobile-${product.id}`} className="product-slide">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+              
+              <button className="scroll-btn scroll-right" onClick={scrollFeaturedRight}>
+                <i className="fas fa-chevron-right"></i>
+              </button>
             </div>
           </section>
         )}
 
-        {/* New arrivals */}
+        {/* New arrivals - Now with horizontal scroll on mobile */}
         {newArrivals.length > 0 && (
           <section className="new-arrivals">
-            <h2>New Arrivals</h2>
-            <div className="product-grid">
+            <div className="section-header">
+              <h2>New Arrivals</h2>
+              <Link to="/shop?sort=newest" className="view-all-link">
+                View All <i className="fas fa-arrow-right"></i>
+              </Link>
+            </div>
+            
+            {/* Desktop grid view */}
+            <div className="product-grid desktop-grid">
               {newArrivals.slice(0, 4).map(product => (
                 <ProductCard 
                   key={`new-${product.id}`} 
@@ -229,10 +287,24 @@ function Home() {
                 />
               ))}
             </div>
-            <div className="section-footer">
-              <Link to="/shop?sort=newest" className="view-all-link">
-                View All New Arrivals <i className="fas fa-arrow-right"></i>
-              </Link>
+            
+            {/* Mobile horizontal scroll view */}
+            <div className="product-slider-container mobile-scroll">
+              <button className="scroll-btn scroll-left" onClick={scrollNewArrivalsLeft}>
+                <i className="fas fa-chevron-left"></i>
+              </button>
+              
+              <div className="product-scroll" ref={newArrivalsScrollRef}>
+                {newArrivals.map(product => (
+                  <div key={`new-mobile-${product.id}`} className="product-slide">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+              
+              <button className="scroll-btn scroll-right" onClick={scrollNewArrivalsRight}>
+                <i className="fas fa-chevron-right"></i>
+              </button>
             </div>
           </section>
         )}
