@@ -9,11 +9,13 @@ export default function Navbar() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, logout } = useAuth(); 
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
-  // Close dropdown when route changes
+  // Close dropdown and menu when route changes
   useEffect(() => {
     setShowUserMenu(false);
+    setIsMenuOpen(false);
   }, [location.pathname]);
 
   // Close dropdown when clicking outside
@@ -29,6 +31,11 @@ export default function Navbar() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showUserMenu]);
+
+  // Close mobile menu when clicking a link
+  const handleLinkClick = () => {
+    setIsMenuOpen(false);
+  };
 
   useEffect(() => {
     const setNavbarHeight = () => {
@@ -49,18 +56,36 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     setShowUserMenu(false);
+    setIsMenuOpen(false);
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
     <nav className="navbar" ref={navbarRef}>
-      <Link to="/" className="site-title">VedaThrifts</Link>
-      <ul>
-        <CustomLink to="/">Home</CustomLink>
-        <CustomLink to="/shop">Shop</CustomLink>
-        <CustomLink to="/beauty">Beauty</CustomLink>
-        <CustomLink to="/about">About</CustomLink>
-        <CustomLink to="/contact">Contact</CustomLink>
-        <CustomLink to="/cart" className="cart-link-wrapper">
+      <Link to="/" className="site-title" onClick={handleLinkClick}>VedaThrifts</Link>
+      
+      {/* Hamburger Button */}
+      <button 
+        className={`hamburger ${isMenuOpen ? 'active' : ''}`} 
+        onClick={toggleMenu}
+        aria-label="Toggle menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      {/* Navigation Links */}
+      <ul className={isMenuOpen ? 'active' : ''}>
+        <CustomLink to="/" onClick={handleLinkClick}>Home</CustomLink>
+        <CustomLink to="/shop" onClick={handleLinkClick}>Shop</CustomLink>
+        <CustomLink to="/beauty" onClick={handleLinkClick}>Beauty</CustomLink>
+        <CustomLink to="/about" onClick={handleLinkClick}>About</CustomLink>
+        <CustomLink to="/contact" onClick={handleLinkClick}>Contact</CustomLink>
+        <CustomLink to="/cart" className="cart-link-wrapper" onClick={handleLinkClick}>
           <span className="cart-icon">
             <i className="fas fa-shopping-cart"></i>
             {totalItems > 0 && (
@@ -85,15 +110,15 @@ export default function Navbar() {
             
             {showUserMenu && (
               <div className="user-dropdown">
-                <Link to="/profile" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
+                <Link to="/profile" className="dropdown-item" onClick={() => { setShowUserMenu(false); handleLinkClick(); }}>
                   <i className="fas fa-user"></i>
                   My Profile
                 </Link>
-                <Link to="/orders" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
+                <Link to="/orders" className="dropdown-item" onClick={() => { setShowUserMenu(false); handleLinkClick(); }}>
                   <i className="fas fa-shopping-bag"></i>
                   My Orders
                 </Link>
-                <Link to="/wishlist" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
+                <Link to="/wishlist" className="dropdown-item" onClick={() => { setShowUserMenu(false); handleLinkClick(); }}>
                   <i className="fas fa-heart"></i>
                   Wishlist
                 </Link>
@@ -107,22 +132,22 @@ export default function Navbar() {
           </li>
         ) : (
           <>
-            <CustomLink to="/login">Login</CustomLink>
-            <CustomLink to="/register">Sign Up</CustomLink>
+            <CustomLink to="/login" onClick={handleLinkClick}>Login</CustomLink>
+            <CustomLink to="/register" onClick={handleLinkClick}>Sign Up</CustomLink>
           </>
         )}
       </ul>
     </nav>
   );
 }
- 
-function CustomLink({ to, children, ...props }) {
+
+function CustomLink({ to, children, onClick, ...props }) {
   const resolvedPath = useResolvedPath(to);
   const isActive = useMatch({ path: resolvedPath.pathname, end: true });
   
   return (
     <li className={isActive ? "active" : ""}>
-      <Link to={to} {...props}>
+      <Link to={to} onClick={onClick} {...props}>
         {children}
       </Link>
     </li>
