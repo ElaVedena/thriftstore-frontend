@@ -3,8 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { productService } from '../services/productService';
 import { useNotification } from '../hooks/useNotification';
-import AdvancedSearch from '../components/products/AdvancedSearch';
-import SavedSearches from '../components/products/SavedSearches';
 import SortBar from '../components/products/SortBar';
 import ProductGrid from '../components/products/ProductGrid';
 import Pagination from '../components/common/Pagination';
@@ -41,7 +39,6 @@ function Shop() {
   
   // Mobile: 2 products per row = 4 products per page (2 rows)
   // Desktop: 4 products per row = 8 products per page (2 rows)
-  // Use responsive products per page based on screen size
   const [productsPerPage, setProductsPerPage] = useState(8);
   
   const { showError } = useNotification();
@@ -51,14 +48,11 @@ function Shop() {
     const updateProductsPerPage = () => {
       const width = window.innerWidth;
       if (width <= 768) {
-        // Mobile: 2 columns x 2 rows = 4 products
-        setProductsPerPage(4);
+        setProductsPerPage(4); // Mobile: 2x2 grid = 4 products
       } else if (width <= 1024) {
-        // Tablet: 3 columns x 2 rows = 6 products
-        setProductsPerPage(6);
+        setProductsPerPage(6); // Tablet: 3x2 grid = 6 products
       } else {
-        // Desktop: 4 columns x 2 rows = 8 products
-        setProductsPerPage(8);
+        setProductsPerPage(8); // Desktop: 4x2 grid = 8 products
       }
     };
     
@@ -71,17 +65,9 @@ function Shop() {
   useEffect(() => {
     const urlFilters = getSearchParamsFromURL(searchParams);
     
-    console.log('🔍 URL Search Params:', Object.fromEntries(searchParams.entries()));
-    console.log('📦 Parsed URL Filters:', urlFilters);
-    
-    // Map URL params to state
     const newFilters = { ...filters };
     
-    if (urlFilters.category) {
-      newFilters.category = urlFilters.category;
-      console.log(' Loading category from URL:', urlFilters.category);
-    }
-    
+    if (urlFilters.category) newFilters.category = urlFilters.category;
     if (urlFilters.q) setSearchTerm(urlFilters.q);
     if (urlFilters.min_price) newFilters.minPrice = urlFilters.min_price;
     if (urlFilters.max_price) newFilters.maxPrice = urlFilters.max_price;
@@ -98,7 +84,6 @@ function Shop() {
     if (urlFilters.sort) setSortBy(urlFilters.sort);
     if (urlFilters.page) setCurrentPage(parseInt(urlFilters.page) - 1);
     
-    console.log('📊 Setting filters:', newFilters);
     setFilters(newFilters);
   }, [searchParams]);
 
@@ -132,18 +117,16 @@ function Shop() {
       setLoading(true);
       
       try {
-        console.log('Fetching all products for filtering');
-        const result = await productService.getProducts(0, 100); // Get up to 100 products
+        const result = await productService.getProducts(0, 100);
         
         if (result.success) {
           const productsData = result.data?.content || result.data || [];
           setAllProducts(productsData);
-          console.log(` Fetched ${productsData.length} products for filtering`);
         } else {
           showError(result.message || 'Failed to load products');
         }
       } catch (error) {
-        console.error(' Error fetching products:', error);
+        console.error('Error fetching products:', error);
         showError('An error occurred while fetching products');
       } finally {
         setLoading(false);
@@ -153,14 +136,10 @@ function Shop() {
     fetchAllProducts();
   }, [showError]);
 
-  // Apply filters and sorting whenever allProducts or filters change
+  // Apply filters and sorting
   useEffect(() => {
     if (allProducts.length === 0) return;
 
-    console.log('🔄 Applying filters:', filters);
-    console.log('🔄 Sort by:', sortBy);
-
-    // Convert price strings to numbers
     const filterCriteria = {
       ...filters,
       priceMin: filters.minPrice ? parseFloat(filters.minPrice) : undefined,
@@ -169,46 +148,17 @@ function Shop() {
       search: searchTerm
     };
 
-    // Apply filters using the helper function
     let filtered = filterProducts(allProducts, filterCriteria);
-    console.log(`After filtering: ${filtered.length} products`);
-
-    // Apply sorting
     filtered = sortProducts(filtered, sortBy);
-    console.log(` After sorting: ${filtered.length} products`);
 
-    // Update total products and pages
     setTotalProducts(filtered.length);
     setTotalPages(Math.ceil(filtered.length / productsPerPage));
 
-    // Apply pagination
     const start = currentPage * productsPerPage;
     const paginatedProducts = filtered.slice(start, start + productsPerPage);
     setDisplayedProducts(paginatedProducts);
 
   }, [allProducts, filters, sortBy, currentPage, searchTerm, productsPerPage]);
-
-  // Sync advanced search with sidebar filters
-  const handleAdvancedSearch = (searchFilters) => {
-    setSearchTerm(searchFilters.search || '');
-    setFilters({
-      category: searchFilters.category || '',
-      size: searchFilters.size?.length ? searchFilters.size[0] : '',
-      condition: searchFilters.condition?.length ? searchFilters.condition[0] : '',
-      minPrice: searchFilters.priceMin || '',
-      maxPrice: searchFilters.priceMax || '',
-      rating: searchFilters.minRating || '',
-      brand: searchFilters.brand?.length ? searchFilters.brand[0] : '',
-      color: searchFilters.color?.length ? searchFilters.color[0] : '',
-      era: searchFilters.era?.length ? searchFilters.era[0] : '',
-      material: searchFilters.material?.length ? searchFilters.material[0] : '',
-      pattern: searchFilters.pattern?.length ? searchFilters.pattern[0] : '',
-      inStockOnly: searchFilters.inStockOnly || false,
-      onSaleOnly: searchFilters.onSaleOnly || false
-    });
-    setSortBy(searchFilters.sortBy || 'relevance');
-    setCurrentPage(0);
-  };
 
   const handleFilterChange = (newFilters) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
@@ -272,30 +222,24 @@ function Shop() {
   return (
     <>
       <Helmet>
-        {/* Primary SEO */}
         <title>{getPageTitle()} | VedaThrifts - Thrift Store Kenya</title>
         <meta name="description" content={getPageDescription()} />
         <meta name="keywords" content={getPageKeywords()} />
         <meta name="author" content="VedaThrifts" />
         <meta name="robots" content="index, follow" />
         
-        {/* Open Graph / Facebook / WhatsApp */}
         <meta property="og:title" content={`${getPageTitle()} | VedaThrifts`} />
         <meta property="og:description" content={getPageDescription()} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://vedathrifts.com/shop${window.location.search}`} />
         <meta property="og:image" content="https://vedathrifts.com/og-image-shop.jpg" />
-        <meta property="og:image:alt" content="Shop Secondhand Fashion at VedaThrifts" />
         <meta property="og:site_name" content="VedaThrifts" />
         <meta property="og:locale" content="en_KE" />
         
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${getPageTitle()} | VedaThrifts`} />
         <meta name="twitter:description" content={getPageDescription()} />
-        <meta name="twitter:image" content="https://vedathrifts.com/og-image-shop.jpg" />
         
-        {/* Canonical URL */}
         <link rel="canonical" href={`https://vedathrifts.com/shop${window.location.search}`} />
       </Helmet>
 
@@ -308,29 +252,6 @@ function Shop() {
                 Showing products in category: <strong>{filters.category.charAt(0).toUpperCase() + filters.category.slice(1)}</strong>
               </p>
             )}
-          </div>
-          <div className="search-section">
-            <AdvancedSearch 
-              onSearch={handleAdvancedSearch}
-              initialFilters={{
-                search: searchTerm,
-                category: filters.category,
-                priceMin: filters.minPrice,
-                priceMax: filters.maxPrice,
-                size: filters.size ? [filters.size] : [],
-                condition: filters.condition ? [filters.condition] : [],
-                brand: filters.brand ? [filters.brand] : [],
-                color: filters.color ? [filters.color] : [],
-                era: filters.era ? [filters.era] : [],
-                material: filters.material ? [filters.material] : [],
-                pattern: filters.pattern ? [filters.pattern] : [],
-                minRating: filters.rating,
-                inStockOnly: filters.inStockOnly,
-                onSaleOnly: filters.onSaleOnly,
-                sortBy: sortBy
-              }}
-            />
-            <SavedSearches />
           </div>
         </div>
 
