@@ -38,7 +38,6 @@ function Shop() {
   const [viewMode, setViewMode] = useState('grid');
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const productsPerPage = 8;
   
   const { showError } = useNotification();
@@ -221,10 +220,6 @@ function Shop() {
     console.log('Added to cart:', product);
   };
 
-  const toggleFilter = () => {
-    setIsFilterOpen(!isFilterOpen);
-  };
-
   const getPageTitle = () => {
     if (filters.category) {
       const categoryName = filters.category.charAt(0).toUpperCase() + filters.category.slice(1);
@@ -252,12 +247,14 @@ function Shop() {
   return (
     <>
       <Helmet>
+        {/* Primary SEO */}
         <title>{getPageTitle()} | VedaThrifts - Thrift Store Kenya</title>
         <meta name="description" content={getPageDescription()} />
         <meta name="keywords" content={getPageKeywords()} />
         <meta name="author" content="VedaThrifts" />
         <meta name="robots" content="index, follow" />
         
+        {/* Open Graph / Facebook / WhatsApp */}
         <meta property="og:title" content={`${getPageTitle()} | VedaThrifts`} />
         <meta property="og:description" content={getPageDescription()} />
         <meta property="og:type" content="website" />
@@ -267,30 +264,24 @@ function Shop() {
         <meta property="og:site_name" content="VedaThrifts" />
         <meta property="og:locale" content="en_KE" />
         
+        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${getPageTitle()} | VedaThrifts`} />
         <meta name="twitter:description" content={getPageDescription()} />
         <meta name="twitter:image" content="https://vedathrifts.com/og-image-shop.jpg" />
         
+        {/* Canonical URL */}
         <link rel="canonical" href={`https://vedathrifts.com/shop${window.location.search}`} />
       </Helmet>
 
       <div className="shop-page">
         <div className="shop-header">
-          <div className="shop-header-left">
-            <h1>{getPageTitle()}</h1>
-            {filters.category && (
-              <p className="category-description">
-                Showing products in category: <strong>{filters.category.charAt(0).toUpperCase() + filters.category.slice(1)}</strong>
-              </p>
-            )}
-          </div>
-          
-          {/* Mobile Filter Button */}
-          <button className="filter-toggle-btn" onClick={toggleFilter}>
-            <i className="fas fa-sliders-h"></i> Filters
-          </button>
-          
+          <h1>{getPageTitle()}</h1>
+          {filters.category && (
+            <p className="category-description">
+              Showing products in category: <strong>{filters.category.charAt(0).toUpperCase() + filters.category.slice(1)}</strong>
+            </p>
+          )}
           <div className="search-section">
             <AdvancedSearch 
               onSearch={handleAdvancedSearch}
@@ -317,34 +308,12 @@ function Shop() {
         </div>
 
         <div className="shop-content">
-          {/* Desktop Filters */}
-          <aside className="filters-sidebar desktop-filters">
-            <Filters
-              filters={filters}
-              onFilterChange={handleFilterChange}
-              onClearFilters={clearFilters}
-              products={displayedProducts}
-            />
-          </aside>
-          
-          {/* Mobile Slide-out Filters */}
-          <div className={`mobile-filters-overlay ${isFilterOpen ? 'active' : ''}`} onClick={toggleFilter}></div>
-          <aside className={`mobile-filters-panel ${isFilterOpen ? 'active' : ''}`}>
-            <div className="mobile-filters-header">
-              <h3>Filter Products</h3>
-              <button className="close-filters" onClick={toggleFilter}>
-                <i className="fas fa-times"></i>
-              </button>
-            </div>
-            <div className="mobile-filters-content">
-              <Filters
-                filters={filters}
-                onFilterChange={handleFilterChange}
-                onClearFilters={clearFilters}
-                products={displayedProducts}
-              />
-            </div>
-          </aside>
+          <Filters
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onClearFilters={clearFilters}
+            products={displayedProducts}
+          />
           
           <main className="shop-main">
             <SortBar
