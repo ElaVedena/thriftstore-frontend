@@ -37,8 +37,7 @@ function Shop() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   
-  // Mobile: 2 products per row = 4 products per page (2 rows)
-  // Desktop: 4 products per row = 8 products per page (2 rows)
+  // Products per page - adjusted for mobile to show 4 products without scrolling
   const [productsPerPage, setProductsPerPage] = useState(8);
   
   const { showError } = useNotification();
@@ -160,6 +159,12 @@ function Shop() {
 
   }, [allProducts, filters, sortBy, currentPage, searchTerm, productsPerPage]);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearchTerm(e.target.search.value);
+    setCurrentPage(0);
+  };
+
   const handleFilterChange = (newFilters) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
     setCurrentPage(0);
@@ -253,15 +258,32 @@ function Shop() {
               </p>
             )}
           </div>
+          <form onSubmit={handleSearch} className="search-form">
+            <input
+              type="text"
+              name="search"
+              placeholder="Search products..."
+              defaultValue={searchTerm}
+              className="search-input"
+            />
+            <button type="submit" className="search-btn">
+              <i className="fas fa-search"></i>
+            </button>
+          </form>
         </div>
 
         <div className="shop-content">
-          <Filters
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onClearFilters={clearFilters}
-            products={displayedProducts}
-          />
+          <div className="filters-sidebar">
+            <button onClick={clearFilters} className="clear-filters-top">
+              <i className="fas fa-times-circle"></i> Clear All Filters
+            </button>
+            <Filters
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              onClearFilters={clearFilters}
+              products={displayedProducts}
+            />
+          </div>
           
           <main className="shop-main">
             <SortBar
