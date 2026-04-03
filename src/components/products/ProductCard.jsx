@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import WishlistButton from '../wishlist/WishlistButton';
 import CloudinaryImage from '../common/CloudinaryImage';
-import { getMobileOptimizedUrl, getImageForUseCase } from '../../utils/cloudinary';
 import '../../components/css/ProductCard.css';
 
 function ProductCard({ product, priority = false }) {
@@ -34,40 +33,31 @@ function ProductCard({ product, priority = false }) {
     const imageUrl = product.images?.[0] || product.image;
     const isInStock = product.stock > 0;
 
-    // Get optimized image URLs for different screen sizes
-    const mobileImageUrl = getMobileOptimizedUrl(imageUrl, 120, 120);
-    const desktopImageUrl = getImageForUseCase(imageUrl, 'product_card');
-    
-    // Responsive srcSet for different screen sizes
-    const srcSet = `
-        ${getMobileOptimizedUrl(imageUrl, 120, 120)} 120w,
-        ${getMobileOptimizedUrl(imageUrl, 240, 240)} 240w,
-        ${getImageForUseCase(imageUrl, 'product_card')} 300w
-    `;
-    
-    const sizes = "(max-width: 480px) 120px, (max-width: 768px) 240px, 300px";
-
     return (
         <div className="product-card">
             <Link to={`/product/${product.id}`} className="product-link">
                 <div className="product-image">
-                    <img
-                        src={desktopImageUrl}
-                        srcSet={srcSet}
-                        sizes={sizes}
+                    <CloudinaryImage
+                        src={imageUrl}
                         alt={product.name || 'Product'}
+                        width={280}
+                        height={240}
+                        crop="scale"           // NO cropping - entire image visible
+                        quality="auto"
+                        format="auto"
                         className="product-img"
-                        loading={priority ? "eager" : "lazy"}
-                        width="100%"
-                        height="auto"
+                        priority={priority}
+                        responsive={true}      // Enable responsive images
+                        mobileWidth={120}      // 120x120 for 3-column mobile grid
+                        mobileHeight={120}
                     />
                     
-                    {/* Condition badge  */}
+                    {/* Condition badge */}
                     {product.condition && (
                         <span className="product-condition">{product.condition}</span>
                     )}
                     
-                    {/* Stock badge*/}
+                    {/* Stock badge */}
                     {isInStock ? (
                         <span className="product-stock-badge">{product.stock} left</span>
                     ) : (
