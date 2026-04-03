@@ -22,6 +22,7 @@
     font-size: 0.9rem;
 }
 
+/* Error message - keep red for errors */
 .auth-error {
     background: #ffebee;
     color: #c62828;
@@ -60,6 +61,7 @@
     gap: 0.3rem;
 }
 
+/* ALL icons in labels use #CEABB1 */
 .form-group label i {
     color: #CEABB1;
     font-size: 0.9rem;
@@ -130,6 +132,7 @@
     text-decoration: underline;
 }
 
+/* Submit button */
 .auth-submit-btn {
     padding: 0.9rem;
     background: #CEABB1;
@@ -145,6 +148,10 @@
     justify-content: center;
     gap: 0.5rem;
     width: 100%;
+}
+
+.auth-submit-btn i {
+    color: white;
 }
 
 .auth-submit-btn:hover:not(:disabled) {
@@ -194,30 +201,34 @@
     box-sizing: border-box;
 }
 
+/* Password toggle button icon - use #CEABB1 */
 .password-toggle {
     position: absolute;
     right: 10px;
     background: none;
     border: none;
-    color: #CEABB1;
     cursor: pointer;
     padding: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
-.password-toggle:hover {
+.password-toggle i {
+    color: #CEABB1;
+    font-size: 1rem;
+}
+
+.password-toggle:hover i {
     color: #b88e96;
 }
 
 .password-toggle:focus {
     outline: none;
-    color: #b88e96;
 }
 
-/* Auth Info - Changed from green to #CEABB1 */
+/* Auth Info - Using #CEABB1 instead of green */
 .auth-info {
     background: rgba(206, 171, 177, 0.1);
     color: #CEABB1;
@@ -308,6 +319,10 @@ input:-webkit-autofill:active {
         font-size: 0.8rem;
     }
     
+    .form-group label i {
+        font-size: 0.85rem;
+    }
+    
     .form-group input {
         padding: 0.7rem;
         font-size: 0.85rem;
@@ -315,6 +330,10 @@ input:-webkit-autofill:active {
     
     .auth-submit-btn {
         padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .password-toggle i {
         font-size: 0.9rem;
     }
 }
@@ -456,6 +475,14 @@ input:-webkit-autofill:active {
         margin-bottom: 1rem;
     }
     
+    .form-group label {
+        font-size: 0.7rem;
+    }
+    
+    .form-group label i {
+        font-size: 0.75rem;
+    }
+    
     .form-group input {
         padding: 0.5rem;
         font-size: 0.75rem;
@@ -476,6 +503,10 @@ input:-webkit-autofill:active {
     
     .register-link {
         font-size: 0.8rem;
+    }
+    
+    .password-toggle i {
+        font-size: 0.75rem;
     }
 }
 
