@@ -38,7 +38,7 @@ function ProductInfo({ product }) {
                 <span className="current-price">{product.price?.toFixed(2) || '0.00'}</span>
                 {product.originalPrice && (
                     <>
-                        <span className="original-price">${product.originalPrice.toFixed(2)}</span>
+                        <span className="original-price">{product.originalPrice.toFixed(2)}</span>
                         <span className="discount-badge">
                             {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
                         </span>
