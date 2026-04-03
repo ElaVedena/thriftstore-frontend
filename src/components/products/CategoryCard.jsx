@@ -17,7 +17,13 @@ function CategoryCard({ category }) {
               alt={categoryName}
               width={220}
               height={220}
+              crop="scale"           // NO cropping - entire image visible
+              quality="auto"
+              format="auto"
               className="category-image"
+              responsive={true}      // Enable responsive images
+              mobileWidth={150}      // 150x150 on mobile for 3-column layout
+              mobileHeight={150}
             />
           ) : (
             <div className="no-image-placeholder">
