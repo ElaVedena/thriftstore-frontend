@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import '../../../components/css/ProductDescription.css'; 
 
-
-function ProductDescription({ description, details }) {
+function ProductDescription({ description }) {
     const [activeTab, setActiveTab] = useState('description');
 
     return (
@@ -13,12 +12,6 @@ function ProductDescription({ description, details }) {
                     onClick={() => setActiveTab('description')}
                 >
                     Description
-                </button>
-                <button
-                    className={`tab-btn ${activeTab === 'details' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('details')}
-                >
-                    Additional Information
                 </button>
                 <button
                     className={`tab-btn ${activeTab === 'shipping' ? 'active' : ''}`}
@@ -32,19 +25,6 @@ function ProductDescription({ description, details }) {
                 {activeTab === 'description' && (
                     <div className="description-content">
                         <p>{description}</p>
-                    </div>
-                )}
-
-                {activeTab === 'details' && (
-                    <div className="details-content">
-                        <ul className="details-list">
-                            {details.map((detail, index) => (
-                                <li key={index}>
-                                    <i className="fas fa-check"></i>
-                                    <span>{detail}</span>
-                                </li>
-                            ))}
-                        </ul>
                     </div>
                 )}
 

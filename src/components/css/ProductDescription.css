@@ -50,22 +50,10 @@
     color: #4a4a4a;
 }
 
-.details-list {
-    list-style: none;
-    padding: 0;
-}
-
-.details-list li {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.details-list li i {
-    color: #CEABB1;
+.description-content p {
+    margin: 0;
     font-size: 1rem;
+    line-height: 1.6;
 }
 
 .shipping-content h4 {
@@ -75,4 +63,118 @@
 
 .shipping-content h4:first-child {
     margin-top: 0;
+}
+
+.shipping-content p {
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+
+/* Tablet (max-width: 768px) */
+@media (max-width: 768px) {
+    .product-description {
+        margin: 1.5rem 0;
+    }
+    
+    .description-tabs {
+        gap: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+    
+    .tab-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .tab-content {
+        padding: 1.5rem 0;
+    }
+    
+    .description-content p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    
+    .shipping-content h4 {
+        font-size: 0.95rem;
+        margin: 0.8rem 0 0.4rem;
+    }
+    
+    .shipping-content p {
+        font-size: 0.85rem;
+        margin-bottom: 0.8rem;
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .product-description {
+        margin: 1rem 0;
+    }
+    
+    .description-tabs {
+        flex-direction: column;
+        gap: 0.25rem;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    
+    .tab-btn {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+        text-align: left;
+        border-left: 2px solid transparent;
+        border-radius: 0;
+    }
+    
+    .tab-btn::after {
+        display: none;
+    }
+    
+    .tab-btn.active {
+        border-left-color: #CEABB1;
+        background: rgba(206, 171, 177, 0.05);
+    }
+    
+    .tab-content {
+        padding: 1rem 0;
+    }
+    
+    .description-content p {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+    
+    .shipping-content h4 {
+        font-size: 0.85rem;
+        margin: 0.6rem 0 0.3rem;
+    }
+    
+    .shipping-content p {
+        font-size: 0.8rem;
+        margin-bottom: 0.6rem;
+    }
+}
+
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .tab-btn {
+        padding: 0.45rem 0.7rem;
+        font-size: 0.8rem;
+    }
+    
+    .description-content p {
+        font-size: 0.8rem;
+    }
+    
+    .shipping-content h4 {
+        font-size: 0.8rem;
+    }
+    
+    .shipping-content p {
+        font-size: 0.75rem;
+    }
 }
