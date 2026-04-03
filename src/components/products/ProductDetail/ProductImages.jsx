@@ -1,9 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../../../components/css/ProductImages.css';
 import CloudinaryImage from '../../common/CloudinaryImage';
 
 function ProductImages({ images, productName }) {
     const [mainImage, setMainImage] = useState(images?.[0] || '');
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Detect mobile screen size
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        
+        return () => {
+            window.removeEventListener('resize', checkMobile);
+        };
+    }, []);
 
     // Handle case when no images are provided
     if (!images || images.length === 0) {
@@ -13,15 +28,20 @@ function ProductImages({ images, productName }) {
                     <CloudinaryImage
                         src="/placeholder-image.jpg"
                         alt="No image available"
-                        width={600}
-                        height={600}
-                        crop="pad"
-                        background="white"
+                        width={isMobile ? 400 : 600}
+                        height={isMobile ? 400 : 600}
+                        crop="scale"
+                        quality="auto"
+                        format="auto"
                     />
                 </div>
             </div>
         );
     }
+
+    // Main image dimensions based on device
+    const mainImageWidth = isMobile ? 400 : 600;
+    const mainImageHeight = isMobile ? 400 : 600;
 
     return (
         <div className="product-images">
@@ -29,13 +49,14 @@ function ProductImages({ images, productName }) {
                 <CloudinaryImage
                     src={mainImage}
                     alt={productName}
-                    width={600}
-                    height={600}
-                    crop="pad"          
-                    background="white"   
-                    quality="auto"       
-                    format="auto"        
+                    width={mainImageWidth}
+                    height={mainImageHeight}
+                    crop="scale"           // NO cropping - entire image visible
+                    quality="auto"
+                    format="auto"
                     className="main-img"
+                    responsive={true}
+                    priority={true}
                 />
             </div>
             
@@ -50,12 +71,11 @@ function ProductImages({ images, productName }) {
                             <CloudinaryImage
                                 src={image}
                                 alt={`${productName} ${index + 1}`}
-                                width={100}
-                                height={100}
-                                crop="fill"     
-                                gravity="auto" 
+                                width={80}
+                                height={80}
+                                crop="scale"        // NO cropping for thumbnails
                                 quality="auto"
-                                format="auto"
+                                format="webp"       // WebP for thumbnails (smaller)
                             />
                         </button>
                     ))}

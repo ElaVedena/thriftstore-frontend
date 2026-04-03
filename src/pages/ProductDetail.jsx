@@ -12,6 +12,7 @@ import ReviewList from '../components/reviews/ReviewList';
 import ReviewForm from '../components/reviews/ReviewForm';
 import ProductShare from '../components/products/ProductDetail/ProductShare';
 import RelatedProducts from '../components/products/ProductDetail/RelatedProducts';
+import { getOptimizedImageUrl, getImageWithBackgroundRemoved } from '../utils/cloudinary';
 import '../components/css/ProductDetail.css';
 
 function ProductDetail() {
@@ -114,7 +115,7 @@ function ProductDetail() {
             'affordable clothes',
             'VedaThrifts',
             'Kenya'
-        ].filter(Boolean); // Remove null/undefined values
+        ].filter(Boolean);
         
         return keywords.join(', ');
     };
@@ -127,6 +128,42 @@ function ProductDetail() {
             return product.image;
         }
         return 'https://vedathrifts.com/default-product.jpg';
+    };
+
+    // Get optimized product image for different devices
+    const getOptimizedProductImage = (imageUrl, isMobile = false) => {
+        if (!imageUrl) return getProductImage();
+        
+        if (isMobile) {
+            // Mobile: 400x400 for product detail (fits well on phone screens)
+            return getOptimizedImageUrl(imageUrl, {
+                width: 400,
+                height: 400,
+                crop: 'scale',
+                quality: 'auto',
+                format: 'webp'
+            });
+        } else {
+            // Desktop: 800x800 for larger screens
+            return getOptimizedImageUrl(imageUrl, {
+                width: 800,
+                height: 800,
+                crop: 'scale',
+                quality: 'auto',
+                format: 'auto'
+            });
+        }
+    };
+
+    // Get image with background removed (optional - for cleaner product display)
+    const getProductImageNoBg = (imageUrl) => {
+        if (!imageUrl) return getProductImage();
+        
+        return getImageWithBackgroundRemoved(imageUrl, {
+            width: 600,
+            height: 600,
+            crop: 'scale'
+        });
     };
 
     const getProductPrice = () => {
@@ -219,7 +256,7 @@ function ProductDetail() {
                 {/* Canonical URL */}
                 <link rel="canonical" href={`https://vedathrifts.com/product/${product.id}`} />
                 
-                {/* Breadcrumb structured data (will be added separately) */}
+                {/* Breadcrumb structured data */}
                 <script type="application/ld+json">
                     {JSON.stringify({
                         "@context": "https://schema.org/",
@@ -258,7 +295,11 @@ function ProductDetail() {
                 <div className="product-detail-container">
                     <div className="product-detail-grid">
                         <div className="product-gallery">
-                            <ProductImages images={product.images || [product.image]} productName={product.name} />
+                            <ProductImages 
+                                images={product.images || [product.image]} 
+                                productName={product.name}
+                                optimizedImages={true}
+                            />
                         </div>
                         
                         <div className="product-detail-info">
