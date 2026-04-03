@@ -218,13 +218,14 @@
     border-radius: 2px;
 }
 
-/* Hide View All button in categories section */
+/* For sections without View All button - center the heading */
 .section-header.no-view-all {
     justify-content: center;
 }
 
-.section-header.no-view-all .view-all-link {
-    display: none;
+.section-header.no-view-all h2::after {
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .categories-slider-container {

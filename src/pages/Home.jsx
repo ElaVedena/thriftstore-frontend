@@ -223,14 +223,11 @@ function Home() {
           </section>
         )}
 
-        {/* Featured products - Only 4 products */}
+        {/* Featured products - Only 4 products, NO View All button */}
         {featuredProducts.length > 0 && (
           <section className="featured">
-            <div className="section-header">
+            <div className="section-header no-view-all">
               <h2>Featured Products</h2>
-              <Link to="/shop" className="view-all-link">
-                View All <i className="fas fa-arrow-right"></i>
-              </Link>
             </div>
             
             {/* Desktop grid view - 4 products */}
@@ -264,14 +261,11 @@ function Home() {
           </section>
         )}
 
-        {/* New arrivals - Only 4 products */}
+        {/* New arrivals - Only 4 products, View All button at the bottom */}
         {newArrivals.length > 0 && (
           <section className="new-arrivals">
             <div className="section-header">
               <h2>New Arrivals</h2>
-              <Link to="/shop?sort=newest" className="view-all-link">
-                View All <i className="fas fa-arrow-right"></i>
-              </Link>
             </div>
             
             {/* Desktop grid view - 4 products */}
@@ -301,6 +295,13 @@ function Home() {
               <button className="scroll-btn scroll-right" onClick={scrollNewArrivalsRight}>
                 <i className="fas fa-chevron-right"></i>
               </button>
+            </div>
+            
+            {/* View All button at the bottom of new arrivals section */}
+            <div className="section-footer">
+              <Link to="/shop?sort=newest" className="view-all-link">
+                View All New Arrivals <i className="fas fa-arrow-right"></i>
+              </Link>
             </div>
           </section>
         )}
