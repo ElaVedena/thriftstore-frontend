@@ -33,28 +33,43 @@
     color: #999;
 }
 
+/* Desktop Large: 4 columns (1200px and above) */
 @media (max-width: 1200px) {
     .product-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (max-width: 900px) {
+/* Tablet: 3 columns (768px - 1200px) */
+@media (max-width: 1024px) {
     .product-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 15px;
     }
 }
 
-@media (max-width: 600px) {
+/* Mobile: 3 columns (480px - 768px) */
+@media (max-width: 768px) {
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding: 15px;
+    }
+}
+
+/* Small Mobile: 2 columns (360px - 480px) - better for very small screens */
+@media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 10px;
+    }
+}
+
+/* Extra Small Mobile: 1 column (below 360px) */
+@media (max-width: 360px) {
     .product-grid {
         grid-template-columns: 1fr;
         gap: 10px;
-    }
-    
-    .product-card {
-        width: 100%;
-        max-width: 350px;
-        margin: 0 auto;
     }
 }
