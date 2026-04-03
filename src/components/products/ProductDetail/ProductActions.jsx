@@ -24,7 +24,6 @@ function ProductActions({ product, onAddToCart }) {
         return '';
     }, [stock]);
     
-   
     const isLiked = useMemo(() => isInWishlist(product?.id), [isInWishlist, product?.id]);
 
     // Set default size if only one size available
@@ -121,32 +120,32 @@ function ProductActions({ product, onAddToCart }) {
                 </div>
             )}
 
-            {/* Quantity Selector Only show if in stock */}
+            {/* Quantity Selector - Only show if in stock */}
             {isInStock && (
                 <div className="quantity-selector">
                     <label>Quantity:</label>
-                    <div className="quantity-controls">
-                        <button 
-                            type="button"
-                            onClick={() => handleQuantityChange(-1)}
-                            className="quantity-btn"
-                            disabled={quantity <= 1 || isAdding}
-                        >
-                            -
-                        </button>
-                        <span className="quantity-display">{quantity}</span>
-                        <button 
-                            type="button"
-                            onClick={() => handleQuantityChange(1)}
-                            className="quantity-btn"
-                            disabled={quantity >= stock || isAdding}
-                        >
-                            +
-                        </button>
-                    </div>
-                    
-                    {/* New styled stock info */}
-                    <div className="stock-info-container">
+                    <div className="quantity-controls-wrapper">
+                        <div className="quantity-controls">
+                            <button 
+                                type="button"
+                                onClick={() => handleQuantityChange(-1)}
+                                className="quantity-btn"
+                                disabled={quantity <= 1 || isAdding}
+                            >
+                                -
+                            </button>
+                            <span className="quantity-display">{quantity}</span>
+                            <button 
+                                type="button"
+                                onClick={() => handleQuantityChange(1)}
+                                className="quantity-btn"
+                                disabled={quantity >= stock || isAdding}
+                            >
+                                +
+                            </button>
+                        </div>
+                        
+                        {/* Stock info */}
                         <div className={`stock-info ${stockLevel}`}>
                             <i className="fas fa-check-circle"></i>
                             <span>{stock} available</span>
@@ -155,7 +154,7 @@ function ProductActions({ product, onAddToCart }) {
                 </div>
             )}
 
-            {/* Action Buttons - Using your original like button style */}
+            {/* Action Buttons */}
             <div className="action-buttons">
                 {isInStock ? (
                     <button 
@@ -183,7 +182,7 @@ function ProductActions({ product, onAddToCart }) {
                     </div>
                 )}
                 
-                {/*like-btn styling */}
+                {/* Wishlist button */}
                 <button 
                     type="button"
                     onClick={handleToggleWishlist}
