@@ -3,22 +3,27 @@
  * Cloudinary image transformation utilities
  * 
  * Transformation flags:
- * - c_fill : Crop to fill dimensions (may crop parts of image)
- * - c_pad  : Add padding to fit dimensions
- * - c_scale: Scale to fit dimensions (may distort)
- * - c_thumb: Smart thumbnail cropping
- * - g_auto : Automatic gravity for smart cropping
+ * - c_scale : Scale to fit dimensions (NO cropping, entire image visible)
+ * - c_fill  : Crop to fill dimensions (may crop parts of image)
+ * - c_pad   : Add padding to fit dimensions
+ * - c_thumb : Smart thumbnail cropping
+ * - g_auto  : Automatic gravity for smart cropping
+ * - e_background_removal : Remove image background
  */
 
 // Default transformations for different use cases
+// Using c_scale for NO cropping - entire image remains visible
 export const IMAGE_SIZES = {
-    thumbnail: { width: 150, height: 150, crop: 'fill', gravity: 'auto' },
-    product_card: { width: 300, height: 300, crop: 'fill', gravity: 'auto' },
-    product_detail: { width: 600, height: 600, crop: 'pad', background: 'white' },
-    banner: { width: 1200, height: 400, crop: 'fill', gravity: 'auto' },
-    cart: { width: 100, height: 100, crop: 'fill', gravity: 'auto' },
-    wishlist: { width: 200, height: 200, crop: 'fill', gravity: 'auto' },
-    category: { width: 400, height: 300, crop: 'fill', gravity: 'auto' }
+    thumbnail: { width: 100, height: 100, crop: 'scale', quality: 'auto', format: 'auto' },
+    product_card: { width: 250, height: 250, crop: 'scale', quality: 'auto', format: 'auto' },
+    product_detail: { width: 600, height: 600, crop: 'scale', quality: 'auto', format: 'auto' },
+    banner: { width: 1200, height: 400, crop: 'scale', quality: 'auto', format: 'auto' },
+    cart: { width: 80, height: 80, crop: 'scale', quality: 'auto', format: 'auto' },
+    wishlist: { width: 150, height: 150, crop: 'scale', quality: 'auto', format: 'auto' },
+    category: { width: 300, height: 300, crop: 'scale', quality: 'auto', format: 'auto' },
+    // Mobile specific sizes (3 columns)
+    mobile_card: { width: 120, height: 120, crop: 'scale', quality: 'auto', format: 'webp' },
+    mobile_thumbnail: { width: 80, height: 80, crop: 'scale', quality: 'auto', format: 'webp' }
 };
 
 // Cloudinary cloud name (extract from URL or use default)
@@ -69,14 +74,15 @@ export const isCloudinaryUrl = (url) => {
  * @param {Object} options - Transformation options
  * @param {number} options.width - Desired width
  * @param {number} options.height - Desired height
- * @param {string} options.crop - Crop mode (fill, pad, scale, thumb)
+ * @param {string} options.crop - Crop mode (scale, fill, pad, thumb) - DEFAULT 'scale' (NO cropping)
  * @param {string} options.gravity - Gravity for cropping (auto, center, north, etc.)
  * @param {number|string} options.quality - Image quality (auto, 1-100)
  * @param {string} options.format - Output format (auto, jpg, png, webp)
  * @param {string} options.background - Background color for padding (hex or name)
  * @param {number} options.radius - Border radius
- * @param {string} options.effect - Special effects (sepia, grayscale, etc.)
+ * @param {string} options.effect - Special effects (background_removal, sepia, grayscale, etc.)
  * @param {number} options.angle - Rotation angle
+ * @param {boolean} options.removeBackground - Remove background from image
  * @param {boolean} options.secure - Use HTTPS (default: true)
  * @returns {string} Transformed Cloudinary URL
  */
@@ -93,7 +99,7 @@ export const getOptimizedImageUrl = (url, options = {}) => {
         const {
             width,
             height,
-            crop = 'fill',
+            crop = 'scale',  // DEFAULT: NO cropping, entire image visible
             gravity = 'auto',
             quality = 'auto',
             format = 'auto',
@@ -101,6 +107,7 @@ export const getOptimizedImageUrl = (url, options = {}) => {
             radius,
             effect,
             angle,
+            removeBackground = false,
             secure = true
         } = options;
 
@@ -115,8 +122,14 @@ export const getOptimizedImageUrl = (url, options = {}) => {
         if (format) transformations.push(`f_${format}`);
         if (background) transformations.push(`b_${background}`);
         if (radius) transformations.push(`r_${radius}`);
-        if (effect) transformations.push(`e_${effect}`);
         if (angle) transformations.push(`a_${angle}`);
+        
+        // Background removal effect
+        if (removeBackground || effect === 'background_removal') {
+            transformations.push('e_background_removal');
+        } else if (effect) {
+            transformations.push(`e_${effect}`);
+        }
 
         // Add dpr_auto for retina displays
         transformations.push('dpr_auto');
@@ -125,7 +138,7 @@ export const getOptimizedImageUrl = (url, options = {}) => {
 
         // Insert transformations into URL
         // From: /upload/v123456/image.jpg
-        // To:   /upload/w_300,h_300,c_fill,g_auto,q_auto,f_auto,dpr_auto/v123456/image.jpg
+        // To:   /upload/w_300,h_300,c_scale,q_auto,f_auto,dpr_auto/v123456/image.jpg
         const transformedUrl = url.replace('/upload/', `/upload/${transformationString}/`);
         
         // Ensure HTTPS
@@ -153,7 +166,18 @@ export const getImageForUseCase = (url, useCase, customOptions = {}) => {
 };
 
 /**
+ * Get image with background removed
+ */
+export const getImageWithBackgroundRemoved = (url, options = {}) => {
+    return getOptimizedImageUrl(url, { 
+        removeBackground: true,
+        ...options 
+    });
+};
+
+/**
  * Generate responsive srcSet for different screen sizes
+ * Uses c_scale to maintain aspect ratio across all sizes
  */
 export const getResponsiveSrcSet = (url, sizes = [300, 600, 900, 1200], options = {}) => {
     if (!url || !isCloudinaryUrl(url)) return null;
@@ -163,7 +187,7 @@ export const getResponsiveSrcSet = (url, sizes = [300, 600, 900, 1200], options 
             .map(size => {
                 const optimizedUrl = getOptimizedImageUrl(url, { 
                     width: size, 
-                    height: size,
+                    crop: 'scale',  // NO cropping
                     ...options 
                 });
                 return `${optimizedUrl} ${size}w`;
@@ -188,6 +212,21 @@ export const getBaseImageUrl = (url) => {
     } catch (error) {
         return url;
     }
+};
+
+/**
+ * Get mobile-optimized image URL (for 3-column grid)
+ * Smaller size, webp format, NO cropping
+ */
+export const getMobileOptimizedUrl = (url, width = 120, height = 120) => {
+    return getOptimizedImageUrl(url, {
+        width: width,
+        height: height,
+        crop: 'scale',
+        quality: 'auto',
+        format: 'webp',
+        dpr: 'auto'
+    });
 };
 
 /**
@@ -244,6 +283,8 @@ export default {
     isCloudinaryUrl,
     getOptimizedImageUrl,
     getImageForUseCase,
+    getImageWithBackgroundRemoved,
+    getMobileOptimizedUrl,
     getResponsiveSrcSet,
     getBaseImageUrl,
     getVideoThumbnail,
