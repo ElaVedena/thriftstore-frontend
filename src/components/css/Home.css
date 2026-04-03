@@ -5,7 +5,7 @@
     padding: 0;
 }
 
-/* ===== HERO SECTION - Desktop design preserved ===== */
+/* ===== HERO SECTION - Desktop design with text on left ===== */
 .hero {
     position: relative;
     width: 100%;
@@ -30,7 +30,7 @@
     z-index: -2;
 }
 
-/* Desktop gradient overlay - KEPT AS IS */
+/* Desktop gradient - white gradient from left (kept as original) */
 .hero::after {
     content: '';
     position: absolute;
@@ -360,7 +360,7 @@
     }
 }
 
-/* ===== MOBILE HERO - Move text to bottom ===== */
+/* ===== MOBILE HERO - Text at bottom (kept as is) ===== */
 @media (max-width: 768px) {
     .hero {
         min-height: 500px;
