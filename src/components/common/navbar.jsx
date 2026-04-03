@@ -32,18 +32,6 @@ export default function Navbar() {
     };
   }, [showUserMenu]);
 
-  // Prevent body scroll when mobile menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isMobileMenuOpen]);
-
   useEffect(() => {
     const setNavbarHeight = () => {
       if (navbarRef.current) {
@@ -204,14 +192,8 @@ export default function Navbar() {
         </button>
       </div>
       
-      {/* Mobile Dropdown Menu (Slide down from top) */}
+      {/* Mobile Dropdown Menu - Changed from slide-in to dropdown */}
       <div className={`mobile-dropdown-menu ${isMobileMenuOpen ? 'active' : ''}`}>
-        <div className="mobile-menu-header">
-          <h3>Menu</h3>
-          <button className="close-menu" onClick={toggleMobileMenu} aria-label="Close menu">
-            <i className="fas fa-times"></i>
-          </button>
-        </div>
         <ul>
           <li>
             <Link to="/about" onClick={toggleMobileMenu}>
@@ -256,12 +238,20 @@ export default function Navbar() {
           )}
           
           {!isAuthenticated && (
-            <li>
-              <Link to="/register" onClick={toggleMobileMenu}>
-                <i className="fas fa-user-plus"></i>
-                Sign Up
-              </Link>
-            </li>
+            <>
+              <li>
+                <Link to="/login" onClick={toggleMobileMenu}>
+                  <i className="fas fa-sign-in-alt"></i>
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link to="/register" onClick={toggleMobileMenu}>
+                  <i className="fas fa-user-plus"></i>
+                  Sign Up
+                </Link>
+              </li>
+            </>
           )}
         </ul>
       </div>
