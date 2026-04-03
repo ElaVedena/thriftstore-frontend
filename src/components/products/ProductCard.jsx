@@ -52,7 +52,7 @@ function ProductCard({ product, priority = false }) {
                         mobileHeight={120}
                     />
                     
-                    {/* Stock badge only - Condition badge REMOVED */}
+                    {/* Stock badge only - NO condition badge */}
                     {isInStock ? (
                         <span className="product-stock-badge">{product.stock} left</span>
                     ) : (
