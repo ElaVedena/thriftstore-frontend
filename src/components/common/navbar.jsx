@@ -62,7 +62,7 @@ export default function Navbar() {
     <nav className="navbar" ref={navbarRef}>
       <Link to="/" className="site-title">VedaThrifts</Link>
       
-      {/* Desktop Navigation - Full menu (hidden on mobile) */}
+      {/* Desktop Navigation - Full menu */}
       <ul className="desktop-nav">
         <CustomLink to="/">Home</CustomLink>
         <CustomLink to="/shop">Shop</CustomLink>
@@ -123,7 +123,7 @@ export default function Navbar() {
         )}
       </ul>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation - Only visible on mobile */}
       <div className="mobile-nav">
         {/* Core Links - Always visible on mobile */}
         <div className="mobile-core-links">
@@ -192,9 +192,17 @@ export default function Navbar() {
         </button>
       </div>
       
-      {/* Mobile Dropdown Menu - Changed from slide-in to dropdown */}
+      {/* Mobile Dropdown Menu - Only for extra links (About, Contact, and account links if logged in) */}
+      {/* Note: Home, Shop, Beauty, Cart, Login are already visible on the navbar */}
       <div className={`mobile-dropdown-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+        <div className="mobile-menu-header">
+          <h3>Menu</h3>
+          <button className="close-menu" onClick={toggleMobileMenu} aria-label="Close menu">
+            <i className="fas fa-times"></i>
+          </button>
+        </div>
         <ul>
+          {/* Additional pages that are not in the core navbar */}
           <li>
             <Link to="/about" onClick={toggleMobileMenu}>
               <i className="fas fa-info-circle"></i>
@@ -237,21 +245,14 @@ export default function Navbar() {
             </>
           )}
           
+          {/* Show Register link when not logged in (Login is already on navbar) */}
           {!isAuthenticated && (
-            <>
-              <li>
-                <Link to="/login" onClick={toggleMobileMenu}>
-                  <i className="fas fa-sign-in-alt"></i>
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link to="/register" onClick={toggleMobileMenu}>
-                  <i className="fas fa-user-plus"></i>
-                  Sign Up
-                </Link>
-              </li>
-            </>
+            <li>
+              <Link to="/register" onClick={toggleMobileMenu}>
+                <i className="fas fa-user-plus"></i>
+                Sign Up
+              </Link>
+            </li>
           )}
         </ul>
       </div>
