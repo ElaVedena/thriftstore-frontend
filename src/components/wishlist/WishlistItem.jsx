@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
 import { useNotification } from '../../hooks/useNotification';
+import CloudinaryImage from '../common/CloudinaryImage';
 import '../../components/css/WishlistItem.css';
 
 function WishlistItem({ item, onRemove, onAddToCart }) {
@@ -38,11 +39,6 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
         return `KSh ${Number(price).toFixed(2)}`;
     };
 
-    const handleImageError = (e) => {
-        e.target.onerror = null;
-        e.target.src = '/placeholder-image.jpg';
-    };
-
     const imageUrl = item.imageUrl || item.image || '/placeholder-image.jpg';
 
     return (
@@ -53,10 +49,18 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
 
             <Link to={`/product/${item.productId || item.id}`} className="item-link">
                 <div className="item-image">
-                    <img 
-                        src={imageUrl} 
+                    <CloudinaryImage
+                        src={imageUrl}
                         alt={item.name}
-                        onError={handleImageError}
+                        width={120}
+                        height={120}
+                        crop="scale"
+                        quality="auto"
+                        format="auto"
+                        className="wishlist-img"
+                        responsive={true}
+                        mobileWidth={200}
+                        mobileHeight={200}
                     />
                 </div>
 
