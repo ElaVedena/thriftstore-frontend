@@ -342,10 +342,6 @@ body {
     display: none;
 }
 
-.mobile-full-menu {
-    display: none;
-}
-
 /* ===== MOBILE BREAKPOINT (max-width: 768px) ===== */
 @media (max-width: 768px) {
     /* Reduce navbar padding and gap for mobile */
@@ -518,22 +514,25 @@ body {
         transform: translateY(-7px) rotate(-45deg);
     }
     
-    /* Full menu overlay - slides in from left */
-    .mobile-full-menu {
+    /* Mobile Dropdown Menu (Slide down from top) */
+    .mobile-dropdown-menu {
         position: fixed;
         top: var(--navbar-height);
-        left: -100%;
+        left: 0;
+        right: 0;
         width: 100%;
-        height: calc(100vh - var(--navbar-height));
         background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
-        transition: left 0.3s ease;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
         z-index: 999;
+        max-height: calc(100vh - var(--navbar-height));
         overflow-y: auto;
         display: block;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
     
-    .mobile-full-menu.active {
-        left: 0;
+    .mobile-dropdown-menu.active {
+        transform: translateY(0);
     }
     
     .mobile-menu-header {
@@ -566,18 +565,18 @@ body {
         color: #ffd7db;
     }
     
-    .mobile-full-menu ul {
+    .mobile-dropdown-menu ul {
         list-style: none;
         margin: 0;
         padding: 0;
     }
     
-    .mobile-full-menu li {
+    .mobile-dropdown-menu li {
         border-bottom: 1px solid rgba(206, 171, 177, 0.1);
     }
     
-    .mobile-full-menu li a,
-    .mobile-full-menu .logout-btn {
+    .mobile-dropdown-menu li a,
+    .mobile-dropdown-menu .logout-btn {
         display: flex;
         align-items: center;
         gap: 1rem;
@@ -593,23 +592,23 @@ body {
         transition: all 0.3s ease;
     }
     
-    .mobile-full-menu li a i,
-    .mobile-full-menu .logout-btn i {
+    .mobile-dropdown-menu li a i,
+    .mobile-dropdown-menu .logout-btn i {
         width: 24px;
         font-size: 1.1rem;
     }
     
-    .mobile-full-menu li a:hover,
-    .mobile-full-menu .logout-btn:hover {
+    .mobile-dropdown-menu li a:hover,
+    .mobile-dropdown-menu .logout-btn:hover {
         background: rgba(206, 171, 177, 0.1);
         color: #ffd7db;
     }
     
-    .mobile-full-menu .logout-btn {
+    .mobile-dropdown-menu .logout-btn {
         color: #ff8888;
     }
     
-    .mobile-full-menu .logout-btn:hover {
+    .mobile-dropdown-menu .logout-btn:hover {
         background: rgba(255, 68, 68, 0.1);
         color: #ff8888;
     }

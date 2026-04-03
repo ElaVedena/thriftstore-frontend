@@ -204,8 +204,8 @@ export default function Navbar() {
         </button>
       </div>
       
-      {/* Mobile Full Menu (Slides in from left) */}
-      <div className={`mobile-full-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+      {/* Mobile Dropdown Menu (Slide down from top) */}
+      <div className={`mobile-dropdown-menu ${isMobileMenuOpen ? 'active' : ''}`}>
         <div className="mobile-menu-header">
           <h3>Menu</h3>
           <button className="close-menu" onClick={toggleMobileMenu} aria-label="Close menu">
