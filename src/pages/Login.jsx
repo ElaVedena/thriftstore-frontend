@@ -22,11 +22,8 @@ function Login() {
         // Check if we have email from registration
         if (location.state?.email) {
             setInitialEmail(location.state.email);
-            // Show success message if provided
             if (location.state?.message) {
-                showSuccess(location.state.message, {
-                    duration: 4000
-                });
+                showSuccess(location.state.message);
             }
         }
     }, [isAuthenticated, navigate, location, showSuccess]);
@@ -34,17 +31,10 @@ function Login() {
     const handleLogin = async (email, password) => {
         const result = await login(email, password);
         if (result?.success) {
-            showSuccess('Welcome back! Successfully logged in.', {
-                title: 'Login Successful',
-                duration: 3000,
-                action: {
-                    label: 'Continue Shopping',
-                    onClick: () => navigate('/shop')
-                }
-            });
-            // Navigation will happen automatically via the useEffect above
+            showSuccess('Welcome back!');
+            navigate('/');
         } else {
-            showError(result?.message || 'Login failed. Please check your credentials.');
+            showError(result?.message || 'Login failed');
         }
     };
 
@@ -69,29 +59,9 @@ function Login() {
     return (
         <>
             <Helmet>
-                {/* Primary SEO */}
-                <title>Login | VedaThrifts - Thrift Store Kenya</title>
-                <meta name="description" content="Login to your VedaThrifts account. Access your orders, manage your wishlist, and enjoy a personalized thrift shopping experience. Kenya's sustainable fashion destination." />
-                <meta name="keywords" content="login, sign in, VedaThrifts account, thrift store login, customer account, secondhand fashion account" />
-                <meta name="author" content="VedaThrifts" />
+                <title>Login | VedaThrifts</title>
+                <meta name="description" content="Login to your VedaThrifts account." />
                 <meta name="robots" content="noindex, follow" />
-                
-                {/* Open Graph / Facebook / WhatsApp */}
-                <meta property="og:title" content="Login | VedaThrifts" />
-                <meta property="og:description" content="Login to your VedaThrifts account. Access your orders and manage your wishlist." />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content="https://vedathrifts.com/login" />
-                <meta property="og:image" content="https://vedathrifts.com/og-image-login.jpg" />
-                <meta property="og:site_name" content="VedaThrifts" />
-                <meta property="og:locale" content="en_KE" />
-                
-                {/* Twitter Card */}
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Login | VedaThrifts" />
-                <meta name="twitter:description" content="Login to your VedaThrifts account. Access your orders and manage your wishlist." />
-                <meta name="twitter:image" content="https://vedathrifts.com/og-image-login.jpg" />
-                
-                {/* Canonical URL */}
                 <link rel="canonical" href="https://vedathrifts.com/login" />
             </Helmet>
 

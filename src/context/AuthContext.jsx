@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
 import { authService } from '../services/authService';
+import api from '../services/api';
 
 const AuthContext = createContext();
 
@@ -56,15 +57,36 @@ const authReducer = (state, action) => {
     }
 };
 
+// Check if token is expired
+const isTokenExpired = (token) => {
+    if (!token) return true;
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const expiryTime = payload.exp * 1000;
+        return Date.now() >= expiryTime;
+    } catch (error) {
+        return true;
+    }
+};
+
 export function AuthProvider({ children }) {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
+    // Check auth on load
     useEffect(() => {
         const checkAuth = async () => {
             const token = localStorage.getItem('token');
             const userStr = localStorage.getItem('user');
             
             if (token && userStr) {
+                // Check if token is expired
+                if (isTokenExpired(token)) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    dispatch({ type: 'AUTH_CHECK_COMPLETE' });
+                    return;
+                }
+                
                 try {
                     const user = JSON.parse(userStr);
                     dispatch({
@@ -83,6 +105,51 @@ export function AuthProvider({ children }) {
 
         checkAuth();
     }, []);
+
+    // Handle 401 responses from API - just logout silently
+    useEffect(() => {
+        const interceptor = api.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response?.status === 401 && state.isAuthenticated) {
+                    // Clear storage and logout
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    dispatch({ type: 'LOGOUT' });
+                    
+                    // Redirect to login if not already there
+                    const isLoginPage = window.location.pathname === '/login';
+                    if (!isLoginPage) {
+                        window.location.href = '/login';
+                    }
+                }
+                return Promise.reject(error);
+            }
+        );
+        
+        return () => {
+            api.interceptors.response.eject(interceptor);
+        };
+    }, [state.isAuthenticated]);
+
+    // Periodic token check (every minute)
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const token = localStorage.getItem('token');
+            if (token && isTokenExpired(token) && state.isAuthenticated) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                dispatch({ type: 'LOGOUT' });
+                
+                const isLoginPage = window.location.pathname === '/login';
+                if (!isLoginPage) {
+                    window.location.href = '/login';
+                }
+            }
+        }, 60000);
+        
+        return () => clearInterval(interval);
+    }, [state.isAuthenticated]);
 
     const login = async (email, password) => {
         dispatch({ type: 'LOGIN_START' });
@@ -151,6 +218,8 @@ export function AuthProvider({ children }) {
 
     const logout = () => {
         authService.logout();
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
         dispatch({ type: 'LOGOUT' });
     };
 

@@ -9,71 +9,47 @@ const api = axios.create({
     },
 });
 
-// Request interceptor with logging
+// Flag to prevent multiple redirects
+let isRedirecting = false;
+
+// Request interceptor
 api.interceptors.request.use(
     (config) => {
-        // Log the request for debugging
-        console.log(`📤 API Request: ${config.method?.toUpperCase()} ${config.url}`);
-        if (config.data) {
-            console.log('Request data:', config.data);
-        }
-        
         const token = localStorage.getItem('token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
-            console.log('🔑 Token attached to request');
         }
-        
         return config;
     },
+    (error) => Promise.reject(error)
+);
+
+// Response interceptor - just redirect on 401
+api.interceptors.response.use(
+    (response) => response,
     (error) => {
-        console.error('❌ Request interceptor error:', error);
+        if (error.response?.status === 401) {
+            const isLoginPage = window.location.pathname === '/login';
+            const isRegisterPage = window.location.pathname === '/register';
+            
+            if (!isRedirecting && !isLoginPage && !isRegisterPage) {
+                isRedirecting = true;
+                
+                // Clear storage
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                
+                // Redirect to login
+                window.location.href = '/login';
+            }
+        }
         return Promise.reject(error);
     }
 );
 
-// Response interceptor with logging
-api.interceptors.response.use(
-    (response) => {
-        console.log(`✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url} - Status: ${response.status}`);
-        if (response.data) {
-            console.log('Response data:', response.data);
-        }
-        return response;
-    },
-    (error) => {
-        if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.error(`❌ API Error: ${error.config?.method?.toUpperCase()} ${error.config?.url} - Status: ${error.response.status}`);
-            console.error('Error data:', error.response.data);
-            console.error('Error headers:', error.response.headers);
-            
-            if (error.response?.status === 401) {
-                console.warn('🔒 Unauthorized - Redirecting to login');
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = '/login';
-            } else if (error.response?.status === 400) {
-                console.warn('⚠️ Bad Request - Check your input data');
-                // Log the validation errors
-                if (error.response.data?.errors) {
-                    console.error('Validation errors:', error.response.data.errors);
-                }
-            } else if (error.response?.status === 500) {
-                console.error('💥 Server error - Contact support');
-            }
-        } else if (error.request) {
-            // The request was made but no response was received
-            console.error('❌ No response received from server');
-            console.error('Request:', error.request);
-        } else {
-            // Something happened in setting up the request that triggered an Error
-            console.error('❌ Request setup error:', error.message);
-        }
-        
-        return Promise.reject(error);
-    }
-);
+// Reset redirect flag on page load
+window.addEventListener('load', () => {
+    isRedirecting = false;
+});
 
 export default api;
