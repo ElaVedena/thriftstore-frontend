@@ -18,7 +18,6 @@ function ProductGrid({ products, onAddToCart }) {
                 <ProductCard 
                     key={product.id} 
                     product={product} 
-                    onAddToCart={onAddToCart}
                     priority={index < 4} 
                 />
             ))}
