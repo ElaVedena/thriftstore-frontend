@@ -35,7 +35,7 @@ function ProductInfo({ product }) {
             </div>
 
             <div className="product-price-section">
-                <span className="current-price">${product.price?.toFixed(2) || '0.00'}</span>
+                <span className="current-price">{product.price?.toFixed(2) || '0.00'}</span>
                 {product.originalPrice && (
                     <>
                         <span className="original-price">${product.originalPrice.toFixed(2)}</span>
