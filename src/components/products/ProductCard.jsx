@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import WishlistButton from '../wishlist/WishlistButton';
 import CloudinaryImage from '../common/CloudinaryImage';
+import { getMobileOptimizedUrl, getImageForUseCase } from '../../utils/cloudinary';
 import '../../components/css/ProductCard.css';
 
 function ProductCard({ product, priority = false }) {
@@ -33,17 +34,32 @@ function ProductCard({ product, priority = false }) {
     const imageUrl = product.images?.[0] || product.image;
     const isInStock = product.stock > 0;
 
+    // Get optimized image URLs for different screen sizes
+    const mobileImageUrl = getMobileOptimizedUrl(imageUrl, 120, 120);
+    const desktopImageUrl = getImageForUseCase(imageUrl, 'product_card');
+    
+    // Responsive srcSet for different screen sizes
+    const srcSet = `
+        ${getMobileOptimizedUrl(imageUrl, 120, 120)} 120w,
+        ${getMobileOptimizedUrl(imageUrl, 240, 240)} 240w,
+        ${getImageForUseCase(imageUrl, 'product_card')} 300w
+    `;
+    
+    const sizes = "(max-width: 480px) 120px, (max-width: 768px) 240px, 300px";
+
     return (
         <div className="product-card">
             <Link to={`/product/${product.id}`} className="product-link">
                 <div className="product-image">
-                    <CloudinaryImage
-                        src={imageUrl}
+                    <img
+                        src={desktopImageUrl}
+                        srcSet={srcSet}
+                        sizes={sizes}
                         alt={product.name || 'Product'}
-                        width={280}
-                        height={240}
                         className="product-img"
-                        priority={priority}
+                        loading={priority ? "eager" : "lazy"}
+                        width="100%"
+                        height="auto"
                     />
                     
                     {/* Condition badge  */}
@@ -66,13 +82,9 @@ function ProductCard({ product, priority = false }) {
                 <div className="product-info">
                     <h3 className="product-name">{product.name || 'Product'}</h3>
                     
-                    
-                    
                     <div className="product-price">
                         <span className="price">KSh {product.price?.toFixed(2)}</span>
                     </div>
-                    
-                   
                 </div>
             </Link>
             
