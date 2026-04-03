@@ -42,22 +42,17 @@ function ProductCard({ product, priority = false }) {
                         alt={product.name || 'Product'}
                         width={280}
                         height={240}
-                        crop="scale"           // NO cropping - entire image visible
+                        crop="scale"
                         quality="auto"
                         format="auto"
                         className="product-img"
                         priority={priority}
-                        responsive={true}      // Enable responsive images
-                        mobileWidth={120}      // 120x120 for 3-column mobile grid
+                        responsive={true}
+                        mobileWidth={120}
                         mobileHeight={120}
                     />
                     
-                    {/* Condition badge */}
-                    {product.condition && (
-                        <span className="product-condition">{product.condition}</span>
-                    )}
-                    
-                    {/* Stock badge */}
+                    {/* Stock badge only - Condition badge REMOVED */}
                     {isInStock ? (
                         <span className="product-stock-badge">{product.stock} left</span>
                     ) : (
