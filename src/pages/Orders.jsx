@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../hooks/useNotification';
 import { orderService } from '../services/orderService';
+import { productService } from '../services/productService';
 import OrderCard from '../components/orders/OrderCard';
 import '../components/css/Orders.css';
 
@@ -28,20 +29,28 @@ function Orders() {
             
             if (response.success) {
                 const ordersData = response.data?.data || response.data;
+                const ordersContent = ordersData.content || [];
                 
-                // Ensure orders have image URLs by fetching product details
-                const ordersWithImages = await Promise.all((ordersData.content || []).map(async (order) => {
+                // Fetch product images for each order item
+                const ordersWithImages = await Promise.all(ordersContent.map(async (order) => {
                     if (order.items && order.items.length > 0) {
                         const itemsWithImages = await Promise.all(order.items.map(async (item) => {
-                            if (!item.imageUrl && !item.image && item.productId) {
+                            // If item already has an image, use it
+                            if (item.imageUrl || item.image) {
+                                return item;
+                            }
+                            
+                            // Otherwise fetch product image
+                            const productId = item.productId || item.id;
+                            if (productId) {
                                 try {
-                                    const productResponse = await productService.getProductById(item.productId);
+                                    const productResponse = await productService.getProductById(productId);
                                     if (productResponse.success && productResponse.data) {
                                         const product = productResponse.data;
                                         item.imageUrl = product.images?.[0] || product.imageUrl || product.image;
                                     }
                                 } catch (error) {
-                                    console.error('Failed to fetch product image:', error);
+                                    console.error('Failed to fetch product image for product:', productId, error);
                                 }
                             }
                             return item;
