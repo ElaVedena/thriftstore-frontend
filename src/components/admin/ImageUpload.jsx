@@ -7,9 +7,6 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
     const [previews, setPreviews] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
-    const [removeBackground, setRemoveBackground] = useState(false);
-    const [imageQuality, setImageQuality] = useState(80);
-    const [resizeWidth, setResizeWidth] = useState(800);
     const fileInputRef = useRef(null);
     const { showError, showSuccess, showInfo } = useNotification();
 
@@ -18,19 +15,17 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         if (images && images.length > 0) {
             const initialPreviews = images.map(img => {
                 if (typeof img === 'string') {
-                    const transformedUrl = applyClientTransformations(img);
                     return {
                         url: img,
-                        preview: transformedUrl,
+                        preview: img,
                         file: null,
                         isExisting: true,
                         publicId: extractPublicIdFromUrl(img)
                     };
                 } else if (img.url) {
-                    const transformedUrl = applyClientTransformations(img.url);
                     return {
                         ...img,
-                        preview: transformedUrl,
+                        preview: img.url,
                         isExisting: true,
                         publicId: img.publicId || extractPublicIdFromUrl(img.url)
                     };
@@ -46,31 +41,9 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
     // Helper to extract public ID from Cloudinary URL
     const extractPublicIdFromUrl = (url) => {
         if (!url) return null;
+        // Cloudinary URL format: https://res.cloudinary.com/cloud_name/image/upload/v123456/folder/public_id.jpg
         const matches = url.match(/\/v\d+\/(.+)\./);
         return matches ? matches[1] : null;
-    };
-
-    // Apply client-side Cloudinary transformations for preview only
-    const applyClientTransformations = (url) => {
-        if (!url || !url.includes('cloudinary')) return url;
-        
-        let transformations = [];
-        
-        if (resizeWidth && resizeWidth > 0) {
-            transformations.push(`w_${resizeWidth}`);
-        }
-        
-        if (imageQuality && imageQuality < 100) {
-            transformations.push(`q_${imageQuality}`);
-        }
-        
-        if (removeBackground) {
-            transformations.push('e_bgremoval');
-        }
-        
-        if (transformations.length === 0) return url;
-        
-        return url.replace('/upload/', `/upload/${transformations.join(',')}/`);
     };
 
     const validateFiles = (files) => {
@@ -78,10 +51,12 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         const errors = [];
 
         for (const file of files) {
+            // Check file size (max 5MB as per backend)
             if (file.size > 5 * 1024 * 1024) {
                 errors.push(`${file.name} is too large. Max size is 5MB`);
                 continue;
             }
+            // Check file type
             if (!file.type.startsWith('image/')) {
                 errors.push(`${file.name} is not an image`);
                 continue;
@@ -100,12 +75,15 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
             return;
         }
 
+        // Validate files
         const { validFiles, errors } = validateFiles(files);
         
+        // Show validation errors
         errors.forEach(error => showError(error));
 
         if (validFiles.length === 0) return;
 
+        // Create FormData - backend expects parameter name "files"
         const formData = new FormData();
         validFiles.forEach(file => {
             formData.append('files', file);
@@ -140,16 +118,21 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                 },
             });
 
+            console.log('Upload response:', response.data);
+
             if (response.data.success) {
+                // Backend returns data directly as array of URLs
                 const uploadedUrls = response.data.data || [];
                 
+                // Remove temporary previews 
                 const previewsWithoutTemp = previews.filter(p => !p.isUploading);
                 
+                // Add new uploaded images
                 const finalPreviews = [
                     ...previewsWithoutTemp,
                     ...uploadedUrls.map(url => ({
                         url: url,
-                        preview: applyClientTransformations(url),
+                        preview: url,
                         file: null,
                         isExisting: false,
                         publicId: extractPublicIdFromUrl(url)
@@ -158,6 +141,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
 
                 setPreviews(finalPreviews);
                 
+                // Send only the URLs to parent component
                 const imageUrlsOnly = finalPreviews
                     .filter(img => img.url)
                     .map(img => img.url);
@@ -167,15 +151,23 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                 showSuccess(`${validFiles.length} image(s) uploaded successfully`);
             } else {
                 showError(response.data.message || 'Failed to upload images');
+                // Remove failed uploads
                 const filteredPreviews = previews.filter(p => !p.isUploading);
                 setPreviews(filteredPreviews);
                 onImagesChange(filteredPreviews.map(p => p.url).filter(Boolean));
             }
         } catch (error) {
             console.error('Upload error:', error);
-            showError(error.response?.data?.message || 'Failed to upload images. Please try again.');
+            console.error('Error response:', error.response?.data);
+            
+            // Show specific error message from backend if available
+            const errorMessage = error.response?.data?.message || 'Failed to upload images. Please try again.';
+            showError(errorMessage);
+            
+            // Remove failed uploads
             const filteredPreviews = previews.filter(p => !p.isUploading);
             
+            // Clean up blob URLs
             filteredPreviews.forEach(p => {
                 if (p.preview?.startsWith('blob:')) {
                     URL.revokeObjectURL(p.preview);
@@ -187,6 +179,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         } finally {
             setUploading(false);
             setUploadProgress(0);
+            // Clear file input
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -196,10 +189,12 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
     const handleRemove = async (index) => {
         const imageToRemove = previews[index];
         
+        // Clean up blob URL if it exists
         if (imageToRemove.preview?.startsWith('blob:')) {
             URL.revokeObjectURL(imageToRemove.preview);
         }
 
+        // Delete from Cloudinary if it's an existing image (has publicId)
         if (imageToRemove.publicId && !imageToRemove.isUploading) {
             try {
                 await api.delete('/uploads/images', {
@@ -208,12 +203,14 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                 showInfo('Image deleted from storage');
             } catch (error) {
                 console.error('Failed to delete from Cloudinary:', error);
+                // Continue with removal from UI even if server delete fails
             }
         }
         
         const newPreviews = previews.filter((_, i) => i !== index);
         setPreviews(newPreviews);
         
+        // Send only URLs to parent
         const imageUrlsOnly = newPreviews
             .filter(img => img.url)
             .map(img => img.url);
@@ -230,6 +227,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         newPreviews.splice(dropIndex, 0, draggedItem);
         setPreviews(newPreviews);
         
+        // Send only URLs to parent
         const imageUrlsOnly = newPreviews
             .filter(img => img.url)
             .map(img => img.url);
@@ -255,59 +253,8 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         }
     };
 
-    // Update previews when transformation settings change
-    useEffect(() => {
-        setPreviews(prev => prev.map(img => ({
-            ...img,
-            preview: img.url ? applyClientTransformations(img.url) : img.preview
-        })));
-    }, [removeBackground, imageQuality, resizeWidth]);
-
     return (
         <div className="image-upload">
-            {/* Image Settings Panel - Client-side only for preview */}
-            <div className="image-settings">
-                <div className="settings-group">
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={removeBackground}
-                            onChange={(e) => setRemoveBackground(e.target.checked)}
-                            disabled={uploading}
-                        />
-                        Remove Background (AI) - Preview Only
-                    </label>
-                    <small>AI background removal effect for preview (applied client-side)</small>
-                </div>
-
-                <div className="settings-group">
-                    <label>Preview Quality: {imageQuality}%</label>
-                    <input
-                        type="range"
-                        min="10"
-                        max="100"
-                        value={imageQuality}
-                        onChange={(e) => setImageQuality(parseInt(e.target.value))}
-                        disabled={uploading}
-                    />
-                    <small>Adjust preview quality (original image preserved)</small>
-                </div>
-
-                <div className="settings-group">
-                    <label>Preview Width: {resizeWidth}px</label>
-                    <input
-                        type="range"
-                        min="200"
-                        max="1200"
-                        step="50"
-                        value={resizeWidth}
-                        onChange={(e) => setResizeWidth(parseInt(e.target.value))}
-                        disabled={uploading}
-                    />
-                    <small>Preview size adjustment (original image preserved)</small>
-                </div>
-            </div>
-
             <div className="image-grid">
                 {previews.map((img, index) => (
                     <div 
@@ -350,12 +297,6 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                         {!img.isUploading && !img.isExisting && (
                             <span className="image-badge new">New</span>
                         )}
-
-                        {removeBackground && img.url && !img.isUploading && (
-                            <span className="image-badge bg-removed">
-                                <i className="fas fa-magic"></i> Preview
-                            </span>
-                        )}
                     </div>
                 ))}
 
@@ -389,7 +330,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                             ></div>
                             <span>{uploadProgress}%</span>
                         </div>
-                        <small>Uploading...</small>
+                        <small>Uploading to Cloudinary...</small>
                     </div>
                 )}
             </div>
@@ -406,7 +347,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
 
             <p className="upload-hint">
                 <i className="fas fa-info-circle"></i>
-                Max {maxImages} images, 5MB each. Images are stored securely.
+                Max {maxImages} images, 5MB each. Images will be automatically resized to 400x400 and background removed.
                 {previews.length > 0 && (
                     <span className="image-count"> ({previews.length}/{maxImages})</span>
                 )}
