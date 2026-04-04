@@ -15,6 +15,7 @@ export const productService = {
             };
         } catch (error) {
             console.error('❌ Error fetching products:', error);
+            console.error('❌ Error response:', error.response?.data);
             return {
                 success: false,
                 message: error.response?.data?.message || 'Failed to fetch products',
@@ -23,7 +24,7 @@ export const productService = {
         }
     },
 
-    // Get featured products - using main products endpoint
+    // Get featured products - using main products endpoint (no 400 error)
     getFeaturedProducts: async (limit = 4) => {
         try {
             console.log(`⭐ getFeaturedProducts: limit=${limit}`);
@@ -61,17 +62,17 @@ export const productService = {
         }
     },
 
-    // Get new arrivals - using main products endpoint with createdAt sorting
+    // Get new arrivals - using working endpoint
     getNewArrivals: async (limit = 4) => {
         try {
             console.log(`🆕 getNewArrivals: limit=${limit}`);
             
-            // Get products sorted by creation date (newest first)
-            const response = await api.get('/products', {
-                params: { page: 0, size: limit, sortBy: 'createdAt', sortDir: 'desc' }
+            const response = await api.get('/products/new-arrivals', {
+                params: { limit }
             });
+            console.log('🆕 getNewArrivals response:', response.data);
             
-            // Extract products
+            // Handle different response structures
             let products = [];
             if (response.data?.content) {
                 products = response.data.content;
@@ -83,19 +84,45 @@ export const productService = {
                 products = response.data || [];
             }
             
-            console.log(`🆕 Found ${products.length} new arrivals`);
-            return {
-                success: true,
-                data: products
+            return { 
+                success: true, 
+                data: products.slice(0, limit)
             };
             
         } catch (error) {
-            console.error('Failed to fetch new arrivals:', error);
-            return {
-                success: false,
-                message: 'Failed to fetch new arrivals',
-                data: []
-            };
+            console.log('New arrivals endpoint not available, using recent products from database');
+            
+            // Fallback: Get products sorted by creation date
+            try {
+                const response = await api.get('/products', {
+                    params: { page: 0, size: limit, sortBy: 'createdAt', sortDir: 'desc' }
+                });
+                
+                // Extract products
+                let products = [];
+                if (response.data?.content) {
+                    products = response.data.content;
+                } else if (Array.isArray(response.data)) {
+                    products = response.data;
+                } else if (response.data?.data) {
+                    products = response.data.data;
+                } else {
+                    products = response.data || [];
+                }
+                
+                console.log(`🆕 Found ${products.length} recent products`);
+                return {
+                    success: true,
+                    data: products
+                };
+            } catch (fallbackError) {
+                console.error('Failed to fetch new arrivals:', fallbackError);
+                return {
+                    success: false,
+                    message: 'Failed to fetch new arrivals',
+                    data: []
+                };
+            }
         }
     },
 
@@ -161,6 +188,8 @@ export const productService = {
             };
         } catch (error) {
             console.error(' Error filtering products:', error);
+            console.error(' Error response:', error.response?.data);
+            console.error(' Error status:', error.response?.status);
             return {
                 success: false,
                 message: error.response?.data?.message || 'Filter failed',
