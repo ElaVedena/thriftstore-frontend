@@ -54,15 +54,17 @@ export const userService = {
     // Get user's orders
     getOrders: async () => {
         try {
-            const response = await api.get('/users/orders');
+            const response = await api.get('/orders/user');
             return {
                 success: true,
                 data: response.data || []
             };
         } catch (error) {
+            console.error('Get orders error:', error);
             return {
                 success: false,
-                message: error.response?.data?.message || 'Failed to fetch orders'
+                message: error.response?.data?.message || 'Failed to fetch orders',
+                data: []
             };
         }
     },
@@ -76,9 +78,11 @@ export const userService = {
                 data: response.data || []
             };
         } catch (error) {
+            console.error('Get wishlist error:', error);
             return {
                 success: false,
-                message: error.response?.data?.message || 'Failed to fetch wishlist'
+                message: error.response?.data?.message || 'Failed to fetch wishlist',
+                data: []
             };
         }
     },
@@ -86,15 +90,17 @@ export const userService = {
     // Get user's reviews
     getUserReviews: async () => {
         try {
-            const response = await api.get('/users/reviews');
+            const response = await api.get('/reviews/user');
             return {
                 success: true,
                 data: response.data || []
             };
         } catch (error) {
+            console.error('Get reviews error:', error);
             return {
                 success: false,
-                message: error.response?.data?.message || 'Failed to fetch reviews'
+                message: error.response?.data?.message || 'Failed to fetch reviews',
+                data: []
             };
         }
     },
@@ -102,7 +108,7 @@ export const userService = {
     // Get single order details
     getOrderById: async (orderId) => {
         try {
-            const response = await api.get(`/users/orders/${orderId}`);
+            const response = await api.get(`/orders/${orderId}`);
             return {
                 success: true,
                 data: response.data
