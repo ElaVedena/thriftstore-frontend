@@ -1,27 +1,69 @@
 import api from './api';
 
 export const wishlistService = {
-    // Get user's wishlist
+    // Get user's wishlist with product details (including stock)
     getWishlist: async () => {
         try {
             const response = await api.get('/wishlist');
             
+            let wishlistItems = [];
+            
+            // Extract wishlist items from response
             if (response.data && response.data.data !== undefined) {
-                return {
-                    success: true,
-                    data: response.data.data || []
-                };
+                wishlistItems = response.data.data || [];
             } else if (Array.isArray(response.data)) {
-                return {
-                    success: true,
-                    data: response.data
-                };
-            } else {
-                return {
-                    success: true,
-                    data: []
-                };
+                wishlistItems = response.data;
             }
+            
+            // For each wishlist item, fetch product details to get real stock status
+            const itemsWithStock = await Promise.all(
+                wishlistItems.map(async (item) => {
+                    const productId = item.productId || item.id;
+                    if (!productId) return item;
+                    
+                    try {
+                        // Fetch product details to get stock information
+                        const productResponse = await api.get(`/products/${productId}`);
+                        const productData = productResponse.data?.data || productResponse.data;
+                        
+                        return {
+                            ...item,
+                            // Stock information from product data
+                            stock: productData?.stock || 0,
+                            inStock: (productData?.stock || 0) > 0,
+                            quantity: productData?.quantity || productData?.stock || 0,
+                            available: productData?.available !== undefined ? productData.available : (productData?.stock || 0) > 0,
+                            // Also update price in case it changed
+                            price: productData?.price || item.price,
+                            originalPrice: productData?.originalPrice || item.originalPrice,
+                            // Update name in case it changed
+                            name: productData?.name || item.name,
+                            // Update image in case it changed
+                            imageUrl: productData?.images?.[0] || item.imageUrl || item.image,
+                            // Update brand
+                            brand: productData?.brand || item.brand,
+                            // Update condition
+                            condition: productData?.condition || item.condition,
+                            // Update size
+                            size: productData?.size || item.size
+                        };
+                    } catch (productError) {
+                        console.error(`Failed to fetch product ${productId}:`, productError);
+                        // Return original item with out of stock status
+                        return {
+                            ...item,
+                            stock: 0,
+                            inStock: false,
+                            available: false
+                        };
+                    }
+                })
+            );
+            
+            return {
+                success: true,
+                data: itemsWithStock
+            };
         } catch (error) {
             console.error('Get wishlist error:', error);
             return {
