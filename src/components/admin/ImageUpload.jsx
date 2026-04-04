@@ -18,8 +18,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         if (images && images.length > 0) {
             const initialPreviews = images.map(img => {
                 if (typeof img === 'string') {
-                    // Apply transformations to existing images
-                    const transformedUrl = applyTransformations(img);
+                    const transformedUrl = applyClientTransformations(img);
                     return {
                         url: img,
                         preview: transformedUrl,
@@ -28,7 +27,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                         publicId: extractPublicIdFromUrl(img)
                     };
                 } else if (img.url) {
-                    const transformedUrl = applyTransformations(img.url);
+                    const transformedUrl = applyClientTransformations(img.url);
                     return {
                         ...img,
                         preview: transformedUrl,
@@ -51,30 +50,26 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         return matches ? matches[1] : null;
     };
 
-    // Apply Cloudinary transformations
-    const applyTransformations = (url) => {
+    // Apply client-side Cloudinary transformations for preview only
+    const applyClientTransformations = (url) => {
         if (!url || !url.includes('cloudinary')) return url;
         
         let transformations = [];
         
-        // Resize transformation
         if (resizeWidth && resizeWidth > 0) {
             transformations.push(`w_${resizeWidth}`);
         }
         
-        // Quality transformation
         if (imageQuality && imageQuality < 100) {
             transformations.push(`q_${imageQuality}`);
         }
         
-        // Background removal (using Cloudinary's bgremoval effect)
         if (removeBackground) {
             transformations.push('e_bgremoval');
         }
         
         if (transformations.length === 0) return url;
         
-        // Insert transformations after 'upload' in the URL
         return url.replace('/upload/', `/upload/${transformations.join(',')}/`);
     };
 
@@ -115,15 +110,11 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         validFiles.forEach(file => {
             formData.append('files', file);
         });
-        
-        // Add transformation options to the request
-        formData.append('removeBackground', removeBackground);
-        formData.append('quality', imageQuality);
-        formData.append('resizeWidth', resizeWidth);
 
         setUploading(true);
         setUploadProgress(0);
 
+        // Create temporary previews for immediate feedback
         const tempPreviews = validFiles.map(file => ({
             url: null,
             preview: URL.createObjectURL(file),
@@ -150,12 +141,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
             });
 
             if (response.data.success) {
-                let uploadedUrls = response.data.data || [];
-                
-                // Apply client-side transformations to the returned URLs if needed
-                if (removeBackground || imageQuality < 100 || resizeWidth) {
-                    uploadedUrls = uploadedUrls.map(url => applyTransformations(url));
-                }
+                const uploadedUrls = response.data.data || [];
                 
                 const previewsWithoutTemp = previews.filter(p => !p.isUploading);
                 
@@ -163,7 +149,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                     ...previewsWithoutTemp,
                     ...uploadedUrls.map(url => ({
                         url: url,
-                        preview: applyTransformations(url),
+                        preview: applyClientTransformations(url),
                         file: null,
                         isExisting: false,
                         publicId: extractPublicIdFromUrl(url)
@@ -269,17 +255,17 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         }
     };
 
-    // Update all previews when transformation settings change
+    // Update previews when transformation settings change
     useEffect(() => {
         setPreviews(prev => prev.map(img => ({
             ...img,
-            preview: img.url ? applyTransformations(img.url) : img.preview
+            preview: img.url ? applyClientTransformations(img.url) : img.preview
         })));
     }, [removeBackground, imageQuality, resizeWidth]);
 
     return (
         <div className="image-upload">
-            {/* Image Settings Panel */}
+            {/* Image Settings Panel - Client-side only for preview */}
             <div className="image-settings">
                 <div className="settings-group">
                     <label>
@@ -289,13 +275,13 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                             onChange={(e) => setRemoveBackground(e.target.checked)}
                             disabled={uploading}
                         />
-                        Remove Background (AI)
+                        Remove Background (AI) - Preview Only
                     </label>
-                    <small>Automatically remove image background using AI</small>
+                    <small>AI background removal effect for preview (applied client-side)</small>
                 </div>
 
                 <div className="settings-group">
-                    <label>Image Quality: {imageQuality}%</label>
+                    <label>Preview Quality: {imageQuality}%</label>
                     <input
                         type="range"
                         min="10"
@@ -304,11 +290,11 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                         onChange={(e) => setImageQuality(parseInt(e.target.value))}
                         disabled={uploading}
                     />
-                    <small>Lower quality = smaller file size</small>
+                    <small>Adjust preview quality (original image preserved)</small>
                 </div>
 
                 <div className="settings-group">
-                    <label>Resize Width: {resizeWidth}px</label>
+                    <label>Preview Width: {resizeWidth}px</label>
                     <input
                         type="range"
                         min="200"
@@ -318,7 +304,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                         onChange={(e) => setResizeWidth(parseInt(e.target.value))}
                         disabled={uploading}
                     />
-                    <small>Images will be resized to this width</small>
+                    <small>Preview size adjustment (original image preserved)</small>
                 </div>
             </div>
 
@@ -367,7 +353,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
 
                         {removeBackground && img.url && !img.isUploading && (
                             <span className="image-badge bg-removed">
-                                <i className="fas fa-magic"></i> BG Removed
+                                <i className="fas fa-magic"></i> Preview
                             </span>
                         )}
                     </div>
@@ -403,7 +389,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                             ></div>
                             <span>{uploadProgress}%</span>
                         </div>
-                        <small>Uploading to Cloudinary...</small>
+                        <small>Uploading...</small>
                     </div>
                 )}
             </div>
@@ -420,7 +406,7 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
 
             <p className="upload-hint">
                 <i className="fas fa-info-circle"></i>
-                Max {maxImages} images, 5MB each. Images are stored securely in Cloudinary.
+                Max {maxImages} images, 5MB each. Images are stored securely.
                 {previews.length > 0 && (
                     <span className="image-count"> ({previews.length}/{maxImages})</span>
                 )}
