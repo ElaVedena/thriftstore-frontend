@@ -27,11 +27,31 @@ function Orders() {
             const response = await orderService.getMyOrders(currentPage, 10);
             
             if (response.success) {
-                // Handle the nested response structure
-                // The data comes as: { success: true, data: { content: [...], totalPages, ... } }
                 const ordersData = response.data?.data || response.data;
                 
-                setOrders(ordersData.content || []);
+                // Ensure orders have image URLs by fetching product details
+                const ordersWithImages = await Promise.all((ordersData.content || []).map(async (order) => {
+                    if (order.items && order.items.length > 0) {
+                        const itemsWithImages = await Promise.all(order.items.map(async (item) => {
+                            if (!item.imageUrl && !item.image && item.productId) {
+                                try {
+                                    const productResponse = await productService.getProductById(item.productId);
+                                    if (productResponse.success && productResponse.data) {
+                                        const product = productResponse.data;
+                                        item.imageUrl = product.images?.[0] || product.imageUrl || product.image;
+                                    }
+                                } catch (error) {
+                                    console.error('Failed to fetch product image:', error);
+                                }
+                            }
+                            return item;
+                        }));
+                        order.items = itemsWithImages;
+                    }
+                    return order;
+                }));
+                
+                setOrders(ordersWithImages);
                 setTotalPages(ordersData.totalPages || 0);
                 setTotalElements(ordersData.totalElements || 0);
             } else {
@@ -45,10 +65,8 @@ function Orders() {
         }
     };
 
-    // Ensure orders is always an array for filtering
     const ordersArray = Array.isArray(orders) ? orders : [];
 
-    // Filter orders 
     const filteredOrders = ordersArray.filter(order => {
         if (filter !== 'all' && order.status !== filter.toUpperCase()) {
             return false;

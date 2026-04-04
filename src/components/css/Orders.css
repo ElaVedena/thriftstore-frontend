@@ -2,6 +2,12 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
+    min-height: calc(100vh - var(--navbar-height) - 2rem);
+}
+
+/* Hide footer on orders page */
+body:has(.orders-page) .footer {
+    display: none !important;
 }
 
 .orders-header {
@@ -18,6 +24,7 @@
     color: #2d2d2d;
     position: relative;
     padding-bottom: 0.5rem;
+    margin: 0;
 }
 
 .orders-header h1::after {
@@ -28,6 +35,12 @@
     width: 60px;
     height: 3px;
     background: linear-gradient(90deg, #CEABB1, transparent);
+}
+
+.orders-count {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
 }
 
 .orders-search {
@@ -184,15 +197,69 @@
     font-size: 1.1rem;
 }
 
-/* Responsive */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1rem 0;
+}
+
+.pagination-btn {
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #CEABB1;
+    color: white;
+    border-color: #CEABB1;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    display: flex;
+    gap: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.pagination-total {
+    color: #999;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+
+/* Tablet (max-width: 768px) */
 @media (max-width: 768px) {
     .orders-page {
         padding: 1rem;
+        min-height: calc(100vh - var(--navbar-height) - 1rem);
     }
     
     .orders-header {
         flex-direction: column;
         align-items: flex-start;
+    }
+    
+    .orders-header h1 {
+        font-size: 1.6rem;
+    }
+    
+    .orders-header h1::after {
+        width: 50px;
     }
     
     .orders-search {
@@ -201,10 +268,136 @@
     
     .orders-tabs {
         overflow-x: auto;
-        padding-bottom: 1rem;
+        flex-wrap: nowrap;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+        -webkit-overflow-scrolling: touch;
     }
     
     .tab-btn {
         white-space: nowrap;
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+        gap: 0.8rem;
+    }
+    
+    .pagination-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+    
+    .pagination-info {
+        font-size: 0.8rem;
+    }
+    
+    .no-orders {
+        padding: 2rem 1rem;
+    }
+    
+    .no-orders i {
+        font-size: 3rem;
+    }
+    
+    .no-orders h2 {
+        font-size: 1.2rem;
+    }
+    
+    .no-orders p {
+        font-size: 0.9rem;
+    }
+    
+    .shop-now-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .orders-page {
+        padding: 0.8rem;
+        min-height: calc(100vh - var(--navbar-height) - 0.5rem);
+    }
+    
+    .orders-header h1 {
+        font-size: 1.4rem;
+    }
+    
+    .orders-header h1::after {
+        width: 40px;
+        height: 2px;
+    }
+    
+    .orders-count {
+        font-size: 0.8rem;
+    }
+    
+    .tab-btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .tab-count {
+        font-size: 0.7rem;
+        padding: 0.15rem 0.4rem;
+    }
+    
+    .orders-list {
+        gap: 1rem;
+    }
+    
+    .pagination-btn {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.8rem;
+    }
+    
+    .pagination-info {
+        font-size: 0.75rem;
+    }
+    
+    .no-orders {
+        padding: 1.5rem 0.8rem;
+    }
+    
+    .no-orders i {
+        font-size: 2.5rem;
+    }
+    
+    .no-orders h2 {
+        font-size: 1.1rem;
+    }
+    
+    .no-orders p {
+        font-size: 0.85rem;
+    }
+    
+    .shop-now-btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .orders-header h1 {
+        font-size: 1.2rem;
+    }
+    
+    .tab-btn {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .tab-count {
+        font-size: 0.6rem;
+    }
+    
+    .pagination-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
     }
 }
