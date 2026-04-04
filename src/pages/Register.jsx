@@ -124,37 +124,28 @@ function Register() {
     return (
         <>
             <Helmet>
-                {/* Primary SEO */}
                 <title>Register | VedaThrifts - Create Account</title>
-                <meta name="description" content="Create your VedaThrifts account today. Join Kenya's sustainable thrift store community. Save favorites, track orders, and enjoy a personalized shopping experience." />
-                <meta name="keywords" content="register, sign up, create account, VedaThrifts account, thrift store registration, sustainable fashion Kenya" />
+                <meta name="description" content="Create your VedaThrifts account today. Join Kenya's sustainable thrift store community." />
+                <meta name="keywords" content="register, sign up, create account, VedaThrifts account, thrift store registration" />
                 <meta name="author" content="VedaThrifts" />
                 <meta name="robots" content="noindex, follow" />
-                
-                {/* Open Graph / Facebook / WhatsApp */}
                 <meta property="og:title" content="Register | VedaThrifts - Create Account" />
-                <meta property="og:description" content="Create your VedaThrifts account today. Join Kenya's sustainable thrift store community. Save favorites and track orders." />
+                <meta property="og:description" content="Create your VedaThrifts account today. Join Kenya's sustainable thrift store community." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content="https://vedathrifts.com/register" />
                 <meta property="og:image" content="https://vedathrifts.com/og-image-register.jpg" />
                 <meta property="og:site_name" content="VedaThrifts" />
                 <meta property="og:locale" content="en_KE" />
-                
-                {/* Twitter Card */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content="Register | VedaThrifts - Create Account" />
-                <meta name="twitter:description" content="Create your VedaThrifts account today. Join Kenya's sustainable thrift store community." />
+                <meta name="twitter:description" content="Create your VedaThrifts account today." />
                 <meta name="twitter:image" content="https://vedathrifts.com/og-image-register.jpg" />
-                
-                {/* Canonical URL */}
                 <link rel="canonical" href="https://vedathrifts.com/register" />
             </Helmet>
 
             <div className="auth-page">
                 <div className="auth-container">
-                    <h2>Create Account</h2>
-                    <p>Join Vedathrifts today</p>
-                    
+                    {/* Removed duplicate heading - now only in RegisterForm */}
                     {registeredEmail ? (
                         <div className="email-confirmation-message">
                             <div className="success-icon">✓</div>

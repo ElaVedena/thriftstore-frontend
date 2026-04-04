@@ -67,9 +67,7 @@ function Login() {
 
             <div className="auth-page">
                 <div className="auth-container">
-                    <h2>Welcome Back</h2>
-                    <p>Login to your Vedathrifts account</p>
-                    
+                    {/* Removed duplicate heading - now only in LoginForm */}
                     <LoginForm 
                         onSubmit={handleLogin}
                         isLoading={isLoading}
