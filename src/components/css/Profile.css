@@ -5,6 +5,11 @@
     min-height: calc(100vh - var(--navbar-height) - 2rem);
 }
 
+/* Hide footer on profile page */
+body:has(.profile-page) .footer {
+    display: none !important;
+}
+
 .profile-header {
     margin-bottom: 2rem;
 }
