@@ -10,6 +10,18 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
     const { addToCart } = useCart();
     const { showSuccess, showError } = useNotification();
 
+    // Determine stock status from item data
+    // Check multiple possible fields for stock status
+    const isInStock = 
+        item.inStock === true || 
+        item.inStock === 'true' ||
+        item.stock > 0 ||
+        item.quantity > 0 ||
+        (item.available !== undefined && item.available === true);
+    
+    const stockQuantity = item.stock || item.quantity || 0;
+    const isLowStock = stockQuantity > 0 && stockQuantity <= 3;
+
     const handleRemove = async () => {
         try {
             await removeFromWishlist(item.productId || item.id, item.name);
@@ -20,13 +32,19 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
     };
 
     const handleAddToCart = () => {
+        if (!isInStock) {
+            showError(`${item.name} is out of stock and cannot be added to cart`);
+            return;
+        }
+
         const cartItem = {
             id: item.productId || item.id,
             name: item.name,
             price: item.price,
             image: item.imageUrl || item.image,
             quantity: 1,
-            selectedSize: item.size || 'One Size'
+            selectedSize: item.size || 'One Size',
+            stock: stockQuantity
         };
         
         addToCart(cartItem);
@@ -36,7 +54,10 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
 
     const formatPrice = (price) => {
         if (!price) return 'KSh 0.00';
-        return `KSh ${Number(price).toFixed(2)}`;
+        return `KSh ${Number(price).toLocaleString('en-KE', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        })}`;
     };
 
     const imageUrl = item.imageUrl || item.image || '/placeholder-image.jpg';
@@ -73,7 +94,7 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
                     
                     <div className="item-price">
                         <span className="current-price">{formatPrice(item.price)}</span>
-                        {item.originalPrice && (
+                        {item.originalPrice && item.originalPrice > item.price && (
                             <span className="original-price">{formatPrice(item.originalPrice)}</span>
                         )}
                     </div>
@@ -85,20 +106,30 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
                         {item.size && (
                             <span className="item-size">Size: {item.size}</span>
                         )}
+                        {isLowStock && isInStock && (
+                            <span className="low-stock-badge">
+                                <i className="fas fa-exclamation-triangle"></i>
+                                Only {stockQuantity} left!
+                            </span>
+                        )}
                     </div>
                 </div>
             </Link>
 
             <div className="item-actions">
-                <button onClick={handleAddToCart} className="add-to-cart-btn">
+                <button 
+                    onClick={handleAddToCart} 
+                    className={`add-to-cart-btn ${!isInStock ? 'disabled' : ''}`}
+                    disabled={!isInStock}
+                >
                     <i className="fas fa-shopping-cart"></i>
-                    Add to Cart
+                    {isInStock ? 'Add to Cart' : 'Out of Stock'}
                 </button>
 
-                {item.inStock ? (
+                {isInStock ? (
                     <span className="in-stock">
                         <i className="fas fa-check-circle"></i>
-                        In Stock
+                        {isLowStock ? `Only ${stockQuantity} left!` : 'In Stock'}
                     </span>
                 ) : (
                     <span className="out-of-stock">
