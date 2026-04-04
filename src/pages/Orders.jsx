@@ -18,6 +18,10 @@ function Orders() {
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
 
+    // Statuses that should be visible to users (excluding pending/unpaid)
+    const VISIBLE_STATUSES = ['PROCESSING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+    const FILTER_STATUSES = ['all', 'processing', 'shipped', 'delivered', 'cancelled'];
+
     useEffect(() => {
         loadOrders();
     }, [currentPage]);
@@ -29,18 +33,21 @@ function Orders() {
             
             if (response.success) {
                 const ordersData = response.data?.data || response.data;
-                const ordersContent = ordersData.content || [];
+                let ordersContent = ordersData.content || [];
+                
+                // Filter out pending/unpaid orders
+                ordersContent = ordersContent.filter(order => 
+                    VISIBLE_STATUSES.includes(order.status?.toUpperCase())
+                );
                 
                 // Fetch product images for each order item
                 const ordersWithImages = await Promise.all(ordersContent.map(async (order) => {
                     if (order.items && order.items.length > 0) {
                         const itemsWithImages = await Promise.all(order.items.map(async (item) => {
-                            // If item already has an image, use it
                             if (item.imageUrl || item.image) {
                                 return item;
                             }
                             
-                            // Otherwise fetch product image
                             const productId = item.productId || item.id;
                             if (productId) {
                                 try {
@@ -50,7 +57,7 @@ function Orders() {
                                         item.imageUrl = product.images?.[0] || product.imageUrl || product.image;
                                     }
                                 } catch (error) {
-                                    console.error('Failed to fetch product image for product:', productId, error);
+                                    console.error('Failed to fetch product image:', error);
                                 }
                             }
                             return item;
@@ -62,7 +69,7 @@ function Orders() {
                 
                 setOrders(ordersWithImages);
                 setTotalPages(ordersData.totalPages || 0);
-                setTotalElements(ordersData.totalElements || 0);
+                setTotalElements(ordersWithImages.length);
             } else {
                 showError(response.message || 'Failed to load orders');
             }
@@ -118,7 +125,7 @@ function Orders() {
             <div className="orders-header">
                 <h1>My Orders</h1>
                 {totalElements > 0 && (
-                    <p className="orders-count">{totalElements} total orders</p>
+                    <p className="orders-count">{totalElements} completed orders</p>
                 )}
                 
                 <div className="orders-search">
@@ -133,7 +140,7 @@ function Orders() {
             </div>
 
             <div className="orders-tabs">
-                {['all', 'pending', 'processing', 'shipped', 'delivered', 'cancelled'].map(status => (
+                {FILTER_STATUSES.map(status => (
                     <button
                         key={status}
                         className={`tab-btn ${filter === status ? 'active' : ''}`}
@@ -152,7 +159,7 @@ function Orders() {
                     <p>
                         {searchTerm || filter !== 'all' 
                             ? 'Try adjusting your filters or search term'
-                            : "You haven't placed any orders yet"}
+                            : "You haven't placed any completed orders yet"}
                     </p>
                     <Link to="/shop" className="shop-now-btn">
                         Start Shopping

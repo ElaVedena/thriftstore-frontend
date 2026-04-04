@@ -20,6 +20,15 @@ function OrderCard({ order }) {
         return status.toLowerCase();
     };
 
+    // Check if order is paid/completed (not pending)
+    const isOrderPaid = () => {
+        const status = order.status?.toUpperCase();
+        return status !== 'PENDING' && 
+               status !== 'PENDING_PAYMENT' && 
+               status !== 'FAILED' &&
+               status !== 'CANCELLED';
+    };
+
     // Helper to get the correct image source from different possible field names
     const getItemImageSrc = (item) => {
         const possibleFields = [
@@ -162,6 +171,14 @@ function OrderCard({ order }) {
                             View Details
                         </Link>
                         
+                        {/* Print Receipt - Only show for paid/completed orders */}
+                        {isOrderPaid() && (
+                            <button onClick={() => window.print()} className="print-order-btn">
+                                <i className="fas fa-print"></i>
+                                Print Receipt
+                            </button>
+                        )}
+                        
                         {deliveredItems.length > 0 && (
                             <button 
                                 className="review-all-btn"
@@ -172,8 +189,7 @@ function OrderCard({ order }) {
                             </button>
                         )}
                         
-                        {(getDisplayStatus(order.status) === 'pending' || 
-                          getDisplayStatus(order.status) === 'processing' ||
+                        {(getDisplayStatus(order.status) === 'processing' ||
                           getDisplayStatus(order.status) === 'shipped') && (
                             <Link to={`/track/${order.id}`} className="track-order-btn">
                                 <i className="fas fa-truck"></i>
