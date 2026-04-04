@@ -13,6 +13,18 @@ function OrderManagement() {
     const [dateRange, setDateRange] = useState('3days');
     const { showSuccess, showError } = useNotification();
 
+    // Statuses that should be visible to admin (excluding PENDING and PENDING_PAYMENT)
+    const VISIBLE_STATUSES = ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+    
+    // Filter tabs that should be shown (no Pending tab)
+    const FILTER_TABS = [
+        { key: 'all', label: 'All' },
+        { key: 'processing', label: 'Processing' },
+        { key: 'shipped', label: 'Shipped' },
+        { key: 'delivered', label: 'Delivered' },
+        { key: 'cancelled', label: 'Cancelled' }
+    ];
+
     useEffect(() => {
         loadOrders();
     }, [dateRange]);
@@ -23,6 +35,11 @@ function OrderManagement() {
             const response = await adminService.getOrders();
             if (response.success) {
                 let allOrders = response.data?.content || response.data || [];
+                
+                // Filter out pending/unpaid orders
+                allOrders = allOrders.filter(order => 
+                    VISIBLE_STATUSES.includes(order.status?.toUpperCase())
+                );
                 
                 allOrders = allOrders.map(order => ({
                     ...order,
@@ -67,7 +84,7 @@ function OrderManagement() {
         try {
             const response = await adminService.updateOrderStatus(order.id, newStatus);
             if (response.success) {
-                showSuccess(`Order ${order.id} status updated to ${newStatus}`);
+                showSuccess(`Order ${order.orderNumber} status updated to ${newStatus}`);
                 await loadOrders();
             } else {
                 showError(response.message || 'Failed to update order status');
@@ -87,7 +104,7 @@ function OrderManagement() {
     const formatPrice = (price) => `KSh ${Number(price).toLocaleString()}`;
 
     const normalizeStatus = (status) => {
-        if (!status) return 'pending';
+        if (!status) return 'processing';
         return status.toLowerCase();
     };
 
@@ -150,7 +167,6 @@ function OrderManagement() {
                             className={`status-select status-${normalizedStatus}`}
                             disabled={updatingOrderId === item.id}
                         >
-                            <option value="pending">Pending</option>
                             <option value="processing">Processing</option>
                             <option value="shipped">Shipped</option>
                             <option value="delivered">Delivered</option>
@@ -238,48 +254,21 @@ function OrderManagement() {
                     </div>
                     
                     <div className="filter-tabs">
-                        <button
-                            className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
-                            onClick={() => setFilter('all')}
-                        >
-                            All ({getStatusCount('all')})
-                        </button>
-                        <button
-                            className={`filter-tab ${filter === 'pending' ? 'active' : ''}`}
-                            onClick={() => setFilter('pending')}
-                        >
-                            Pending ({getStatusCount('pending')})
-                        </button>
-                        <button
-                            className={`filter-tab ${filter === 'processing' ? 'active' : ''}`}
-                            onClick={() => setFilter('processing')}
-                        >
-                            Processing ({getStatusCount('processing')})
-                        </button>
-                        <button
-                            className={`filter-tab ${filter === 'shipped' ? 'active' : ''}`}
-                            onClick={() => setFilter('shipped')}
-                        >
-                            Shipped ({getStatusCount('shipped')})
-                        </button>
-                        <button
-                            className={`filter-tab ${filter === 'delivered' ? 'active' : ''}`}
-                            onClick={() => setFilter('delivered')}
-                        >
-                            Delivered ({getStatusCount('delivered')})
-                        </button>
-                        <button
-                            className={`filter-tab ${filter === 'cancelled' ? 'active' : ''}`}
-                            onClick={() => setFilter('cancelled')}
-                        >
-                            Cancelled ({getStatusCount('cancelled')})
-                        </button>
+                        {FILTER_TABS.map(tab => (
+                            <button
+                                key={tab.key}
+                                className={`filter-tab ${filter === tab.key ? 'active' : ''}`}
+                                onClick={() => setFilter(tab.key)}
+                            >
+                                {tab.label} ({getStatusCount(tab.key)})
+                            </button>
+                        ))}
                     </div>
                     
                     <div className="orders-info">
                         <span>
                             <i className="fas fa-info-circle"></i>
-                            Showing {filteredOrders.length} orders ({getDateRangeLabel()})
+                            Showing {filteredOrders.length} completed orders ({getDateRangeLabel()})
                         </span>
                     </div>
                 </div>
@@ -290,7 +279,7 @@ function OrderManagement() {
                     onView={handleViewOrder}
                     onEdit={null}
                     onDelete={null}
-                    emptyMessage="No orders found"
+                    emptyMessage="No completed orders found"
                 />
             </main>
         </div>
