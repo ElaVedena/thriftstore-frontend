@@ -51,6 +51,70 @@ export const userService = {
         }
     },
 
+    // Get user's orders
+    getOrders: async () => {
+        try {
+            const response = await api.get('/users/orders');
+            return {
+                success: true,
+                data: response.data || []
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: error.response?.data?.message || 'Failed to fetch orders'
+            };
+        }
+    },
+
+    // Get user's wishlist
+    getWishlist: async () => {
+        try {
+            const response = await api.get('/wishlist');
+            return {
+                success: true,
+                data: response.data || []
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: error.response?.data?.message || 'Failed to fetch wishlist'
+            };
+        }
+    },
+
+    // Get user's reviews
+    getUserReviews: async () => {
+        try {
+            const response = await api.get('/users/reviews');
+            return {
+                success: true,
+                data: response.data || []
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: error.response?.data?.message || 'Failed to fetch reviews'
+            };
+        }
+    },
+
+    // Get single order details
+    getOrderById: async (orderId) => {
+        try {
+            const response = await api.get(`/users/orders/${orderId}`);
+            return {
+                success: true,
+                data: response.data
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: error.response?.data?.message || 'Failed to fetch order details'
+            };
+        }
+    },
+
     // Admin: Get all users
     getAllUsers: async (page = 0, size = 20, role = null) => {
         try {
@@ -84,6 +148,22 @@ export const userService = {
             return {
                 success: false,
                 message: error.response?.data?.message || 'Failed to update user role'
+            };
+        }
+    },
+
+    // Admin: Delete user
+    deleteUser: async (userId) => {
+        try {
+            const response = await api.delete(`/users/admin/${userId}`);
+            return {
+                success: true,
+                data: response.data
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: error.response?.data?.message || 'Failed to delete user'
             };
         }
     }
