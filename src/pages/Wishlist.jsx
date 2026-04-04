@@ -109,7 +109,8 @@ function Wishlist() {
                         brand: item.brand,
                         condition: item.condition,
                         size: item.size,
-                        inStock: item.inStock !== false
+                        inStock: item.stock > 0 || item.inStock === true,
+                        stock: item.stock || 0
                     };
                     
                     return (
