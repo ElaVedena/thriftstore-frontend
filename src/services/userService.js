@@ -51,13 +51,29 @@ export const userService = {
         }
     },
 
-    // Get user's orders
+    // Get user's orders - using the working endpoint /orders/my-orders
     getOrders: async () => {
         try {
-            const response = await api.get('/orders/user');
+            const response = await api.get('/orders/my-orders', {
+                params: { page: 0, size: 100 }
+            });
+            
+            // Extract orders from the response structure
+            let orders = [];
+            if (response.data && response.data.content) {
+                orders = response.data.content;
+            } else if (response.data && response.data.data && response.data.data.content) {
+                orders = response.data.data.content;
+            } else if (Array.isArray(response.data)) {
+                orders = response.data;
+            } else if (response.data && response.data.orders) {
+                orders = response.data.orders;
+            }
+            
             return {
                 success: true,
-                data: response.data || []
+                data: orders,
+                rawData: response.data
             };
         } catch (error) {
             console.error('Get orders error:', error);
@@ -69,13 +85,21 @@ export const userService = {
         }
     },
 
-    // Get user's wishlist
+    // Get user's wishlist - using the working endpoint
     getWishlist: async () => {
         try {
             const response = await api.get('/wishlist');
+            
+            let wishlist = [];
+            if (response.data && response.data.data !== undefined) {
+                wishlist = response.data.data || [];
+            } else if (Array.isArray(response.data)) {
+                wishlist = response.data;
+            }
+            
             return {
                 success: true,
-                data: response.data || []
+                data: wishlist
             };
         } catch (error) {
             console.error('Get wishlist error:', error);
@@ -87,16 +111,34 @@ export const userService = {
         }
     },
 
-    // Get user's reviews
-    getUserReviews: async () => {
+    // Get user's reviews - requires userId parameter
+    getUserReviews: async (userId) => {
         try {
-            const response = await api.get('/reviews/user');
+            if (!userId) {
+                return {
+                    success: false,
+                    message: 'User ID is required',
+                    data: []
+                };
+            }
+            
+            const response = await api.get(`/reviews/user/${userId}`);
+            
+            let reviews = [];
+            if (response.data && response.data.content) {
+                reviews = response.data.content;
+            } else if (Array.isArray(response.data)) {
+                reviews = response.data;
+            } else if (response.data && response.data.data && response.data.data.content) {
+                reviews = response.data.data.content;
+            }
+            
             return {
                 success: true,
-                data: response.data || []
+                data: reviews
             };
         } catch (error) {
-            console.error('Get reviews error:', error);
+            console.error('Get user reviews error:', error);
             return {
                 success: false,
                 message: error.response?.data?.message || 'Failed to fetch reviews',

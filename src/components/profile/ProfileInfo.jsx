@@ -17,6 +17,7 @@ function ProfileInfo({ user, onEdit }) {
 
     // Use user prop or authUser as fallback
     const currentUser = user || authUser;
+    const userId = currentUser?.id;
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
@@ -43,6 +44,11 @@ function ProfileInfo({ user, onEdit }) {
     // Fetch user stats from backend
     useEffect(() => {
         const fetchUserStats = async () => {
+            if (!userId) {
+                setIsLoading(false);
+                return;
+            }
+            
             setIsLoading(true);
             
             // Fetch orders
@@ -57,8 +63,6 @@ function ProfileInfo({ user, onEdit }) {
                     totalOrders,
                     totalSpent
                 }));
-            } else if (ordersResponse.message) {
-                console.log('Orders fetch:', ordersResponse.message);
             }
 
             // Fetch wishlist
@@ -69,37 +73,23 @@ function ProfileInfo({ user, onEdit }) {
                     ...prev,
                     wishlistCount: wishlist.length
                 }));
-            } else if (wishlistResponse.message) {
-                console.log('Wishlist fetch:', wishlistResponse.message);
-                // Fallback to localStorage wishlist
-                const localWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-                setUserStats(prev => ({
-                    ...prev,
-                    wishlistCount: localWishlist.length
-                }));
             }
 
-            // Fetch reviews
-            const reviewsResponse = await userService.getUserReviews();
+            // Fetch reviews - pass userId
+            const reviewsResponse = await userService.getUserReviews(userId);
             if (reviewsResponse.success) {
                 const reviews = reviewsResponse.data || [];
                 setUserStats(prev => ({
                     ...prev,
                     reviewsCount: reviews.length
                 }));
-            } else if (reviewsResponse.message) {
-                console.log('Reviews fetch:', reviewsResponse.message);
             }
 
             setIsLoading(false);
         };
 
-        if (currentUser?.id) {
-            fetchUserStats();
-        } else {
-            setIsLoading(false);
-        }
-    }, [currentUser?.id]);
+        fetchUserStats();
+    }, [userId]);
 
     return (
         <div className="profile-info-card">
