@@ -37,7 +37,7 @@
 }
 
 .profile-phone {
-    color: #888;
+    color: #666;
     font-size: 0.9rem;
     margin: 0.3rem 0 0 0;
     display: flex;
@@ -48,6 +48,15 @@
 .profile-phone i {
     color: #CEABB1;
     font-size: 0.8rem;
+    width: 16px;
+}
+
+.profile-phone.not-provided {
+    color: #ccc;
+}
+
+.profile-phone.not-provided i {
+    color: #ccc;
 }
 
 .admin-badge {

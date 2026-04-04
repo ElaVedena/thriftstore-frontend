@@ -122,6 +122,15 @@ function ProfileInfo({ user, onEdit }) {
                 <div className="profile-title">
                     <h2>{currentUser?.name || 'User'}</h2>
                     <p className="profile-email">{currentUser?.email}</p>
+                    {currentUser?.phone ? (
+                        <p className="profile-phone">
+                            <i className="fas fa-phone-alt"></i> {currentUser?.phone}
+                        </p>
+                    ) : (
+                        <p className="profile-phone not-provided">
+                            <i className="fas fa-phone-alt"></i> No phone number added
+                        </p>
+                    )}
                     {currentUser?.role === 'ADMIN' && (
                         <span className="admin-badge">Administrator</span>
                     )}
@@ -144,6 +153,20 @@ function ProfileInfo({ user, onEdit }) {
                             <span className="detail-label">Email Address</span>
                             <span className="detail-value">{currentUser?.email || 'Not provided'}</span>
                         </div>
+                        <div className="detail-item">
+                            <span className="detail-label">Phone Number</span>
+                            <span className="detail-value">{currentUser?.phone || 'Not provided'}</span>
+                        </div>
+                        <div className="detail-item">
+                            <span className="detail-label">Member Since</span>
+                            <span className="detail-value">{formatDate(currentUser?.createdAt)}</span>
+                        </div>
+                        {currentUser?.role && (
+                            <div className="detail-item">
+                                <span className="detail-label">Account Type</span>
+                                <span className="detail-value">{currentUser?.role || 'Customer'}</span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
