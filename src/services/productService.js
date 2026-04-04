@@ -15,7 +15,6 @@ export const productService = {
             };
         } catch (error) {
             console.error('❌ Error fetching products:', error);
-            console.error('❌ Error response:', error.response?.data);
             return {
                 success: false,
                 message: error.response?.data?.message || 'Failed to fetch products',
@@ -24,19 +23,17 @@ export const productService = {
         }
     },
 
-    // Get featured products
+    // Get featured products - using main products endpoint
     getFeaturedProducts: async (limit = 4) => {
         try {
             console.log(`⭐ getFeaturedProducts: limit=${limit}`);
             
-            // Try to get from featured endpoint first
-            const response = await api.get('/products/featured', {
-                params: { limit }
+            // Get products directly from main endpoint
+            const response = await api.get('/products', {
+                params: { page: 0, size: limit, sortBy: 'id', sortDir: 'desc' }
             });
             
-            console.log('⭐ getFeaturedProducts response:', response.data);
-            
-            // Handle different response structures
+            // Extract products from response
             let products = [];
             if (response.data?.content) {
                 products = response.data.content;
@@ -48,73 +45,33 @@ export const productService = {
                 products = response.data || [];
             }
             
-            return { 
-                success: true, 
-                data: products.slice(0, limit)
+            console.log(`⭐ Found ${products.length} products for featured section`);
+            return {
+                success: true,
+                data: products
             };
             
         } catch (error) {
-            console.log('Featured endpoint not available, using random products from database');
-            
-            // Fallback: Get regular products and randomly select
-            try {
-                const response = await api.get('/products', {
-                    params: { page: 0, size: 20, sortBy: 'id', sortDir: 'desc' }
-                });
-                
-                // Extract products from response
-                let products = [];
-                if (response.data?.content) {
-                    products = response.data.content;
-                } else if (Array.isArray(response.data)) {
-                    products = response.data;
-                } else if (response.data?.data) {
-                    products = response.data.data;
-                } else {
-                    products = response.data || [];
-                }
-                
-                // If we have products, randomly select 'limit' number of them
-                if (products.length > 0) {
-                    // Shuffle array and take first 'limit' items
-                    const shuffled = [...products].sort(() => 0.5 - Math.random());
-                    const selected = shuffled.slice(0, Math.min(limit, products.length));
-                    
-                    console.log(`Selected ${selected.length} random products for featured section`);
-                    return {
-                        success: true,
-                        data: selected
-                    };
-                }
-                
-                return {
-                    success: true,
-                    data: []
-                };
-                
-            } catch (fallbackError) {
-                console.error('Failed to fetch products for featured section:', fallbackError);
-                return {
-                    success: false,
-                    message: 'Failed to fetch products',
-                    data: []
-                };
-            }
+            console.error('Failed to fetch featured products:', error);
+            return {
+                success: false,
+                message: 'Failed to fetch products',
+                data: []
+            };
         }
     },
 
-    // Get new arrivals
+    // Get new arrivals - using main products endpoint with createdAt sorting
     getNewArrivals: async (limit = 4) => {
         try {
             console.log(`🆕 getNewArrivals: limit=${limit}`);
             
-            // Try to get from new-arrivals endpoint first
-            const response = await api.get('/products/new-arrivals', {
-                params: { limit }
+            // Get products sorted by creation date (newest first)
+            const response = await api.get('/products', {
+                params: { page: 0, size: limit, sortBy: 'createdAt', sortDir: 'desc' }
             });
-            console.log('🆕 getNewArrivals response:', response.data);
             
-            // Handle different response structures
+            // Extract products
             let products = [];
             if (response.data?.content) {
                 products = response.data.content;
@@ -126,45 +83,19 @@ export const productService = {
                 products = response.data || [];
             }
             
-            return { 
-                success: true, 
-                data: products.slice(0, limit)
+            console.log(`🆕 Found ${products.length} new arrivals`);
+            return {
+                success: true,
+                data: products
             };
             
         } catch (error) {
-            console.log('New arrivals endpoint not available, using recent products from database');
-            
-            // Fallback: Get products sorted by creation date
-            try {
-                const response = await api.get('/products', {
-                    params: { page: 0, size: limit, sortBy: 'createdAt', sortDir: 'desc' }
-                });
-                
-                // Extract products
-                let products = [];
-                if (response.data?.content) {
-                    products = response.data.content;
-                } else if (Array.isArray(response.data)) {
-                    products = response.data;
-                } else if (response.data?.data) {
-                    products = response.data.data;
-                } else {
-                    products = response.data || [];
-                }
-                
-                console.log(`🆕 Found ${products.length} recent products`);
-                return {
-                    success: true,
-                    data: products
-                };
-            } catch (fallbackError) {
-                console.error('Failed to fetch new arrivals:', fallbackError);
-                return {
-                    success: false,
-                    message: 'Failed to fetch new arrivals',
-                    data: []
-                };
-            }
+            console.error('Failed to fetch new arrivals:', error);
+            return {
+                success: false,
+                message: 'Failed to fetch new arrivals',
+                data: []
+            };
         }
     },
 
@@ -230,8 +161,6 @@ export const productService = {
             };
         } catch (error) {
             console.error(' Error filtering products:', error);
-            console.error(' Error response:', error.response?.data);
-            console.error(' Error status:', error.response?.status);
             return {
                 success: false,
                 message: error.response?.data?.message || 'Filter failed',
