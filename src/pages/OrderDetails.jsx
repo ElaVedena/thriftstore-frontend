@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { orderService } from '../services/orderService';
+import { productService } from '../services/productService';
 import OrderStatusBadge from '../components/orders/OrderStatusBadge';
 import OrderTimeline from '../components/orders/OrderTimeline';
 import CloudinaryImage from '../components/common/CloudinaryImage';
@@ -14,39 +15,31 @@ function OrderDetails() {
     const [timeline, setTimeline] = useState([]);
     const [loading, setLoading] = useState(true);
     const [cancelling, setCancelling] = useState(false);
+    const [itemsWithImages, setItemsWithImages] = useState([]);
 
     useEffect(() => {
         loadOrderDetails();
     }, [orderId]);
 
-    // Helper function to get the correct image URL
-    const getImageUrl = (item) => {
-        // Check multiple possible fields for image URL
-        const imageUrl = item.imageUrl || item.image || item.productImage || item.mainImage;
+    // Helper function to get image URL for an item by fetching product details
+    const fetchProductImage = async (productId) => {
+        if (!productId) return null;
         
-        if (!imageUrl) {
-            console.log('No image URL found for item:', item);
-            return null;
+        try {
+            const response = await productService.getProductById(productId);
+            if (response.success) {
+                const product = response.data;
+                // Check multiple possible image fields
+                const imageUrl = product?.images?.[0] || 
+                                product?.imageUrl || 
+                                product?.image ||
+                                product?.mainImage;
+                return imageUrl || null;
+            }
+        } catch (error) {
+            console.error(`Failed to fetch image for product ${productId}:`, error);
         }
-        
-        // If it's already a full Cloudinary URL, return as-is
-        if (imageUrl.includes('cloudinary.com') || imageUrl.includes('res.cloudinary.com')) {
-            return imageUrl;
-        }
-        
-        // If it's a relative path, construct the full URL
-        if (imageUrl.startsWith('/')) {
-            const baseUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://thriftstore-backend-production.up.railway.app';
-            return `${baseUrl}${imageUrl}`;
-        }
-        
-        // If it's a local path without leading slash
-        if (!imageUrl.startsWith('http')) {
-            const baseUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://thriftstore-backend-production.up.railway.app';
-            return `${baseUrl}/${imageUrl}`;
-        }
-        
-        return imageUrl;
+        return null;
     };
 
     const loadOrderDetails = async () => {
@@ -56,18 +49,28 @@ function OrderDetails() {
             
             if (orderRes.success) {
                 const orderData = orderRes.data?.data || orderRes.data;
-                
-                // Log to debug image URLs
-                if (orderData?.items) {
-                    console.log('Order items with images:', orderData.items.map(item => ({
-                        name: item.productName,
-                        imageUrl: item.imageUrl,
-                        image: item.image,
-                        productImage: item.productImage
-                    })));
-                }
-                
                 setOrder(orderData);
+                
+                // Fetch images for each item
+                if (orderData?.items && orderData.items.length > 0) {
+                    const itemsWithImagesPromises = orderData.items.map(async (item) => {
+                        const productId = item.productId || item.id;
+                        let imageUrl = item.imageUrl || item.image || item.productImage;
+                        
+                        // If no image URL in order item, fetch from product
+                        if (!imageUrl && productId) {
+                            imageUrl = await fetchProductImage(productId);
+                        }
+                        
+                        return {
+                            ...item,
+                            imageUrl: imageUrl
+                        };
+                    });
+                    
+                    const enrichedItems = await Promise.all(itemsWithImagesPromises);
+                    setItemsWithImages(enrichedItems);
+                }
                 
                 if (orderData) {
                     generateTimeline(orderData);
@@ -202,6 +205,8 @@ function OrderDetails() {
         );
     }
 
+    const displayItems = itemsWithImages.length > 0 ? itemsWithImages : (order.items || []);
+
     return (
         <div className="order-details-page">
             <div className="order-details-header">
@@ -225,26 +230,22 @@ function OrderDetails() {
                     <div className="order-section">
                         <h2>Order Items</h2>
                         <div className="order-items-list">
-                            {order.items && order.items.length > 0 ? (
-                                order.items.map((item, index) => {
-                                    const imageUrl = getImageUrl(item);
+                            {displayItems.length > 0 ? (
+                                displayItems.map((item, index) => {
+                                    const imageUrl = item.imageUrl || item.image || item.productImage;
                                     
                                     return (
                                         <div key={index} className="order-item-detail">
                                             <div className="item-image">
                                                 {imageUrl ? (
-                                                    <CloudinaryImage 
-                                                        src={imageUrl}
+                                                    <img 
+                                                        src={imageUrl} 
                                                         alt={item.productName || 'Product'}
-                                                        width={100}
-                                                        height={100}
-                                                        crop="scale"
-                                                        quality="auto"
-                                                        format="auto"
                                                         className="order-item-img"
-                                                        responsive={true}
-                                                        mobileWidth={80}
-                                                        mobileHeight={80}
+                                                        onError={(e) => {
+                                                            e.target.onerror = null;
+                                                            e.target.src = '/placeholder-image.jpg';
+                                                        }}
                                                     />
                                                 ) : (
                                                     <div className="image-placeholder">
@@ -254,8 +255,11 @@ function OrderDetails() {
                                             </div>
                                             <div className="item-details">
                                                 <h3>{item.productName || 'Product'}</h3>
-                                                {item.size && (
-                                                    <p className="item-size">Size: {item.size}</p>
+                                                {(item.size || item.selectedSize) && (
+                                                    <p className="item-size">Size: {item.size || item.selectedSize}</p>
+                                                )}
+                                                {item.condition && (
+                                                    <p className="item-condition">Condition: {item.condition}</p>
                                                 )}
                                                 <p className="item-price">{formatPrice(item.price)}</p>
                                             </div>
@@ -263,7 +267,7 @@ function OrderDetails() {
                                                 <span>Qty: {item.quantity}</span>
                                             </div>
                                             <div className="item-total">
-                                                <span>{formatPrice(item.price * item.quantity)}</span>
+                                                <span>{formatPrice((item.price || 0) * (item.quantity || 1))}</span>
                                             </div>
                                         </div>
                                     );
