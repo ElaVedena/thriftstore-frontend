@@ -13,10 +13,11 @@ function ProfileInfo({ user, onEdit }) {
         wishlistCount: 0,
         reviewsCount: 0
     });
+    const [fullUserData, setFullUserData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     // Use user prop or authUser as fallback
-    const currentUser = user || authUser;
+    const currentUser = fullUserData || user || authUser;
     const userId = currentUser?.id;
 
     const formatDate = (dateString) => {
@@ -40,6 +41,27 @@ function ProfileInfo({ user, onEdit }) {
             maximumFractionDigits: 0
         }).format(amount);
     };
+
+    // Fetch full user profile from backend
+    useEffect(() => {
+        const fetchFullUserProfile = async () => {
+            if (!userId) {
+                setIsLoading(false);
+                return;
+            }
+            
+            try {
+                const profileResponse = await userService.getProfile();
+                if (profileResponse.success) {
+                    setFullUserData(profileResponse.data);
+                }
+            } catch (error) {
+                console.error('Error fetching full user profile:', error);
+            }
+        };
+
+        fetchFullUserProfile();
+    }, [userId]);
 
     // Fetch user stats from backend
     useEffect(() => {
@@ -100,9 +122,13 @@ function ProfileInfo({ user, onEdit }) {
                 <div className="profile-title">
                     <h2>{currentUser?.name || 'User'}</h2>
                     <p className="profile-email">{currentUser?.email}</p>
-                    {currentUser?.phone && (
+                    {currentUser?.phone ? (
                         <p className="profile-phone">
                             <i className="fas fa-phone-alt"></i> {currentUser?.phone}
+                        </p>
+                    ) : (
+                        <p className="profile-phone not-provided">
+                            <i className="fas fa-phone-alt"></i> No phone number added
                         </p>
                     )}
                     {currentUser?.role === 'ADMIN' && (
