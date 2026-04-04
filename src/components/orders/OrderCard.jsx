@@ -10,7 +10,10 @@ function OrderCard({ order }) {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showReviewModal, setShowReviewModal] = useState(false);
 
-    const formatPrice = (price) => `KSh ${(price || 0).toFixed(2)}`;
+    const formatPrice = (price) => `KSh ${(price || 0).toLocaleString('en-KE', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    })}`;
 
     const getDisplayStatus = (status) => {
         if (!status) return 'pending';
@@ -19,9 +22,6 @@ function OrderCard({ order }) {
 
     // Helper to get the correct image source from different possible field names
     const getItemImageSrc = (item) => {
-        console.log('Getting image for item:', item);
-        
-       
         const possibleFields = [
             item.imageUrl,
             item.image,
@@ -33,23 +33,14 @@ function OrderCard({ order }) {
             item.product?.image
         ];
         
-        // Find the first valid image source
         const imageSrc = possibleFields.find(field => field != null && field !== '');
         
-        if (imageSrc) {
-            console.log('Found image URL:', imageSrc);
-            
-            // If it's a relative path, make sure it has the full URL
-            if (imageSrc.startsWith('/')) {
-                const baseUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8080';
-                return baseUrl + imageSrc;
-            }
-            
-            return imageSrc;
+        if (imageSrc && imageSrc.startsWith('/')) {
+            const baseUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8080';
+            return baseUrl + imageSrc;
         }
         
-        console.log('No image URL found in item:', item);
-        return null;
+        return imageSrc || null;
     };
 
     // Helper to extract product ID from different possible field names
@@ -63,14 +54,10 @@ function OrderCard({ order }) {
             item.product?.productId
         ];
         
-        const productId = possibleIdFields.find(id => id != null);
-        console.log('Extracted product ID:', productId, 'from item:', item);
-        return productId;
+        return possibleIdFields.find(id => id != null);
     };
 
     const handleReviewClick = (item) => {
-        console.log('Review clicked for item:', item);
-        
         const productId = getProductId(item);
         
         if (!productId) {
@@ -85,19 +72,16 @@ function OrderCard({ order }) {
             productImage: getItemImageSrc(item)
         };
         
-        console.log('Setting selected product:', selectedProduct);
         setSelectedProduct(selectedProduct);
         setShowReviewModal(true);
     };
 
     const handleReviewSubmitted = (review) => {
-        console.log('Review submitted:', review);
         setShowReviewModal(false);
         setSelectedProduct(null);
     };
 
     const handleCloseModal = () => {
-        console.log('Closing modal');
         setShowReviewModal(false);
         setSelectedProduct(null);
     };
@@ -134,8 +118,14 @@ function OrderCard({ order }) {
                                     alt={item.productName || item.name || 'Product'}
                                     width={100}
                                     height={100}
+                                    crop="scale"
+                                    quality="auto"
+                                    format="auto"
                                     className="order-item-img"
                                     fallback="/placeholder-image.jpg"
+                                    responsive={true}
+                                    mobileWidth={80}
+                                    mobileHeight={80}
                                 />
                                 {item.quantity > 1 && (
                                     <span className="item-quantity">{item.quantity}</span>
@@ -182,7 +172,6 @@ function OrderCard({ order }) {
                             </button>
                         )}
                         
-                        {/* Track button*/}
                         {(getDisplayStatus(order.status) === 'pending' || 
                           getDisplayStatus(order.status) === 'processing' ||
                           getDisplayStatus(order.status) === 'shipped') && (
