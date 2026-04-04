@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { orderService } from '../services/orderService';
 import OrderStatusBadge from '../components/orders/OrderStatusBadge';
 import OrderTimeline from '../components/orders/OrderTimeline';
+import CloudinaryImage from '../components/common/CloudinaryImage';
 import { formatDate } from '../utils/dateUtils';
 import '../components/css/OrderDetails.css';
 
@@ -22,37 +23,18 @@ function OrderDetails() {
         if (!url) return null;
         if (url.startsWith('http')) return url;
         
-        return `http://localhost:8080${url.startsWith('/') ? url : '/' + url}`;
+        // For production, use the API URL
+        const baseUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://thriftstore-backend-production.up.railway.app';
+        return `${baseUrl}${url.startsWith('/') ? url : '/' + url}`;
     };
 
     const loadOrderDetails = async () => {
         setLoading(true);
         try {
             const orderRes = await orderService.getOrderById(orderId);
-
-            console.log('========== ORDER DETAILS DEBUG ==========');
-            console.log('Raw order response:', orderRes);
             
             if (orderRes.success) {
-                // Handle nested response structure
                 const orderData = orderRes.data?.data || orderRes.data;
-                console.log('Order data:', orderData);
-                
-                // Log items specifically
-                if (orderData.items) {
-                    console.log('Order items count:', orderData.items.length);
-                    orderData.items.forEach((item, index) => {
-                        console.log(`Item ${index}:`, {
-                            productName: item.productName,
-                            imageUrl: item.imageUrl,
-                            allKeys: Object.keys(item),
-                            fullItem: item
-                        });
-                    });
-                } else {
-                    console.log('No items found in order');
-                }
-                
                 setOrder(orderData);
                 
                 if (orderData) {
@@ -66,11 +48,9 @@ function OrderDetails() {
         }
     };
 
-    // Generate timeline from order data
     const generateTimeline = (orderData) => {
         const timelineEvents = [];
         
-        // Order placed
         if (orderData.createdAt) {
             timelineEvents.push({
                 status: 'Order Placed',
@@ -81,7 +61,6 @@ function OrderDetails() {
             });
         }
         
-        // Payment confirmed
         if (orderData.status === 'PAID' || orderData.status === 'PROCESSING' || 
             orderData.status === 'SHIPPED' || orderData.status === 'DELIVERED') {
             timelineEvents.push({
@@ -96,7 +75,6 @@ function OrderDetails() {
             });
         }
         
-        // Processing
         if (orderData.status === 'PROCESSING' || orderData.status === 'SHIPPED' || orderData.status === 'DELIVERED') {
             timelineEvents.push({
                 status: 'Processing',
@@ -107,7 +85,6 @@ function OrderDetails() {
             });
         }
         
-        // Shipped
         if (orderData.status === 'SHIPPED' || orderData.status === 'DELIVERED') {
             timelineEvents.push({
                 status: 'Shipped',
@@ -118,7 +95,6 @@ function OrderDetails() {
             });
         }
         
-        // Delivered
         if (orderData.status === 'DELIVERED') {
             timelineEvents.push({
                 status: 'Delivered',
@@ -129,7 +105,6 @@ function OrderDetails() {
             });
         }
         
-        // Cancelled or failed
         if (orderData.status === 'CANCELLED' || orderData.status === 'PAYMENT_FAILED') {
             timelineEvents.push({
                 status: orderData.status === 'CANCELLED' ? 'Cancelled' : 'Payment Failed',
@@ -141,7 +116,6 @@ function OrderDetails() {
             });
         }
         
-        // Mark the last event as active
         if (timelineEvents.length > 0) {
             timelineEvents[timelineEvents.length - 1].active = true;
         }
@@ -169,22 +143,10 @@ function OrderDetails() {
         alert('Tracking information will be available once your order has been shipped.');
     };
 
-    const handleImageError = (e, item) => {
-        console.log('Image failed to load:', {
-            src: e.target.src,
-            item: item?.productName,
-            imageUrl: item?.imageUrl
-        });
-        e.target.onerror = null;
-        // Try different fallback strategies
-        if (!e.target.src.includes('placekitten')) {
-            e.target.src = 'https://via.placeholder.com/80x80?text=No+Image';
-        } else {
-            e.target.src = '/placeholder-image.jpg';
-        }
-    };
-
-    const formatPrice = (price) => `KSh ${(price || 0).toFixed(2)}`;
+    const formatPrice = (price) => `KSh ${(price || 0).toLocaleString('en-KE', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    })}`;
 
     if (loading) {
         return (
@@ -223,39 +185,35 @@ function OrderDetails() {
 
             <div className="order-details-grid">
                 <div className="order-main">
-                    {/* Order Timeline */}
                     <div className="order-section">
                         <h2>Order Status</h2>
                         <OrderTimeline timeline={timeline} currentStatus={order.status} />
                     </div>
 
-                    {/* Order Items */}
                     <div className="order-section">
                         <h2>Order Items</h2>
                         <div className="order-items-list">
                             {order.items && order.items.length > 0 ? (
                                 order.items.map((item, index) => {
-                                    console.log(`Rendering item ${index}:`, {
-                                        name: item.productName,
-                                        imageUrl: item.imageUrl,
-                                        fullImageUrl: getFullImageUrl(item.imageUrl)
-                                    });
+                                    const imageUrl = item.imageUrl || item.image;
                                     
                                     return (
                                         <div key={index} className="order-item-detail">
                                             <div className="item-image">
-                                                {item.imageUrl ? (
-                                                    <img 
-                                                        src={getFullImageUrl(item.imageUrl)} 
-                                                        alt={item.productName || 'Product'}
-                                                        onError={(e) => handleImageError(e, item)}
-                                                        onLoad={() => console.log('Image loaded:', item.imageUrl)}
-                                                    />
-                                                ) : (
-                                                    <div className="placeholder-image">
-                                                        <i className="fas fa-image"></i>
-                                                    </div>
-                                                )}
+                                                <CloudinaryImage 
+                                                    src={imageUrl}
+                                                    alt={item.productName || 'Product'}
+                                                    width={100}
+                                                    height={100}
+                                                    crop="scale"
+                                                    quality="auto"
+                                                    format="auto"
+                                                    className="order-item-img"
+                                                    fallback="/placeholder-image.jpg"
+                                                    responsive={true}
+                                                    mobileWidth={80}
+                                                    mobileHeight={80}
+                                                />
                                             </div>
                                             <div className="item-details">
                                                 <h3>{item.productName || 'Product'}</h3>
@@ -279,7 +237,6 @@ function OrderDetails() {
                         </div>
                     </div>
 
-                    {/* Order Summary */}
                     <div className="order-section">
                         <h2>Order Summary</h2>
                         <div className="order-summary-details">
@@ -298,7 +255,6 @@ function OrderDetails() {
                         </div>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="order-actions-section">
                         {(order.status === 'PENDING' || order.status === 'PENDING_PAYMENT' || order.status === 'PROCESSING') && (
                             <button
@@ -339,7 +295,6 @@ function OrderDetails() {
                 </div>
 
                 <div className="order-sidebar">
-                    {/* Shipping Information */}
                     <div className="sidebar-section">
                         <h3>Shipping Information</h3>
                         <div className="shipping-details">
@@ -349,7 +304,6 @@ function OrderDetails() {
                         </div>
                     </div>
 
-                    {/* Payment Information */}
                     <div className="sidebar-section">
                         <h3>Payment Information</h3>
                         <div className="payment-details">
@@ -370,7 +324,6 @@ function OrderDetails() {
                         </div>
                     </div>
 
-                    {/* Need Help? */}
                     <div className="sidebar-section help-section">
                         <h3>Need Help?</h3>
                         <p>If you have any questions about your order, contact our support team.</p>
