@@ -32,6 +32,13 @@ function AddProduct() {
     const [useCustomCategory, setUseCustomCategory] = useState(false);
     const [useCustomSize, setUseCustomSize] = useState(false);
 
+    // Image processing settings
+    const [imageSettings, setImageSettings] = useState({
+        removeBackground: false,
+        quality: 80,
+        resizeWidth: 800
+    });
+
     const categories = [
         'jackets', 'pants', 'dresses', 'shoes', 'accessories', 
         'sweaters', 'skirts', 't-shirts', 'shirts'
@@ -134,6 +141,10 @@ function AddProduct() {
             ...prev,
             availableSizes: prev.availableSizes.filter(s => s !== sizeToRemove)
         }));
+    };
+
+    const handleImageSettingsChange = (settings) => {
+        setImageSettings(settings);
     };
 
     const handleSubmit = async (e) => {
@@ -478,6 +489,50 @@ function AddProduct() {
 
                     <div className="form-section">
                         <h2>Product Images</h2>
+                        
+                        {/* Image Processing Settings */}
+                        <div className="image-processing-settings">
+                            <h3>Image Processing Options</h3>
+                            <div className="settings-grid">
+                                <div className="setting-item">
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={imageSettings.removeBackground}
+                                            onChange={(e) => setImageSettings(prev => ({ ...prev, removeBackground: e.target.checked }))}
+                                        />
+                                        Remove Background (AI)
+                                    </label>
+                                    <small>Automatically removes image background using AI</small>
+                                </div>
+
+                                <div className="setting-item">
+                                    <label>Image Quality: {imageSettings.quality}%</label>
+                                    <input
+                                        type="range"
+                                        min="10"
+                                        max="100"
+                                        value={imageSettings.quality}
+                                        onChange={(e) => setImageSettings(prev => ({ ...prev, quality: parseInt(e.target.value) }))}
+                                    />
+                                    <small>Lower quality = smaller file size</small>
+                                </div>
+
+                                <div className="setting-item">
+                                    <label>Resize Width: {imageSettings.resizeWidth}px</label>
+                                    <input
+                                        type="range"
+                                        min="200"
+                                        max="1200"
+                                        step="50"
+                                        value={imageSettings.resizeWidth}
+                                        onChange={(e) => setImageSettings(prev => ({ ...prev, resizeWidth: parseInt(e.target.value) }))}
+                                    />
+                                    <small>Images will be resized to this width</small>
+                                </div>
+                            </div>
+                        </div>
+
                         <ImageUpload
                             images={formData.images}
                             onImagesChange={(newImages) => {
@@ -485,9 +540,12 @@ function AddProduct() {
                                 setFormData(prev => ({ ...prev, images: newImages }));
                             }}
                             maxImages={5}
+                            removeBackground={imageSettings.removeBackground}
+                            imageQuality={imageSettings.quality}
+                            resizeWidth={imageSettings.resizeWidth}
                         />
                         {errors.images && <span className="error-message">{errors.images}</span>}
-                        <p className="field-hint">Upload up to 5 images. First image will be the main product image.</p>
+                        <p className="field-hint">Upload up to 5 images. First image will be the main product image. Use the settings above to optimize your images.</p>
                     </div>
 
                     <div className="form-actions">
