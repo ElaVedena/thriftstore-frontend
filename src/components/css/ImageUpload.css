@@ -2,6 +2,51 @@
     margin: 1rem 0;
 }
 
+/* Image Settings Panel */
+.image-settings {
+    background: #f8f5f6;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #f0f0f0;
+}
+
+.settings-group {
+    margin-bottom: 1rem;
+}
+
+.settings-group:last-child {
+    margin-bottom: 0;
+}
+
+.settings-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #2d2d2d;
+    margin-bottom: 0.3rem;
+}
+
+.settings-group input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    cursor: pointer;
+}
+
+.settings-group input[type="range"] {
+    width: 100%;
+    padding: 0;
+    cursor: pointer;
+}
+
+.settings-group small {
+    display: block;
+    font-size: 0.7rem;
+    color: #999;
+    margin-top: 0.2rem;
+}
+
 .image-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -15,11 +60,26 @@
     border-radius: 8px;
     overflow: hidden;
     border: 2px solid transparent;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, transform 0.2s ease;
+    cursor: grab;
+}
+
+.image-item:active {
+    cursor: grabbing;
+    transform: scale(0.98);
 }
 
 .image-item:hover {
     border-color: #CEABB1;
+}
+
+.image-item.uploading {
+    cursor: wait;
+    opacity: 0.8;
+}
+
+.image-item.uploading img {
+    filter: blur(2px);
 }
 
 .image-item img {
@@ -45,6 +105,7 @@
     font-size: 0.8rem;
     transition: all 0.3s ease;
     opacity: 0;
+    z-index: 3;
 }
 
 .image-item:hover .remove-image {
@@ -54,6 +115,11 @@
 .remove-image:hover {
     background: #ff4444;
     transform: scale(1.1);
+}
+
+.remove-image:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .image-actions {
@@ -66,6 +132,7 @@
     gap: 0.3rem;
     opacity: 0;
     transition: opacity 0.3s ease;
+    z-index: 3;
 }
 
 .image-item:hover .image-actions {
@@ -88,111 +155,6 @@
 
 .image-actions button:hover {
     background: #CEABB1;
-    color: white;
-}
-
-.upload-placeholder {
-    aspect-ratio: 1;
-    border: 2px dashed #ddd;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: #999;
-}
-
-.upload-placeholder:hover {
-    border-color: #CEABB1;
-    color: #CEABB1;
-}
-
-.upload-placeholder i {
-    font-size: 2rem;
-}
-
-.upload-placeholder span {
-    font-size: 0.9rem;
-}
-
-.upload-hint {
-    font-size: 0.85rem;
-    color: #999;
-    margin: 0.5rem 0 0;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-.upload-hint i {
-    color: #CEABB1;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .image-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 0.5rem;
-    }
-    
-    .remove-image,
-    .image-actions {
-        opacity: 1;
-    }
-    
-    .image-actions button {
-        width: 20px;
-        height: 20px;
-        font-size: 0.7rem;
-    }
-}
-
-.uploading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    border-radius: 8px;
-    z-index: 2;
-}
-
-.uploading-overlay i {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-}
-
-.uploading-overlay span {
-    font-size: 0.8rem;
-}
-
-.image-badge {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    z-index: 1;
-}
-
-.image-badge.existing {
-    background: #4caf50;
-    color: white;
-}
-
-.image-badge.new {
-    background: #2196f3;
     color: white;
 }
 
@@ -269,27 +231,232 @@
     margin-top: 0.2rem;
 }
 
+.upload-hint {
+    font-size: 0.85rem;
+    color: #999;
+    margin: 0.5rem 0 0;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+}
+
+.upload-hint i {
+    color: #CEABB1;
+}
+
 .image-count {
     font-weight: 600;
     color: #CEABB1;
 }
 
-.image-item {
-    position: relative;
-    cursor: grab;
-    transition: transform 0.2s ease;
+.uploading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border-radius: 8px;
+    z-index: 2;
 }
 
-.image-item:active {
-    cursor: grabbing;
-    transform: scale(0.98);
+.uploading-overlay i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
 }
 
-.image-item.uploading {
-    cursor: wait;
-    opacity: 0.8;
+.uploading-overlay span {
+    font-size: 0.8rem;
 }
 
-.image-item.uploading img {
-    filter: blur(2px);
+.image-badge {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.image-badge.existing {
+    background: #4caf50;
+    color: white;
+}
+
+.image-badge.new {
+    background: #2196f3;
+    color: white;
+}
+
+.image-badge.bg-removed {
+    background: #CEABB1;
+    bottom: auto;
+    top: 8px;
+    right: 8px;
+    left: auto;
+    font-size: 0.65rem;
+}
+
+.image-badge.bg-removed i {
+    font-size: 0.6rem;
+    margin-right: 0.2rem;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+
+/* Tablet (max-width: 768px) */
+@media (max-width: 768px) {
+    .image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 0.5rem;
+    }
+    
+    .remove-image,
+    .image-actions {
+        opacity: 1;
+    }
+    
+    .image-actions button {
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+    }
+    
+    .image-settings {
+        padding: 0.8rem;
+    }
+    
+    .settings-group label {
+        font-size: 0.85rem;
+    }
+    
+    .settings-group small {
+        font-size: 0.65rem;
+    }
+    
+    .upload-placeholder i {
+        font-size: 1.5rem;
+    }
+    
+    .upload-placeholder span {
+        font-size: 0.8rem;
+    }
+    
+    .upload-placeholder small {
+        font-size: 0.65rem;
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 0.4rem;
+    }
+    
+    .image-settings {
+        padding: 0.6rem;
+        margin-bottom: 1rem;
+    }
+    
+    .settings-group {
+        margin-bottom: 0.8rem;
+    }
+    
+    .settings-group label {
+        font-size: 0.8rem;
+    }
+    
+    .settings-group small {
+        font-size: 0.6rem;
+    }
+    
+    .remove-image {
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+    }
+    
+    .upload-placeholder {
+        padding: 0.5rem;
+    }
+    
+    .upload-placeholder i {
+        font-size: 1.2rem;
+    }
+    
+    .upload-placeholder span {
+        font-size: 0.7rem;
+    }
+    
+    .upload-placeholder small {
+        font-size: 0.6rem;
+    }
+    
+    .upload-hint {
+        font-size: 0.75rem;
+    }
+    
+    .image-badge {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.4rem;
+    }
+    
+    .image-badge.bg-removed {
+        font-size: 0.55rem;
+        top: 5px;
+        right: 5px;
+    }
+    
+    .uploading-overlay i {
+        font-size: 1.5rem;
+    }
+    
+    .uploading-overlay span {
+        font-size: 0.7rem;
+    }
+}
+
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 0.3rem;
+    }
+    
+    .image-settings {
+        padding: 0.5rem;
+    }
+    
+    .settings-group label {
+        font-size: 0.75rem;
+    }
+    
+    .upload-placeholder span {
+        font-size: 0.65rem;
+    }
+    
+    .upload-hint {
+        font-size: 0.7rem;
+    }
+}
+
+/* ===== DRAG AND DROP STYLES ===== */
+.image-item.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.image-item.drag-over {
+    border-color: #CEABB1;
+    border-style: dashed;
+    background: #f9f9f9;
 }
