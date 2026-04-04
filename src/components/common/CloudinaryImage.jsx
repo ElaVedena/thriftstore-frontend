@@ -24,11 +24,13 @@ function CloudinaryImage({
     const [hasError, setHasError] = useState(false);
     const [currentSrc, setCurrentSrc] = useState(src);
     const [isMobile, setIsMobile] = useState(false);
+    const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
     // Detect mobile screen size
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth <= 768);
+            setWindowWidth(window.innerWidth);
         };
         
         checkMobile();
@@ -38,6 +40,21 @@ function CloudinaryImage({
             window.removeEventListener('resize', checkMobile);
         };
     }, []);
+
+    // Calculate final dimensions
+    const getFinalDimensions = () => {
+        let finalWidth = width;
+        let finalHeight = height;
+        
+        if (responsive && isMobile && mobileWidth) {
+            finalWidth = mobileWidth;
+            finalHeight = mobileHeight || mobileWidth;
+        }
+        
+        return { finalWidth, finalHeight };
+    };
+
+    const { finalWidth, finalHeight } = getFinalDimensions();
 
     // Function to get optimized Cloudinary URL
     const getOptimizedUrl = () => {
@@ -58,36 +75,33 @@ function CloudinaryImage({
             publicId = publicId.replace(/^v\d+\//, '');
             
             // Determine dimensions based on device
-            let finalWidth = width;
-            let finalHeight = height;
+            let imgWidth = finalWidth;
+            let imgHeight = finalHeight;
             
             if (responsive && isMobile && mobileWidth) {
-                finalWidth = mobileWidth;
-                finalHeight = mobileHeight || mobileWidth;
+                imgWidth = mobileWidth;
+                imgHeight = mobileHeight || mobileWidth;
             }
             
             // Build transformations
             const transformations = [];
             
             // Size transformation - using c_scale (NO cropping)
-            if (finalWidth && finalHeight) {
-                transformations.push(`w_${finalWidth},h_${finalHeight},c_${crop}`);
-            } else if (finalWidth) {
-                transformations.push(`w_${finalWidth},c_${crop}`);
-            } else if (finalHeight) {
-                transformations.push(`h_${finalHeight},c_${crop}`);
+            if (imgWidth && imgHeight) {
+                transformations.push(`w_${imgWidth},h_${imgHeight},c_${crop}`);
+            } else if (imgWidth) {
+                transformations.push(`w_${imgWidth},c_${crop}`);
+            } else if (imgHeight) {
+                transformations.push(`h_${imgHeight},c_${crop}`);
             }
             
             // Quality and format
             transformations.push(`q_${quality},f_${format}`);
             
-            // Background removal
+            // Background removal - using correct Cloudinary syntax
             if (removeBackground) {
-                transformations.push('e_background_removal');
+                transformations.push('e_bgremoval');
             }
-            
-            // Auto DPR for retina displays
-            transformations.push('dpr_auto');
             
             const transformationString = transformations.join(',');
             
@@ -110,8 +124,8 @@ function CloudinaryImage({
             
             if (!publicId) return null;
             
-            const sizes = [120, 240, 360, 480, 600];
-            const srcSet = sizes.map(size => {
+            const sizeOptions = [120, 240, 360, 480, 600];
+            const srcSet = sizeOptions.map(size => {
                 return `${baseUrl}w_${size},h_${size},c_${crop},q_${quality},f_${format}/${publicId} ${size}w`;
             }).join(', ');
             
@@ -121,13 +135,13 @@ function CloudinaryImage({
         }
     };
 
-    const handleError = () => {
+    const handleImageError = () => {
         console.warn('Image failed to load:', src);
         setHasError(true);
         if (onError) onError();
     };
 
-    const handleLoad = () => {
+    const handleImageLoad = () => {
         setIsLoaded(true);
         if (onLoad) onLoad();
     };
@@ -147,9 +161,6 @@ function CloudinaryImage({
         );
     }
 
-    const finalWidth = responsive && isMobile && mobileWidth ? mobileWidth : width;
-    const finalHeight = responsive && isMobile && mobileHeight ? mobileHeight : height;
-
     return (
         <div className={`image-container ${className}`} style={{ width: finalWidth, height: finalHeight }}>
             {!isLoaded && (
@@ -164,9 +175,9 @@ function CloudinaryImage({
                 alt={alt}
                 className={`image ${isLoaded ? 'loaded' : 'loading'}`}
                 loading={priority ? 'eager' : (lazy ? 'lazy' : 'eager')}
-                onLoad={handleLoad}
-                onError={handleError}
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                onLoad={handleImageLoad}
+                onError={handleImageError}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 {...props}
             />
         </div>
