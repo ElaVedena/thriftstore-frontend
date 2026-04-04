@@ -5,7 +5,7 @@
     padding: 0;
 }
 
-/* ===== HERO SECTION - Desktop design with text on left ===== */
+/* ===== HERO SECTION - Desktop design with text on LEFT and DARK GRADIENT ===== */
 .hero {
     position: relative;
     width: 100%;
@@ -30,12 +30,12 @@
     z-index: -2;
 }
 
-/* Desktop gradient - white gradient from left (kept as original) */
+/* Desktop gradient - DARK gradient from left (same as mobile style) */
 .hero::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.3) 40%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
     z-index: -1;
     pointer-events: none;
 }
@@ -47,16 +47,16 @@
     padding: 2rem 4rem;
     animation: fadeInLeft 1s ease-out;
     text-align: left;
-    margin-left: 8%;
+    margin-left: 5%;
 }
 
 .hero-content h1 {
-    font-size: 4rem;
+    font-size: 3.5rem;
     margin-bottom: 1.5rem;
     font-weight: 700;
     letter-spacing: 1px;
-    color: #2B1F22;
-    text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.35);
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .hero-content h1 span {
@@ -64,18 +64,18 @@
 }
 
 .hero-content p {
-    font-size: 1.5rem;
-    margin-bottom: 2.5rem;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
     line-height: 1.6;
     font-weight: 400;
-    text-shadow: 1px 2px 6px rgba(0, 0, 0, 0.3);
-    color: #4A3A3D;
-    max-width: 550px;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    color: white;
+    max-width: 500px;
 }
 
 .hero-content .btn {
-    padding: 1.2rem 3rem;
-    font-size: 1.2rem;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: white;
     background-color: #CEABB1;
@@ -300,11 +300,16 @@
 /* ===== RESPONSIVE BREAKPOINTS ===== */
 @media (max-width: 1200px) {
     .hero-content h1 {
-        font-size: 3.5rem;
+        font-size: 3rem;
     }
     
     .hero-content {
-        margin-left: 6%;
+        margin-left: 4%;
+        padding: 1.5rem 3rem;
+    }
+    
+    .hero-content p {
+        font-size: 1.1rem;
     }
     
     .product-grid,
@@ -319,21 +324,22 @@
     }
     
     .hero-content {
-        margin-left: 5%;
-        padding: 2rem;
+        margin-left: 3%;
+        padding: 1.5rem;
     }
     
     .hero-content h1 {
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
     
     .hero-content p {
-        font-size: 1.3rem;
-        max-width: 450px;
+        font-size: 1rem;
+        max-width: 400px;
     }
     
-    .hero::after {
-        background: linear-gradient(90deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%);
+    .hero-content .btn {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
     }
     
     .product-grid,
@@ -360,7 +366,7 @@
     }
 }
 
-/* ===== MOBILE HERO - Text at bottom (kept as is) ===== */
+/* ===== MOBILE HERO - Text at bottom ===== */
 @media (max-width: 768px) {
     .hero {
         min-height: 500px;
@@ -370,7 +376,7 @@
     
     /* Gradient from bottom for better text readability */
     .hero::after {
-        background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%) !important;
+        background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%) !important;
     }
     
     .hero-content {
