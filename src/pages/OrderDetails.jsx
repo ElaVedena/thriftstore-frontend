@@ -19,13 +19,34 @@ function OrderDetails() {
         loadOrderDetails();
     }, [orderId]);
 
-    const getFullImageUrl = (url) => {
-        if (!url) return null;
-        if (url.startsWith('http')) return url;
+    // Helper function to get the correct image URL
+    const getImageUrl = (item) => {
+        // Check multiple possible fields for image URL
+        const imageUrl = item.imageUrl || item.image || item.productImage || item.mainImage;
         
-        // For production, use the API URL
-        const baseUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://thriftstore-backend-production.up.railway.app';
-        return `${baseUrl}${url.startsWith('/') ? url : '/' + url}`;
+        if (!imageUrl) {
+            console.log('No image URL found for item:', item);
+            return null;
+        }
+        
+        // If it's already a full Cloudinary URL, return as-is
+        if (imageUrl.includes('cloudinary.com') || imageUrl.includes('res.cloudinary.com')) {
+            return imageUrl;
+        }
+        
+        // If it's a relative path, construct the full URL
+        if (imageUrl.startsWith('/')) {
+            const baseUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://thriftstore-backend-production.up.railway.app';
+            return `${baseUrl}${imageUrl}`;
+        }
+        
+        // If it's a local path without leading slash
+        if (!imageUrl.startsWith('http')) {
+            const baseUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://thriftstore-backend-production.up.railway.app';
+            return `${baseUrl}/${imageUrl}`;
+        }
+        
+        return imageUrl;
     };
 
     const loadOrderDetails = async () => {
@@ -35,6 +56,17 @@ function OrderDetails() {
             
             if (orderRes.success) {
                 const orderData = orderRes.data?.data || orderRes.data;
+                
+                // Log to debug image URLs
+                if (orderData?.items) {
+                    console.log('Order items with images:', orderData.items.map(item => ({
+                        name: item.productName,
+                        imageUrl: item.imageUrl,
+                        image: item.image,
+                        productImage: item.productImage
+                    })));
+                }
+                
                 setOrder(orderData);
                 
                 if (orderData) {
@@ -195,25 +227,30 @@ function OrderDetails() {
                         <div className="order-items-list">
                             {order.items && order.items.length > 0 ? (
                                 order.items.map((item, index) => {
-                                    const imageUrl = item.imageUrl || item.image;
+                                    const imageUrl = getImageUrl(item);
                                     
                                     return (
                                         <div key={index} className="order-item-detail">
                                             <div className="item-image">
-                                                <CloudinaryImage 
-                                                    src={imageUrl}
-                                                    alt={item.productName || 'Product'}
-                                                    width={100}
-                                                    height={100}
-                                                    crop="scale"
-                                                    quality="auto"
-                                                    format="auto"
-                                                    className="order-item-img"
-                                                    fallback="/placeholder-image.jpg"
-                                                    responsive={true}
-                                                    mobileWidth={80}
-                                                    mobileHeight={80}
-                                                />
+                                                {imageUrl ? (
+                                                    <CloudinaryImage 
+                                                        src={imageUrl}
+                                                        alt={item.productName || 'Product'}
+                                                        width={100}
+                                                        height={100}
+                                                        crop="scale"
+                                                        quality="auto"
+                                                        format="auto"
+                                                        className="order-item-img"
+                                                        responsive={true}
+                                                        mobileWidth={80}
+                                                        mobileHeight={80}
+                                                    />
+                                                ) : (
+                                                    <div className="image-placeholder">
+                                                        <i className="fas fa-image"></i>
+                                                    </div>
+                                                )}
                                             </div>
                                             <div className="item-details">
                                                 <h3>{item.productName || 'Product'}</h3>
