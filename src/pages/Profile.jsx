@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { userService } from '../services/userService';
 import { useNotification } from '../hooks/useNotification';
@@ -11,6 +11,25 @@ function Profile() {
     const { showSuccess, showError, showInfo } = useNotification();
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [fullUserData, setFullUserData] = useState(null);
+
+    // Fetch full user data from backend
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await userService.getProfile();
+                if (response.success) {
+                    setFullUserData(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+        fetchUserData();
+    }, []);
+
+    // Use fetched data or fallback to auth user
+    const currentUser = fullUserData || user;
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -30,14 +49,16 @@ function Profile() {
         try {
             const result = await userService.updateProfile({
                 name: formData.name,
+                email: formData.email,
                 phone: formData.phone
             });
             
             if (result.success) {
                 // Update user in context
                 updateUser({
-                    ...user,
+                    ...currentUser,
                     name: formData.name,
+                    email: formData.email,
                     phone: formData.phone
                 });
                 
@@ -46,6 +67,12 @@ function Profile() {
                     duration: 3000
                 });
                 setIsEditing(false);
+                
+                // Refresh user data
+                const refreshResponse = await userService.getProfile();
+                if (refreshResponse.success) {
+                    setFullUserData(refreshResponse.data);
+                }
             } else {
                 showError(result.message || 'Failed to update profile');
             }
@@ -59,7 +86,6 @@ function Profile() {
 
     const handlePasswordChange = async (passwordData) => {
         try {
-            // Validate passwords match
             if (passwordData.newPassword !== passwordData.confirmPassword) {
                 showError('New passwords do not match');
                 return;
@@ -88,16 +114,6 @@ function Profile() {
         }
     };
 
-    // Fetch real user stats from backend 
-    const enhancedUser = {
-        ...user,
-        totalOrders: 12, 
-        totalSpent: 24500,
-        wishlistCount: 8,
-        reviewsCount: 5,
-        createdAt: user?.createdAt || '2024-01-15T10:30:00Z'
-    };
-
     return (
         <div className="profile-page">
             <div className="profile-header">
@@ -106,7 +122,7 @@ function Profile() {
 
             {isEditing ? (
                 <ProfileForm
-                    user={enhancedUser}
+                    user={currentUser}
                     onSubmit={handleSubmit}
                     onCancel={handleCancel}
                     onPasswordChange={handlePasswordChange}
@@ -114,7 +130,7 @@ function Profile() {
                 />
             ) : (
                 <ProfileInfo
-                    user={enhancedUser}
+                    user={currentUser}
                     onEdit={handleEdit}
                 />
             )}
