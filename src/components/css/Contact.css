@@ -1,6 +1,6 @@
 /* pages/Contact.css - Modern & Fun Redesign */
 .contact-page {
-    min-height: 100vh;
+    min-height: calc(100vh - var(--navbar-height));
     background: linear-gradient(135deg, #fff5f7 0%, #ffffff 100%);
 }
 
@@ -280,6 +280,14 @@
     box-shadow: 0 0 0 4px rgba(206, 171, 177, 0.1);
 }
 
+.validation-error {
+    display: block;
+    color: #dc3545;
+    font-size: 0.75rem;
+    margin-top: 5px;
+    margin-left: 15px;
+}
+
 .submit-fun-btn {
     background: linear-gradient(135deg, #CEABB1, #b88e96);
     color: white;
@@ -425,10 +433,13 @@
     }
 }
 
-/* Responsive */
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Tablet (max-width: 968px) */
 @media (max-width: 968px) {
     .contact-grid {
         grid-template-columns: 1fr;
+        gap: 40px;
     }
     
     .contact-fun-side {
@@ -438,61 +449,324 @@
     .contact-form-wrapper {
         order: 1;
     }
+    
+    .hero-content h1 {
+        font-size: 3rem;
+    }
+    
+    .fun-card {
+        padding: 25px;
+    }
 }
 
+/* Mobile (max-width: 768px) */
 @media (max-width: 768px) {
+    .contact-hero {
+        padding: 50px 16px;
+    }
+    
     .hero-content h1 {
-        font-size: 2.5rem;
-    }
-    
-    .quote-bubble {
-        padding: 20px;
-        border-radius: 30px;
-    }
-    
-    .quote-bubble p {
-        font-size: 1rem;
-    }
-    
-    .contact-form-wrapper {
-        padding: 30px 20px;
-    }
-    
-    .form-header h2 {
-        font-size: 1.8rem;
-    }
-    
-    .contact-info-bar {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .info-item {
-        justify-content: center;
-        text-align: center;
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-content h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
     }
     
     .hero-content p {
         font-size: 1rem;
     }
     
+    .hero-badge {
+        font-size: 0.75rem;
+        padding: 6px 16px;
+    }
+    
+    .contact-container {
+        padding: 40px 16px;
+    }
+    
+    .quote-section {
+        margin-bottom: 40px;
+    }
+    
+    .quote-bubble {
+        padding: 20px 25px;
+        border-radius: 30px 30px 30px 20px;
+    }
+    
+    .quote-bubble i {
+        font-size: 1.5rem;
+    }
+    
+    .quote-bubble p {
+        font-size: 1rem;
+    }
+    
+    .quote-author {
+        font-size: 0.85rem;
+    }
+    
+    .contact-form-wrapper {
+        padding: 25px 20px;
+        border-radius: 30px;
+    }
+    
+    .form-header h2 {
+        font-size: 1.6rem;
+    }
+    
+    .form-header p {
+        font-size: 0.9rem;
+    }
+    
     .fun-card {
         padding: 20px;
+        border-radius: 25px;
+    }
+    
+    .fun-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 16px;
+    }
+    
+    .fun-icon i {
+        font-size: 1.5rem;
+    }
+    
+    .fun-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    .fun-card p {
+        font-size: 0.85rem;
+    }
+    
+    .fun-stats {
+        font-size: 0.75rem;
+        padding: 4px 12px;
     }
     
     .input-group input,
     .input-group textarea {
         padding: 12px 12px 12px 40px;
+        font-size: 0.9rem;
+        border-radius: 12px;
+    }
+    
+    .input-icon {
+        font-size: 0.9rem;
+        left: 12px;
+    }
+    
+    .validation-error {
+        font-size: 0.7rem;
     }
     
     .submit-fun-btn {
-        padding: 14px;
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+    
+    .form-footer p {
+        font-size: 0.85rem;
+    }
+    
+    .social-fun a {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .social-fun a i {
+        font-size: 0.9rem;
+    }
+    
+    .contact-info-bar {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+        border-radius: 25px;
+    }
+    
+    .info-item {
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .info-item i {
+        font-size: 1.5rem;
+    }
+    
+    .info-item h4 {
+        font-size: 0.9rem;
+    }
+    
+    .info-item p {
+        font-size: 0.85rem;
+    }
+    
+    .alert-fun {
+        padding: 12px 16px;
+        gap: 10px;
+    }
+    
+    .alert-fun i {
+        font-size: 1.2rem;
+    }
+    
+    .alert-fun strong {
+        font-size: 0.9rem;
+    }
+    
+    .alert-fun p {
+        font-size: 0.8rem;
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .contact-hero {
+        padding: 40px 12px;
+    }
+    
+    .hero-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    .hero-content p {
+        font-size: 0.9rem;
+    }
+    
+    .hero-badge {
+        font-size: 0.7rem;
+        padding: 5px 12px;
+        margin-bottom: 15px;
+    }
+    
+    .contact-container {
+        padding: 30px 12px;
+    }
+    
+    .quote-bubble {
+        padding: 15px 20px;
+    }
+    
+    .quote-bubble p {
+        font-size: 0.9rem;
+    }
+    
+    .contact-form-wrapper {
+        padding: 20px 15px;
+        border-radius: 25px;
+    }
+    
+    .form-header h2 {
+        font-size: 1.4rem;
+    }
+    
+    .form-header p {
+        font-size: 0.85rem;
+    }
+    
+    .fun-card {
+        padding: 16px;
+        border-radius: 20px;
+    }
+    
+    .fun-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 14px;
+        margin-bottom: 15px;
+    }
+    
+    .fun-icon i {
+        font-size: 1.3rem;
+    }
+    
+    .fun-card h3 {
+        font-size: 1rem;
+    }
+    
+    .fun-card p {
+        font-size: 0.8rem;
+    }
+    
+    .fun-stats {
+        font-size: 0.7rem;
+    }
+    
+    .input-group input,
+    .input-group textarea {
+        padding: 10px 10px 10px 35px;
+        font-size: 0.85rem;
+        border-radius: 10px;
+    }
+    
+    .input-icon {
+        font-size: 0.85rem;
+        left: 10px;
+    }
+    
+    .validation-error {
+        font-size: 0.65rem;
+    }
+    
+    .submit-fun-btn {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+    
+    .form-footer p {
+        font-size: 0.8rem;
+    }
+    
+    .social-fun a {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .social-fun a i {
+        font-size: 0.85rem;
+    }
+    
+    .contact-info-bar {
+        padding: 16px;
+        gap: 16px;
+        border-radius: 20px;
+    }
+    
+    .info-item i {
+        font-size: 1.3rem;
+    }
+    
+    .info-item h4 {
+        font-size: 0.85rem;
+    }
+    
+    .info-item p {
+        font-size: 0.8rem;
+    }
+}
+
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .hero-content h1 {
+        font-size: 1.5rem;
+    }
+    
+    .hero-content p {
+        font-size: 0.85rem;
+    }
+    
+    .form-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .fun-card h3 {
+        font-size: 0.95rem;
+    }
+    
+    .submit-fun-btn {
+        font-size: 0.8rem;
     }
 }
