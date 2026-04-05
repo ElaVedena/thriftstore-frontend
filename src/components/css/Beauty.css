@@ -1,6 +1,6 @@
 /* pages/Beauty.css */
 .beauty-page {
-    min-height: 100vh;
+    min-height: calc(100vh - var(--navbar-height));
     background: #fafafa;
 }
 
@@ -642,24 +642,35 @@
     margin-bottom: 1rem;
 }
 
-/* Responsive */
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Tablet (max-width: 1024px) */
 @media (max-width: 1024px) {
     .recommend-section {
         grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem 1.5rem;
     }
     
     .recommend-filters {
         position: static;
+        padding: 1.5rem;
     }
     
     .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .beauty-hero h1 {
+        font-size: 2.5rem;
     }
 }
 
+/* Mobile (max-width: 768px) */
 @media (max-width: 768px) {
     .beauty-hero {
-        min-height: 400px;
+        min-height: 350px;
     }
     
     .beauty-hero h1 {
@@ -670,46 +681,389 @@
         font-size: 1rem;
     }
     
+    .beauty-hero-content {
+        padding: 1.5rem;
+    }
+    
     .beauty-tabs {
         gap: 0.5rem;
+        padding: 1rem;
     }
     
     .tab-btn {
         padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .tab-btn i {
+        font-size: 0.9rem;
+    }
+    
+    .recommend-section {
+        padding: 1.5rem 1rem;
+        gap: 1.5rem;
+    }
+    
+    .recommend-filters {
+        padding: 1.2rem;
+        border-radius: 12px;
+    }
+    
+    .filter-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .filter-group h3 {
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .skin-type-grid {
+        gap: 0.6rem;
+    }
+    
+    .filter-card {
+        padding: 0.6rem;
+    }
+    
+    .filter-card i {
+        font-size: 1rem;
+    }
+    
+    .filter-card .filter-label {
         font-size: 0.85rem;
     }
     
+    .filter-card .filter-desc {
+        font-size: 0.7rem;
+    }
+    
+    .filter-chip {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
+    }
+    
+    .filter-chip i {
+        font-size: 0.8rem;
+    }
+    
+    .coverage-grid {
+        gap: 0.6rem;
+    }
+    
+    .coverage-card {
+        padding: 0.6rem;
+    }
+    
+    .coverage-card .coverage-label {
+        font-size: 0.85rem;
+    }
+    
+    .coverage-card .coverage-desc {
+        font-size: 0.65rem;
+    }
+    
+    .finish-grid {
+        gap: 0.6rem;
+    }
+    
+    .finish-card {
+        padding: 0.7rem;
+    }
+    
+    .finish-card i {
+        font-size: 1.2rem;
+    }
+    
+    .finish-card span {
+        font-size: 0.75rem;
+    }
+    
+    .get-recommendations-btn {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .recommendations-results {
+        padding: 1.2rem;
+        border-radius: 12px;
+    }
+    
+    .recommendations-results h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+    
     .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+    
+    .product-card img {
+        height: 200px;
+    }
+    
+    .product-info {
+        padding: 0.8rem;
+    }
+    
+    .product-info h3 {
+        font-size: 0.9rem;
+    }
+    
+    .product-price {
+        font-size: 0.85rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .view-product-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+    }
+    
+    /* Quiz Section Mobile */
+    .quiz-section {
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .quiz-container {
+        padding: 1.5rem;
+        border-radius: 12px;
+    }
+    
+    .quiz-container h2 {
+        font-size: 1.5rem;
+    }
+    
+    .quiz-container p {
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .quiz-question label {
+        font-size: 0.9rem;
     }
     
     .quiz-options {
         flex-direction: column;
+        gap: 0.6rem;
     }
     
-    .coverage-grid {
-        grid-template-columns: 1fr;
+    .quiz-option {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
     }
     
-    .finish-grid {
+    .quiz-submit-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Shade Finder Mobile */
+    .shade-finder-section {
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .shade-finder-container {
+        padding: 1.5rem;
+        border-radius: 12px;
+    }
+    
+    .shade-finder-container h2 {
+        font-size: 1.5rem;
+    }
+    
+    .shade-finder-container p {
+        font-size: 0.9rem;
+    }
+    
+    .upload-placeholder {
+        padding: 2rem;
+    }
+    
+    .upload-placeholder i {
+        font-size: 2rem;
+    }
+    
+    .upload-placeholder p {
+        font-size: 0.9rem;
+    }
+    
+    .skin-tone-badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .foundation-match-card {
         flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .foundation-match-card img {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .match-info h4 {
+        font-size: 0.9rem;
+    }
+    
+    /* All Beauty Mobile */
+    .all-beauty-section {
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .beauty-header h2 {
+        font-size: 1.6rem;
+    }
+    
+    .beauty-header p {
+        font-size: 0.85rem;
     }
 }
 
+/* Small Mobile (max-width: 480px) */
 @media (max-width: 480px) {
     .beauty-hero {
-        min-height: 350px;
+        min-height: 300px;
     }
     
     .beauty-hero h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+    }
+    
+    .beauty-hero p {
+        font-size: 0.85rem;
+    }
+    
+    .beauty-hero-content {
+        padding: 1rem;
+    }
+    
+    .tab-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.7rem;
+    }
+    
+    .tab-btn i {
+        font-size: 0.8rem;
     }
     
     .recommend-section {
-        padding: 2rem 1rem;
+        padding: 1rem;
+    }
+    
+    .recommend-filters {
+        padding: 1rem;
+    }
+    
+    .filter-group h3 {
+        font-size: 0.9rem;
+    }
+    
+    .filter-card {
+        padding: 0.5rem;
+    }
+    
+    .filter-card .filter-label {
+        font-size: 0.8rem;
+    }
+    
+    .filter-chip {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.7rem;
+    }
+    
+    .coverage-card .coverage-label {
+        font-size: 0.8rem;
+    }
+    
+    .finish-card span {
+        font-size: 0.7rem;
     }
     
     .products-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .product-card img {
+        height: 220px;
+    }
+    
+    .recommendations-results h2 {
+        font-size: 1.2rem;
+    }
+    
+    .quiz-container h2 {
+        font-size: 1.3rem;
+    }
+    
+    .shade-finder-container h2 {
+        font-size: 1.3rem;
+    }
+    
+    .beauty-header h2 {
+        font-size: 1.4rem;
+    }
+    
+    .empty-state {
+        padding: 2rem;
+    }
+    
+    .empty-state i {
+        font-size: 2rem;
+    }
+    
+    .empty-state p {
+        font-size: 0.85rem;
+    }
+}
+
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .beauty-hero h1 {
+        font-size: 1.4rem;
+    }
+    
+    .beauty-hero p {
+        font-size: 0.8rem;
+    }
+    
+    .tab-btn {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.65rem;
+    }
+    
+    .filter-card .filter-label {
+        font-size: 0.75rem;
+    }
+    
+    .filter-card .filter-desc {
+        font-size: 0.65rem;
+    }
+    
+    .product-card img {
+        height: 200px;
+    }
+    
+    .product-info h3 {
+        font-size: 0.85rem;
+    }
+    
+    .quiz-container h2 {
+        font-size: 1.2rem;
+    }
+    
+    .shade-finder-container h2 {
+        font-size: 1.2rem;
+    }
+    
+    .beauty-header h2 {
+        font-size: 1.2rem;
     }
 }
