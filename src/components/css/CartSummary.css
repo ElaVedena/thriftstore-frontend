@@ -22,6 +22,8 @@
     margin-bottom: 1rem;
     color: #666;
     font-size: 0.95rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .summary-row.free-shipping {
@@ -113,7 +115,7 @@
 }
 
 .payment-icons i {
-    color: #00a859; /* M-Pesa green color */
+    color: #00a859;
     font-size: 1.5rem;
 }
 
@@ -137,6 +139,7 @@
 .payment-icons i:not(.fa-mobile-alt) {
     display: none;
 }
+
 .secure-checkout {
     text-align: center;
     color: #666;
@@ -148,7 +151,6 @@
     margin-right: 0.3rem;
     color: #4caf50;
 }
-
 
 .login-prompt {
     margin-top: 1rem;
@@ -166,8 +168,163 @@
     font-size: 1rem;
 }
 
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Tablet (max-width: 768px) */
 @media (max-width: 768px) {
     .cart-summary {
         position: static;
+        padding: 1.2rem;
+        margin-top: 1rem;
+    }
+    
+    .cart-summary h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+    }
+    
+    .summary-row {
+        font-size: 0.9rem;
+    }
+    
+    .summary-total {
+        font-size: 1.1rem;
+        margin: 1rem 0;
+    }
+    
+    .total-price {
+        font-size: 1.2rem;
+    }
+    
+    .checkout-btn {
+        padding: 0.9rem;
+        font-size: 0.95rem;
+        margin: 1rem 0 0.8rem;
+    }
+    
+    .payment-icons {
+        margin: 0.8rem 0;
+    }
+    
+    .payment-icons i {
+        font-size: 1.3rem;
+    }
+    
+    .secure-checkout {
+        font-size: 0.85rem;
+    }
+    
+    .login-prompt {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+    }
+    
+    .login-prompt i {
+        font-size: 0.9rem;
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .cart-summary {
+        padding: 1rem;
+    }
+    
+    .cart-summary h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.6rem;
+    }
+    
+    .summary-row {
+        font-size: 0.85rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .free-badge {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.4rem;
+    }
+    
+    .summary-total {
+        font-size: 1rem;
+        margin: 0.8rem 0;
+        padding-top: 0.8rem;
+    }
+    
+    .total-price {
+        font-size: 1.1rem;
+    }
+    
+    .shipping-progress {
+        margin: 1rem 0;
+        padding: 0.8rem;
+    }
+    
+    .shipping-progress p {
+        font-size: 0.8rem;
+    }
+    
+    .checkout-btn {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .payment-icons {
+        margin: 0.6rem 0;
+    }
+    
+    .payment-icons i {
+        font-size: 1.1rem;
+    }
+    
+    .secure-checkout {
+        font-size: 0.8rem;
+    }
+    
+    .login-prompt {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .login-prompt i {
+        font-size: 0.85rem;
+    }
+}
+
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .cart-summary {
+        padding: 0.8rem;
+    }
+    
+    .cart-summary h3 {
+        font-size: 1rem;
+    }
+    
+    .summary-row {
+        font-size: 0.8rem;
+    }
+    
+    .summary-total {
+        font-size: 0.95rem;
+    }
+    
+    .total-price {
+        font-size: 1rem;
+    }
+    
+    .checkout-btn {
+        padding: 0.7rem;
+        font-size: 0.85rem;
+    }
+    
+    .payment-icons i {
+        font-size: 1rem;
+    }
+    
+    .secure-checkout {
+        font-size: 0.75rem;
     }
 }
