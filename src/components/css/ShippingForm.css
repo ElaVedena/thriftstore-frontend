@@ -1,52 +1,52 @@
 .shipping-form {
     background: white;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
 .shipping-form h2 {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
     color: #2d2d2d;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
 }
 
 .form-subtitle {
     color: #666;
-    margin-bottom: 2rem;
-    font-size: 0.95rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.85rem;
 }
 
 .form-row {
-    margin-bottom: 1.2rem;
+    margin-bottom: 0.8rem;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.2rem;
 }
 
 .form-group label {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: #4a4a4a;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
 
 .form-group label i {
     color: #CEABB1;
-    font-size: 1rem;
+    font-size: 0.85rem;
 }
 
 .form-input,
 .form-select {
-    padding: 0.8rem 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 0.85rem;
     transition: all 0.3s ease;
 }
 
@@ -54,7 +54,7 @@
 .form-select:focus {
     outline: none;
     border-color: #CEABB1;
-    box-shadow: 0 0 0 3px rgba(206, 171, 177, 0.1);
+    box-shadow: 0 0 0 2px rgba(206, 171, 177, 0.1);
 }
 
 .form-input.error,
@@ -65,169 +65,91 @@
 
 .error-message {
     color: #ff4444;
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    margin-top: 0.2rem;
+    gap: 0.2rem;
+    margin-top: 0.1rem;
 }
 
 .help-text {
     color: #999;
-    font-size: 0.8rem;
-    margin-top: 0.2rem;
+    font-size: 0.7rem;
+    margin-top: 0.1rem;
 }
 
 .checkbox {
-    margin: 1.5rem 0;
+    margin: 1rem 0;
 }
 
 .checkbox-label {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     color: #666;
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     cursor: pointer;
 }
 
 .checkbox-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     cursor: pointer;
 }
 
 .continue-btn {
     width: 100%;
-    padding: 1rem;
+    padding: 0.7rem;
     background: #CEABB1;
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
 }
 
 .continue-btn:hover {
     background: #b88e96;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(206, 171, 177, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(206, 171, 177, 0.3);
 }
 
 .continue-btn i {
-    font-size: 1rem;
+    font-size: 0.85rem;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
     .shipping-form {
-        padding: 1.5rem;
+        padding: 1rem;
     }
-
+    
     .shipping-form h2 {
-        font-size: 1.5rem;
+        font-size: 1.1rem;
     }
     
     .form-subtitle {
-        font-size: 0.85rem;
-        margin-bottom: 1.5rem;
+        font-size: 0.75rem;
+        margin-bottom: 1rem;
     }
     
     .form-row {
-        margin-bottom: 1rem;
+        margin-bottom: 0.6rem;
     }
     
     .form-group label {
-        font-size: 0.85rem;
-    }
-    
-    .form-input,
-    .form-select {
-        padding: 0.7rem 0.9rem;
-        font-size: 0.9rem;
-    }
-    
-    .checkbox-label {
-        font-size: 0.85rem;
-    }
-    
-    .continue-btn {
-        padding: 0.8rem;
-        font-size: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .shipping-form {
-        padding: 1rem;
-        border-radius: 8px;
-    }
-    
-    .shipping-form h2 {
-        font-size: 1.3rem;
-    }
-    
-    .form-subtitle {
-        font-size: 0.8rem;
-        margin-bottom: 1rem;
-    }
-    
-    .form-group label {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
     
     .form-group label i {
-        font-size: 0.85rem;
-    }
-    
-    .form-input,
-    .form-select {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.85rem;
-        border-radius: 6px;
-    }
-    
-    .error-message {
-        font-size: 0.7rem;
-    }
-    
-    .help-text {
-        font-size: 0.7rem;
-    }
-    
-    .checkbox-label {
-        font-size: 0.8rem;
-    }
-    
-    .checkbox-label input[type="checkbox"] {
-        width: 16px;
-        height: 16px;
-    }
-    
-    .continue-btn {
-        padding: 0.7rem;
-        font-size: 0.9rem;
-    }
-    
-    .continue-btn i {
-        font-size: 0.85rem;
-    }
-}
-
-@media (max-width: 360px) {
-    .shipping-form {
-        padding: 0.8rem;
-    }
-    
-    .shipping-form h2 {
-        font-size: 1.2rem;
+        font-size: 0.75rem;
     }
     
     .form-input,
@@ -236,8 +158,71 @@
         font-size: 0.8rem;
     }
     
+    .checkbox-label {
+        font-size: 0.75rem;
+    }
+    
     .continue-btn {
         padding: 0.6rem;
         font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .shipping-form {
+        padding: 0.8rem;
+    }
+    
+    .shipping-form h2 {
+        font-size: 1rem;
+    }
+    
+    .form-input,
+    .form-select {
+        padding: 0.45rem 0.6rem;
+        font-size: 0.75rem;
+    }
+    
+    .continue-btn {
+        padding: 0.55rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .shipping-form {
+        padding: 0.6rem;
+    }
+    
+    .shipping-form h2 {
+        font-size: 0.9rem;
+    }
+    
+    .form-subtitle {
+        font-size: 0.7rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .form-group label {
+        font-size: 0.7rem;
+    }
+    
+    .form-input,
+    .form-select {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.7rem;
+    }
+    
+    .error-message {
+        font-size: 0.6rem;
+    }
+    
+    .checkbox-label {
+        font-size: 0.7rem;
+    }
+    
+    .continue-btn {
+        padding: 0.5rem;
+        font-size: 0.75rem;
     }
 }

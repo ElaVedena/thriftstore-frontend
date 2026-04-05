@@ -1,6 +1,6 @@
 .order-summary {
     background: white;
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     position: sticky;
@@ -8,24 +8,24 @@
 }
 
 .order-summary h2 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     color: #2d2d2d;
-    margin: 0 0 1.5rem 0;
-    padding-bottom: 0.5rem;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.4rem;
     border-bottom: 2px solid #f0f0f0;
 }
 
 .summary-items {
-    max-height: 400px;
+    max-height: 350px;
     overflow-y: auto;
-    margin-bottom: 1.5rem;
-    padding-right: 0.5rem;
+    margin-bottom: 1rem;
+    padding-right: 0.3rem;
 }
 
 .summary-item {
     display: flex;
-    gap: 1rem;
-    padding: 1rem 0;
+    gap: 0.7rem;
+    padding: 0.7rem 0;
     border-bottom: 1px solid #f0f0f0;
 }
 
@@ -35,8 +35,8 @@
 
 .item-image {
     position: relative;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     flex-shrink: 0;
 }
 
@@ -49,59 +49,64 @@
 
 .item-quantity {
     position: absolute;
-    top: -5px;
-    right: -5px;
+    top: -4px;
+    right: -4px;
     background: #CEABB1;
     color: white;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     font-weight: 600;
 }
 
 .item-details {
     flex: 1;
+    min-width: 0;
 }
 
 .item-details h4 {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     margin: 0 0 0.2rem 0;
     color: #2d2d2d;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .item-size {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #666;
 }
 
 .item-price {
     font-weight: 600;
     color: #CEABB1;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
 }
 
 .summary-totals {
     border-top: 2px solid #f0f0f0;
-    padding-top: 1.5rem;
+    padding-top: 1rem;
 }
 
 .total-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.5rem;
     color: #666;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
 }
 
 .total-row.grand-total {
-    margin-top: 1rem;
-    padding-top: 1rem;
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
     border-top: 2px solid #f0f0f0;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 700;
     color: #2d2d2d;
 }
@@ -117,108 +122,52 @@
 
 .shipping-pending {
     color: #ff9800;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
 }
 
 .shipping-notice {
-    margin-top: 1rem;
-    padding: 0.8rem;
+    margin-top: 0.8rem;
+    padding: 0.6rem;
     background: #fff3e0;
     border-radius: 4px;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     color: #f57c00;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
 }
 
 .shipping-notice i {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
 }
 
 .shipping-detail {
-    margin-top: 1rem;
-    padding: 0.5rem;
+    margin-top: 0.8rem;
+    padding: 0.4rem;
     background: #e8f5e9;
     border-radius: 4px;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     color: #2e7d32;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
     .order-summary {
         position: static;
-        padding: 1.5rem;
-        margin-top: 1rem;
-    }
-    
-    .order-summary h2 {
-        font-size: 1.3rem;
-        margin-bottom: 1rem;
-    }
-    
-    .summary-items {
-        max-height: 300px;
-    }
-    
-    .summary-item {
-        gap: 0.8rem;
-        padding: 0.8rem 0;
-    }
-    
-    .item-image {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .item-details h4 {
-        font-size: 0.85rem;
-    }
-    
-    .item-size {
-        font-size: 0.7rem;
-    }
-    
-    .item-price {
-        font-size: 0.85rem;
-    }
-    
-    .total-row {
-        font-size: 0.85rem;
-        margin-bottom: 0.6rem;
-    }
-    
-    .total-row.grand-total {
-        font-size: 1rem;
-        margin-top: 0.8rem;
-        padding-top: 0.8rem;
-    }
-    
-    .shipping-notice {
-        padding: 0.6rem;
-        font-size: 0.8rem;
-    }
-    
-    .shipping-detail {
-        font-size: 0.75rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .order-summary {
         padding: 1rem;
+        margin-top: 0.5rem;
     }
     
     .order-summary h2 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
     }
     
     .summary-items {
-        max-height: 250px;
+        max-height: 280px;
     }
     
     .summary-item {
@@ -229,14 +178,6 @@
     .item-image {
         width: 45px;
         height: 45px;
-    }
-    
-    .item-quantity {
-        width: 18px;
-        height: 18px;
-        font-size: 0.6rem;
-        top: -4px;
-        right: -4px;
     }
     
     .item-details h4 {
@@ -253,38 +194,37 @@
     
     .total-row {
         font-size: 0.8rem;
+        margin-bottom: 0.4rem;
     }
     
     .total-row.grand-total {
-        font-size: 0.95rem;
-    }
-    
-    .shipping-pending {
-        font-size: 0.7rem;
-    }
-    
-    .shipping-notice {
-        padding: 0.5rem;
-        font-size: 0.7rem;
-    }
-    
-    .shipping-notice i {
         font-size: 0.9rem;
-    }
-    
-    .shipping-detail {
-        font-size: 0.7rem;
+        margin-top: 0.6rem;
+        padding-top: 0.6rem;
     }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 600px) {
     .order-summary {
         padding: 0.8rem;
+    }
+    
+    .order-summary h2 {
+        font-size: 1rem;
+        margin-bottom: 0.6rem;
     }
     
     .item-image {
         width: 40px;
         height: 40px;
+    }
+    
+    .item-quantity {
+        width: 16px;
+        height: 16px;
+        font-size: 0.55rem;
+        top: -3px;
+        right: -3px;
     }
     
     .item-details h4 {
@@ -301,5 +241,53 @@
     
     .total-row.grand-total {
         font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .order-summary {
+        padding: 0.6rem;
+    }
+    
+    .order-summary h2 {
+        font-size: 0.9rem;
+    }
+    
+    .item-image {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .item-details h4 {
+        font-size: 0.7rem;
+    }
+    
+    .item-size {
+        font-size: 0.6rem;
+    }
+    
+    .item-price {
+        font-size: 0.7rem;
+    }
+    
+    .total-row {
+        font-size: 0.7rem;
+    }
+    
+    .total-row.grand-total {
+        font-size: 0.8rem;
+    }
+    
+    .shipping-pending {
+        font-size: 0.65rem;
+    }
+    
+    .shipping-notice {
+        font-size: 0.65rem;
+        padding: 0.4rem;
+    }
+    
+    .shipping-detail {
+        font-size: 0.65rem;
     }
 }
