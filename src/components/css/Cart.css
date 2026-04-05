@@ -5,6 +5,11 @@
     min-height: calc(100vh - var(--navbar-height) - 2rem);
 }
 
+/* Hide footer on cart page */
+body:has(.cart-page) .footer {
+    display: none !important;
+}
+
 .cart-header {
     display: flex;
     justify-content: space-between;
@@ -170,7 +175,7 @@
     }
 }
 
-/* Mobile (max-width: 768px) */
+/* Mobile - KEEP 2 COLUMNS */
 @media (max-width: 768px) {
     .cart-page {
         padding: 1rem;
@@ -199,13 +204,15 @@
         font-size: 0.85rem;
     }
 
+    /* KEEP 2 COLUMNS - NOT 1 COLUMN */
     .cart-content {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+        grid-template-columns: 1fr 280px;
+        gap: 1rem;
     }
     
+    /* Reduce cart item padding for mobile */
     .cart-items {
-        gap: 0.8rem;
+        gap: 0.6rem;
     }
     
     .cart-actions {
@@ -214,7 +221,7 @@
     }
     
     .continue-shopping-link {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     
     .empty-cart {
@@ -248,7 +255,19 @@
     }
 }
 
-/* Small Mobile (max-width: 480px) */
+/* Small Mobile - Keep 2 columns but narrower */
+@media (max-width: 600px) {
+    .cart-content {
+        grid-template-columns: 1fr 260px;
+        gap: 0.8rem;
+    }
+    
+    .cart-header h1 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Very Small Mobile - Still keep 2 columns */
 @media (max-width: 480px) {
     .cart-page {
         padding: 0.8rem;
@@ -261,7 +280,7 @@
     }
     
     .cart-header h1 {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
     }
     
     .cart-header h1::after {
@@ -270,15 +289,17 @@
     
     .clear-cart-btn {
         padding: 0.35rem 0.7rem;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
     
+    /* Keep 2 columns */
     .cart-content {
-        gap: 1rem;
+        grid-template-columns: 1fr 240px;
+        gap: 0.6rem;
     }
     
     .cart-items {
-        gap: 0.6rem;
+        gap: 0.5rem;
     }
     
     .cart-actions {
@@ -286,7 +307,7 @@
     }
     
     .continue-shopping-link {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
     
     .empty-cart {
@@ -321,23 +342,40 @@
     }
 }
 
-/* Extra Small Mobile (max-width: 360px) */
+/* Extra Small Mobile - Keep 2 columns but very narrow */
+@media (max-width: 400px) {
+    .cart-content {
+        grid-template-columns: 1fr 200px;
+        gap: 0.5rem;
+    }
+    
+    .cart-header h1 {
+        font-size: 1.1rem;
+    }
+    
+    .clear-cart-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+    }
+}
+
+/* Tiny screens - Still keep 2 columns */
 @media (max-width: 360px) {
     .cart-page {
         padding: 0.6rem;
     }
     
     .cart-header h1 {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
     
     .cart-header h1::after {
         width: 35px;
     }
     
-    .clear-cart-btn {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.75rem;
+    .cart-content {
+        grid-template-columns: 1fr 180px;
+        gap: 0.4rem;
     }
     
     .empty-cart-content i {
