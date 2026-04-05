@@ -3,11 +3,6 @@
     background: #fafafa;
 }
 
-/* Hide footer on about page */
-body:has(.about-page) .footer {
-    display: none !important;
-}
-
 /* ===== MISSION SECTION ===== */
 .mission-section {
     padding: 60px 20px 40px;
