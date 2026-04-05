@@ -36,19 +36,37 @@ function Checkout() {
         };
     }, []);
 
-    // Define shipping cost function 
+    // Define shipping cost function - MATCHING OrderSummary.jsx
     const getShippingCost = (county) => {
         if (!county) return 0;
         
-        const lowCostCounties = ['Nairobi', 'Kiambu', 'Machakos', 'Kajiado'];
-        const highCostCounties = ['Mombasa', 'Kwale', 'Kilifi', 'Lamu', 'Garissa', 'Wajir', 'Mandera'];
+        // Nairobi and surrounding counties
+        const nairobiRegion = ['Nairobi', 'Kiambu', 'Machakos', 'Kajiado'];
+        // Central Kenya counties
+        const centralRegion = ['Muranga', 'Nyeri', 'Kirinyaga', 'Nyandarua', 'Embu', 'Meru', 'Tharaka Nithi'];
+        // Coastal counties
+        const coastalRegion = ['Mombasa', 'Kwale', 'Kilifi', 'Tana River', 'Lamu', 'Taita Taveta'];
+        // Western Kenya counties
+        const westernRegion = ['Kisumu', 'Kisii', 'Nyamira', 'Homa Bay', 'Migori', 'Siaya', 'Vihiga', 'Kakamega', 'Bungoma', 'Busia', 'Trans Nzoia'];
+        // Rift Valley counties
+        const riftRegion = ['Nakuru', 'Uasin Gishu', 'Kericho', 'Bomet', 'Nandi', 'Baringo', 'Laikipia', 'Samburu', 'Turkana', 'West Pokot', 'Elgeyo Marakwet'];
+        // Northern and remote counties (higher shipping cost)
+        const remoteRegion = ['Garissa', 'Wajir', 'Mandera', 'Marsabit', 'Isiolo'];
         
-        if (lowCostCounties.includes(county)) {
-            return 2; 
-        } else if (highCostCounties.includes(county)) {
-            return 3; 
+        if (nairobiRegion.includes(county)) {
+            return 150; // KSh 150 for Nairobi and surrounding
+        } else if (centralRegion.includes(county)) {
+            return 250; // KSh 250 for Central Kenya
+        } else if (coastalRegion.includes(county)) {
+            return 350; // KSh 350 for Coast
+        } else if (westernRegion.includes(county)) {
+            return 300; // KSh 300 for Western Kenya
+        } else if (riftRegion.includes(county)) {
+            return 250; // KSh 250 for Rift Valley
+        } else if (remoteRegion.includes(county)) {
+            return 500; // KSh 500 for remote areas
         } else {
-            return 4;
+            return 400; // Default for other counties
         }
     };
 
@@ -64,7 +82,7 @@ function Checkout() {
         setPollingAttempts(0);
         
         try {
-            // Calculate shipping and total
+            // Calculate shipping and total using the correct shipping costs
             const shipping = getShippingCost(shippingInfo.county);
             const subtotal = totalPrice;
             const total = subtotal + shipping;
@@ -144,7 +162,6 @@ function Checkout() {
                 
                 // If still not found, try direct access to the data object
                 if (!orderNum && response.data?.data) {
-
                     for (const key in response.data.data) {
                         const value = response.data.data[key];
                         if (typeof value === 'string' && value.startsWith('ORD-')) {
@@ -304,13 +321,16 @@ function Checkout() {
                 sessionStorage.removeItem('pollInterval');
             }
             
+            // Calculate current shipping for fallback
+            const shippingCost = shippingInfo ? getShippingCost(shippingInfo.county) : 0;
+            
             // Create complete order data for confirmation page
             const completeOrderData = orderDetails || {
                 orderNumber: orderNum,
                 items: cartItems,
                 subtotal: totalPrice,
-                shippingCost: currentShipping,
-                total: totalPrice + currentShipping,
+                shippingCost: shippingCost,
+                total: totalPrice + shippingCost,
                 shipping: {
                     fullName: shippingInfo?.fullName,
                     phone: shippingInfo?.phone,
@@ -348,13 +368,15 @@ function Checkout() {
         } catch (error) {
             console.error('Error fetching order details:', error);
             
+            const shippingCost = shippingInfo ? getShippingCost(shippingInfo.county) : 0;
+            
             // Create fallback order data
             const fallbackOrderData = {
                 orderNumber: orderNum,
                 items: cartItems,
                 subtotal: totalPrice,
-                shippingCost: currentShipping,
-                total: totalPrice + currentShipping,
+                shippingCost: shippingCost,
+                total: totalPrice + shippingCost,
                 shipping: {
                     fullName: shippingInfo?.fullName,
                     phone: shippingInfo?.phone,
@@ -451,7 +473,7 @@ function Checkout() {
                                             </div>
                                             <div className="detail-row">
                                                 <span>Shipping:</span>
-                                                <strong>KSh {currentShipping}</strong>
+                                                <strong>KSh {currentShipping.toFixed(2)}</strong>
                                             </div>
                                         </div>
                                         <div className="email-notice">
