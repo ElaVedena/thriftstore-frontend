@@ -125,7 +125,7 @@
     font-size: 1rem;
 }
 
-/* Responsive */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .shipping-form {
         padding: 1.5rem;
@@ -133,5 +133,111 @@
 
     .shipping-form h2 {
         font-size: 1.5rem;
+    }
+    
+    .form-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-row {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        font-size: 0.85rem;
+    }
+    
+    .form-input,
+    .form-select {
+        padding: 0.7rem 0.9rem;
+        font-size: 0.9rem;
+    }
+    
+    .checkbox-label {
+        font-size: 0.85rem;
+    }
+    
+    .continue-btn {
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .shipping-form {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    
+    .shipping-form h2 {
+        font-size: 1.3rem;
+    }
+    
+    .form-subtitle {
+        font-size: 0.8rem;
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        font-size: 0.8rem;
+    }
+    
+    .form-group label i {
+        font-size: 0.85rem;
+    }
+    
+    .form-input,
+    .form-select {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+    
+    .error-message {
+        font-size: 0.7rem;
+    }
+    
+    .help-text {
+        font-size: 0.7rem;
+    }
+    
+    .checkbox-label {
+        font-size: 0.8rem;
+    }
+    
+    .checkbox-label input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .continue-btn {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+    
+    .continue-btn i {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .shipping-form {
+        padding: 0.8rem;
+    }
+    
+    .shipping-form h2 {
+        font-size: 1.2rem;
+    }
+    
+    .form-input,
+    .form-select {
+        padding: 0.5rem 0.7rem;
+        font-size: 0.8rem;
+    }
+    
+    .continue-btn {
+        padding: 0.6rem;
+        font-size: 0.85rem;
     }
 }
