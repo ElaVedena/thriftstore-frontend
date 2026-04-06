@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
 import { authService } from '../services/authService';
+import { cartService } from '../services/cartService';
 import api from '../services/api';
 
 const AuthContext = createContext();
@@ -71,6 +72,12 @@ const isTokenExpired = (token) => {
 
 export function AuthProvider({ children }) {
     const [state, dispatch] = useReducer(authReducer, initialState);
+    let refreshCartCallback = null;
+
+    // Function to register refresh cart callback from CartContext
+    const setRefreshCartCallback = (callback) => {
+        refreshCartCallback = callback;
+    };
 
     // Check auth on load
     useEffect(() => {
@@ -157,12 +164,21 @@ export function AuthProvider({ children }) {
             const response = await authService.login(email, password);
             
             if (response.success) {
+                const { user, token } = response.data;
+                
+                // 🔄 MERGE GUEST CART AFTER LOGIN
+                console.log('🔄 Merging guest cart after login...');
+                const mergeResult = await cartService.mergeGuestCart();
+                console.log('Cart merge result:', mergeResult);
+                
+                // Refresh cart in context if callback is registered
+                if (refreshCartCallback) {
+                    await refreshCartCallback();
+                }
+                
                 dispatch({
                     type: 'LOGIN_SUCCESS',
-                    payload: {
-                        user: response.data.user,
-                        token: response.data.token
-                    }
+                    payload: { user, token }
                 });
                 return { success: true };
             } else {
@@ -185,6 +201,16 @@ export function AuthProvider({ children }) {
                 const loginResponse = await authService.login(userData.email, userData.password);
                 
                 if (loginResponse.success) {
+                    // 🔄 MERGE GUEST CART AFTER REGISTRATION
+                    console.log('🔄 Merging guest cart after registration...');
+                    const mergeResult = await cartService.mergeGuestCart();
+                    console.log('Cart merge result:', mergeResult);
+                    
+                    // Refresh cart in context if callback is registered
+                    if (refreshCartCallback) {
+                        await refreshCartCallback();
+                    }
+                    
                     dispatch({
                         type: 'REGISTER_SUCCESS',
                         payload: {
@@ -243,6 +269,7 @@ export function AuthProvider({ children }) {
         logout,
         updateUser,
         clearError,
+        setRefreshCartCallback,
         isAdmin: () => state.user?.role === 'ADMIN' || state.user?.role === 'ROLE_ADMIN'
     };
 
