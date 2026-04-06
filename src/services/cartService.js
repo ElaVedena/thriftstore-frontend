@@ -32,11 +32,12 @@ export const cartService = {
     // Get guest cart from localStorage
     getGuestCart: () => {
         try {
-            const savedCart = localStorage.getItem('cart');
-            const cartItems = localStorage.getItem('cartItems');
+            // Get from guest_cart key
+            const guestCart = localStorage.getItem('guest_cart');
             
-            if (cartItems) {
-                const items = JSON.parse(cartItems);
+            if (guestCart) {
+                const parsedCart = JSON.parse(guestCart);
+                const items = parsedCart.items || [];
                 return {
                     success: true,
                     data: {
@@ -47,15 +48,20 @@ export const cartService = {
                 };
             }
             
-            if (savedCart) {
-                const cart = JSON.parse(savedCart);
-                const items = cart.items || [];
+            // Fallback: check old cart keys
+            const oldCart = localStorage.getItem('cart');
+            if (oldCart) {
+                const parsedCart = JSON.parse(oldCart);
+                const items = parsedCart.items || [];
+                // Migrate to new key
+                localStorage.setItem('guest_cart', JSON.stringify({ items: items }));
+                localStorage.removeItem('cart');
                 return {
                     success: true,
                     data: {
                         items: items,
-                        totalItems: cart.totalItems || items.reduce((sum, item) => sum + item.quantity, 0),
-                        totalPrice: cart.totalPrice || items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+                        totalItems: items.reduce((sum, item) => sum + item.quantity, 0),
+                        totalPrice: items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
                     }
                 };
             }
@@ -76,15 +82,8 @@ export const cartService = {
     // Save guest cart to localStorage
     saveGuestCart: (items) => {
         try {
-            const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-            const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            localStorage.setItem('cartItems', JSON.stringify(items));
-            localStorage.setItem('cart', JSON.stringify({
-                items: items,
-                totalItems: totalItems,
-                totalPrice: totalPrice
-            }));
+            const cartData = { items: items };
+            localStorage.setItem('guest_cart', JSON.stringify(cartData));
             console.log('✅ Guest cart saved to localStorage');
         } catch (error) {
             console.error('Failed to save guest cart:', error);
@@ -93,8 +92,8 @@ export const cartService = {
 
     // Clear guest cart from localStorage
     clearGuestCart: () => {
+        localStorage.removeItem('guest_cart');
         localStorage.removeItem('cart');
-        localStorage.removeItem('cartItems');
         console.log('🗑️ Guest cart cleared');
     },
 
@@ -113,27 +112,42 @@ export const cartService = {
         
         if (guestItems.length === 0) {
             console.log('No guest cart to merge');
+            cartService.clearGuestCart();
             return { success: true, message: 'No guest cart to merge' };
         }
         
         console.log('🔄 Merging guest cart with user cart:', guestItems);
         
         try {
-            // Send guest items to backend to merge
-            const response = await api.post('/cart/merge', { items: guestItems });
+            // Format items for backend
+            const formattedItems = guestItems.map(item => ({
+                productId: item.productId,
+                productName: item.productName,
+                price: item.price,
+                quantity: item.quantity,
+                size: item.size || 'One Size',
+                imageUrl: item.imageUrl
+            }));
+            
+            // Send guest items to backend to merge using the /cart/merge endpoint
+            const response = await api.post('/cart/merge', { items: formattedItems });
             
             if (response.data.success) {
                 // Clear guest cart after successful merge
                 cartService.clearGuestCart();
                 console.log('✅ Guest cart merged and cleared');
-                return { success: true, message: 'Cart merged successfully' };
+                return { 
+                    success: true, 
+                    message: 'Cart merged successfully',
+                    data: response.data
+                };
             } else {
                 return { success: false, message: response.data.message };
             }
         } catch (error) {
             console.error('Failed to merge cart:', error);
             
-            // Fallback: If merge endpoint doesn't exist or fails, add items one by one
+            // Fallback: If merge endpoint fails, try adding items one by one
             let successCount = 0;
             for (const item of guestItems) {
                 try {
@@ -202,8 +216,8 @@ export const cartService = {
             }
         } else {
             // Guest - add to localStorage
-            const guestCart = cartService.getGuestCart();
-            const items = guestCart.data?.items || [];
+            const guestCartResult = cartService.getGuestCart();
+            const items = guestCartResult.data?.items || [];
             
             const existingIndex = items.findIndex(
                 i => i.productId === cartItem.productId && i.size === cartItem.size
@@ -252,12 +266,16 @@ export const cartService = {
             }
         } else {
             // Guest - update in localStorage
-            const guestCart = cartService.getGuestCart();
-            const items = guestCart.data?.items || [];
+            const guestCartResult = cartService.getGuestCart();
+            const items = guestCartResult.data?.items || [];
             
-            const item = items.find(i => i.productId === productId && i.size === size);
-            if (item) {
-                item.quantity = quantity;
+            const itemIndex = items.findIndex(i => i.productId === productId && i.size === size);
+            if (itemIndex >= 0) {
+                if (quantity <= 0) {
+                    items.splice(itemIndex, 1);
+                } else {
+                    items[itemIndex].quantity = quantity;
+                }
                 cartService.saveGuestCart(items);
             }
             
@@ -294,8 +312,8 @@ export const cartService = {
             }
         } else {
             // Guest - remove from localStorage
-            const guestCart = cartService.getGuestCart();
-            let items = guestCart.data?.items || [];
+            const guestCartResult = cartService.getGuestCart();
+            let items = guestCartResult.data?.items || [];
             
             items = items.filter(i => !(i.productId === productId && i.size === size));
             
@@ -351,7 +369,6 @@ export const cartService = {
             if (error.response?.status === 405) {
                 console.warn('Bulk cart update not supported, falling back to individual updates');
                 
-                // Skip if no items to update
                 if (!items || items.length === 0) {
                     return { success: true, message: 'No items to update' };
                 }
@@ -432,7 +449,6 @@ export const cartService = {
                 };
             } catch (error) {
                 console.error('Get cart count error:', error);
-                console.error('Error response:', error.response?.data);
                 const guestCart = cartService.getGuestCart();
                 return {
                     success: true,
