@@ -37,19 +37,18 @@ function Home() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Auto-slide for featured products on mobile
+  // Auto-slide for featured products on mobile - 2 seconds
   useEffect(() => {
     if (isMobile && featuredProducts.length > 1) {
       if (featuredTimerRef.current) {
         clearInterval(featuredTimerRef.current);
       }
       
-      // Changed from 30000 to 5000 (5 seconds)
       featuredTimerRef.current = setInterval(() => {
         setCurrentFeaturedIndex((prevIndex) => 
           prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
         );
-      }, 5000); // 5 seconds
+      }, 2000); // 2 seconds
       
       return () => {
         if (featuredTimerRef.current) {
@@ -59,19 +58,18 @@ function Home() {
     }
   }, [isMobile, featuredProducts.length]);
 
-  // Auto-slide for new arrivals on mobile
+  // Auto-slide for new arrivals on mobile - 2 seconds
   useEffect(() => {
     if (isMobile && newArrivals.length > 1) {
       if (newArrivalsTimerRef.current) {
         clearInterval(newArrivalsTimerRef.current);
       }
       
-      // Changed from 30000 to 5000 (5 seconds)
       newArrivalsTimerRef.current = setInterval(() => {
         setCurrentNewArrivalsIndex((prevIndex) => 
           prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
         );
-      }, 5000); // 5 seconds
+      }, 2000); // 2 seconds
       
       return () => {
         if (newArrivalsTimerRef.current) {
@@ -98,7 +96,7 @@ function Home() {
         setCurrentFeaturedIndex((prevIndex) => 
           prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
         );
-      }, 5000);
+      }, 2000);
     }
   };
 
@@ -112,7 +110,7 @@ function Home() {
         setCurrentFeaturedIndex((prevIndex) => 
           prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
         );
-      }, 5000);
+      }, 2000);
     }
   };
 
@@ -127,7 +125,7 @@ function Home() {
         setCurrentNewArrivalsIndex((prevIndex) => 
           prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
         );
-      }, 5000);
+      }, 2000);
     }
   };
 
@@ -141,7 +139,7 @@ function Home() {
         setCurrentNewArrivalsIndex((prevIndex) => 
           prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
         );
-      }, 5000);
+      }, 2000);
     }
   };
 
@@ -154,7 +152,7 @@ function Home() {
         setCurrentFeaturedIndex((prevIndex) => 
           prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
         );
-      }, 5000);
+      }, 2000);
     }
   };
 
@@ -166,7 +164,7 @@ function Home() {
         setCurrentNewArrivalsIndex((prevIndex) => 
           prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
         );
-      }, 5000);
+      }, 2000);
     }
   };
 
@@ -178,30 +176,42 @@ function Home() {
         
         console.log('Fetching home data from database...');
         
+        // Fetch featured products (random) and new arrivals (by date) separately
         const [featuredRes, newArrivalsRes, categoriesRes] = await Promise.allSettled([
-          productService.getFeaturedProducts(4),
-          productService.getNewArrivals(4),
+          productService.getFeaturedProducts(4),  // Should return random products
+          productService.getNewArrivals(4),       // Should return latest by createdAt
           categoryService.getAllCategories()
         ]);
 
+        // Handle featured products - these should be RANDOM
         if (featuredRes.status === 'fulfilled' && featuredRes.value?.success) {
-          const products = featuredRes.value.data || [];
-          setFeaturedProducts(products.slice(0, 4));
-          console.log('Featured products loaded:', products.slice(0, 4).length);
+          let products = featuredRes.value.data || [];
+          // If the backend doesn't randomize, shuffle them client-side
+          if (products.length > 0) {
+            // Shuffle array for random display
+            const shuffled = [...products].sort(() => 0.5 - Math.random());
+            setFeaturedProducts(shuffled.slice(0, 4));
+          } else {
+            setFeaturedProducts([]);
+          }
+          console.log('Featured products loaded (randomized):', products.length);
         } else {
           console.warn('Failed to load featured products');
           setFeaturedProducts([]);
         }
 
+        // Handle new arrivals - these should be LATEST BY DATE
         if (newArrivalsRes.status === 'fulfilled' && newArrivalsRes.value?.success) {
           const products = newArrivalsRes.value.data || [];
+          // Already sorted by createdAt desc from backend, just take first 4
           setNewArrivals(products.slice(0, 4));
-          console.log('New arrivals loaded:', products.slice(0, 4).length);
+          console.log('New arrivals loaded (by date):', products.slice(0, 4).length);
         } else {
           console.warn('Failed to load new arrivals');
           setNewArrivals([]);
         }
 
+        // Handle categories 
         if (categoriesRes.status === 'fulfilled' && categoriesRes.value?.success) {
           const categoryData = categoriesRes.value.data || [];
           setCategories(categoryData);
@@ -338,7 +348,7 @@ function Home() {
           </section>
         )}
 
-        {/* Featured Products - Carousel on mobile, grid on desktop */}
+        {/* Featured Products - Random items */}
         {featuredProducts.length > 0 && (
           <section className="featured">
             <div className="section-header no-view-all">
@@ -388,7 +398,7 @@ function Home() {
           </section>
         )}
 
-        {/* New Arrivals - Carousel on mobile, grid on desktop */}
+        {/* New Arrivals - Latest by date */}
         {newArrivals.length > 0 && (
           <section className="new-arrivals">
             <div className="section-header">

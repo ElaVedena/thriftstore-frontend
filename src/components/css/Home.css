@@ -285,7 +285,7 @@
         width: 100%;
         height: 100%;
         background: #CEABB1;
-        animation: timerProgress 5s linear forwards; /* Changed from 30s to 5s */
+        animation: timerProgress 2s linear forwards; /* Changed from 5s to 2s */
         border-radius: 2px;
     }
     
