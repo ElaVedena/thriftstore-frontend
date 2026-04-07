@@ -62,8 +62,8 @@ function Cart() {
 
     const handleClearCart = () => {
         if (cartItems.length > 0) {
-            clearCart();
-            showInfo('Cart cleared successfully', { duration: 3000 });
+            clearCart(); // Notification is handled inside clearCart in CartContext
+            // Removed duplicate showInfo here
         }
     };
 
