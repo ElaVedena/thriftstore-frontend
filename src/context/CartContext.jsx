@@ -32,7 +32,7 @@ const cartReducer = (state, action) => {
                     return item;
                 });
             } else {
-                // Add new item with backendcompatible structure
+                // Add new item with backend compatible structure
                 updatedItems = [...state.items, {
                     productId: action.payload.productId,
                     productName: action.payload.productName,
@@ -175,7 +175,7 @@ export function CartProvider({ children }) {
     const [isCartLoading, setIsCartLoading] = useState(true);
     const [cartError, setCartError] = useState(null);
     const [isInitialized, setIsInitialized] = useState(false);
-    const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
+    const { user, isAuthenticated, isLoading: isAuthLoading, setRefreshCartCallback } = useAuth();
     const { showError, showWarning, showSuccess, showInfo } = useNotification();
     
     // Use ref to track if this is the initial load
@@ -190,6 +190,43 @@ export function CartProvider({ children }) {
     const lastUpdateTime = useRef(0);
     // Add ref to track whether cart was just cleared
     const justCleared = useRef(false);
+    // Add ref to track if merge has been attempted
+    const mergeAttempted = useRef(false);
+
+    // Function to refresh cart from backend
+    const refreshCart = useCallback(async () => {
+        if (!isAuthenticated || !user) return;
+        
+        setIsCartLoading(true);
+        try {
+            const response = await cartService.getCart();
+            if (response.success) {
+                const cartData = response.data.cart || response.data;
+                const newItems = cartData.items || [];
+                
+                const currentStateString = JSON.stringify(state.items);
+                if (JSON.stringify(newItems) !== currentStateString) {
+                    dispatch({ type: 'LOAD_CART', payload: response.data });
+                }
+                lastSyncedState.current = JSON.stringify(newItems);
+                return { success: true, items: newItems };
+            } else {
+                return { success: false, message: response.message };
+            }
+        } catch (error) {
+            console.error('Failed to refresh cart:', error);
+            return { success: false, message: error.message };
+        } finally {
+            setIsCartLoading(false);
+        }
+    }, [isAuthenticated, user, state.items]);
+
+    // Register refresh callback with AuthContext
+    useEffect(() => {
+        if (setRefreshCartCallback) {
+            setRefreshCartCallback(refreshCart);
+        }
+    }, [setRefreshCartCallback, refreshCart]);
 
     // Load cart based on user authentication status
     useEffect(() => {
@@ -207,29 +244,30 @@ export function CartProvider({ children }) {
                     if (response.success) {
                         console.log('Cart data received:', response.data);
                         
-                        // Only dispatch if data is different from current state
-                        const currentStateString = JSON.stringify(state.items);
                         const cartData = response.data.cart || response.data;
                         const newItems = cartData.items || [];
                         
-                        if (JSON.stringify(newItems) !== currentStateString) {
+                        if (JSON.stringify(newItems) !== JSON.stringify(state.items)) {
                             dispatch({ type: 'LOAD_CART', payload: response.data });
                         }
                         
-                        // Update last synced state after loading
                         lastSyncedState.current = JSON.stringify(newItems);
                         
-                        // Check for guest cart to merge
+                        // Check for guest cart to merge (only once)
                         const guestCart = localStorage.getItem('guest_cart');
-                        if (guestCart) {
+                        if (guestCart && !mergeAttempted.current) {
+                            mergeAttempted.current = true;
                             try {
                                 const parsedGuestCart = JSON.parse(guestCart);
-                                if (parsedGuestCart.items?.length > 0) {
+                                const guestItems = parsedGuestCart.items || [];
+                                
+                                if (guestItems.length > 0) {
                                     showInfo('Merging your guest cart with your account...', {
                                         duration: 3000
                                     });
+                                    
                                     // Merge guest cart with backend
-                                    const mergeResponse = await cartService.mergeCart(parsedGuestCart.items);
+                                    const mergeResponse = await cartService.mergeCart(guestItems);
                                     if (mergeResponse.success) {
                                         // Reload cart after merge
                                         const updatedCart = await cartService.getCart();
@@ -242,11 +280,16 @@ export function CartProvider({ children }) {
                                             }
                                             lastSyncedState.current = JSON.stringify(updatedItems);
                                             
-                                            showSuccess('Cart merged successfully!', {
+                                            showSuccess('Guest cart merged successfully!', {
                                                 duration: 3000
                                             });
                                         }
+                                    } else {
+                                        // Fallback: merge locally
+                                        console.log('Backend merge failed, merging locally');
+                                        dispatch({ type: 'MERGE_CART', payload: guestItems });
                                     }
+                                    // Clear guest cart after merge attempt
                                     localStorage.removeItem('guest_cart');
                                 }
                             } catch (error) {
@@ -255,7 +298,6 @@ export function CartProvider({ children }) {
                             }
                         }
                     } else {
-                        // If backend fails try to load guest cart as fallback
                         console.warn('Backend cart failed, checking guest cart:', response.message);
                         const guestCart = localStorage.getItem('guest_cart');
                         if (guestCart) {
@@ -308,7 +350,7 @@ export function CartProvider({ children }) {
         };
 
         loadCart();
-    }, [isAuthenticated, user, isAuthLoading, showError, showWarning, showSuccess, showInfo]);
+    }, [isAuthenticated, user, isAuthLoading, showError, showWarning, showSuccess, showInfo, state.items]);
 
     // Save cart to localStorage for guests, sync with backend for authenticated users
     useEffect(() => {
@@ -328,7 +370,6 @@ export function CartProvider({ children }) {
             
             // Don't sync empty carts unless they were explicitly cleared by user
             if (state.items.length === 0 && lastSyncedState.current !== '[]' && !justCleared.current) {
-                
                 console.log('Skipping empty cart sync - trusting backend');
                 return;
             }
@@ -385,7 +426,7 @@ export function CartProvider({ children }) {
                 }
             };
         } else {
-            // Save to guest cart in localStorage
+            // Save to guest cart in localStorage (use guest_cart key for consistency)
             localStorage.setItem('guest_cart', JSON.stringify(state));
         }
     }, [state, isAuthenticated, user, isCartLoading, isAuthLoading, cartError, isInitialized]);
@@ -564,34 +605,6 @@ export function CartProvider({ children }) {
             showInfo('Cart cleared', { duration: 2000 });
         }
     }, [isAuthenticated, user, showError, showInfo, state.items]);
-
-    const refreshCart = useCallback(async () => {
-        if (!isAuthenticated || !user) return;
-        
-        setIsCartLoading(true);
-        try {
-            const response = await cartService.getCart();
-            if (response.success) {
-                // Only dispatch if data is different
-                const currentStateString = JSON.stringify(state.items);
-                const cartData = response.data.cart || response.data;
-                const newItems = cartData.items || [];
-                
-                if (JSON.stringify(newItems) !== currentStateString) {
-                    dispatch({ type: 'LOAD_CART', payload: response.data });
-                }
-                lastSyncedState.current = JSON.stringify(newItems);
-                showSuccess('Cart refreshed!', { duration: 1500 });
-            } else {
-                showError(response.message || 'Failed to refresh cart');
-            }
-        } catch (error) {
-            console.error('Failed to refresh cart:', error);
-            showError('Failed to refresh cart. Please try again.');
-        } finally {
-            setIsCartLoading(false);
-        }
-    }, [isAuthenticated, user, state.items, showError, showSuccess]);
 
     const value = {
         cartItems: state.items,
