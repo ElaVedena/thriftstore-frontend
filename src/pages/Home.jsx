@@ -19,7 +19,11 @@ function Home() {
   const [currentNewArrivalsIndex, setCurrentNewArrivalsIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Refs for auto-slide timers
+  // Refs for scroll containers
+  const featuredScrollRef = useRef(null);
+  const newArrivalsScrollRef = useRef(null);
+  
+  // Auto-slide timers
   const featuredTimerRef = useRef(null);
   const newArrivalsTimerRef = useRef(null);
 
@@ -40,6 +44,7 @@ function Home() {
         clearInterval(featuredTimerRef.current);
       }
       
+      // Changed from 30000 to 5000 (5 seconds)
       featuredTimerRef.current = setInterval(() => {
         setCurrentFeaturedIndex((prevIndex) => 
           prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
@@ -61,6 +66,7 @@ function Home() {
         clearInterval(newArrivalsTimerRef.current);
       }
       
+      // Changed from 30000 to 5000 (5 seconds)
       newArrivalsTimerRef.current = setInterval(() => {
         setCurrentNewArrivalsIndex((prevIndex) => 
           prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
@@ -86,33 +92,6 @@ function Home() {
     setCurrentFeaturedIndex((prevIndex) => 
       prevIndex === 0 ? featuredProducts.length - 1 : prevIndex - 1
     );
-    resetFeaturedTimer();
-  };
-
-  const goToNextFeatured = () => {
-    setCurrentFeaturedIndex((prevIndex) => 
-      prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
-    );
-    resetFeaturedTimer();
-  };
-
-  // Manual navigation for new arrivals carousel
-  const goToPreviousNewArrivals = () => {
-    setCurrentNewArrivalsIndex((prevIndex) => 
-      prevIndex === 0 ? newArrivals.length - 1 : prevIndex - 1
-    );
-    resetNewArrivalsTimer();
-  };
-
-  const goToNextNewArrivals = () => {
-    setCurrentNewArrivalsIndex((prevIndex) => 
-      prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
-    );
-    resetNewArrivalsTimer();
-  };
-
-  // Reset timers
-  const resetFeaturedTimer = () => {
     if (featuredTimerRef.current) {
       clearInterval(featuredTimerRef.current);
       featuredTimerRef.current = setInterval(() => {
@@ -123,7 +102,39 @@ function Home() {
     }
   };
 
-  const resetNewArrivalsTimer = () => {
+  const goToNextFeatured = () => {
+    setCurrentFeaturedIndex((prevIndex) => 
+      prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
+    );
+    if (featuredTimerRef.current) {
+      clearInterval(featuredTimerRef.current);
+      featuredTimerRef.current = setInterval(() => {
+        setCurrentFeaturedIndex((prevIndex) => 
+          prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 5000);
+    }
+  };
+
+  // Manual navigation for new arrivals carousel
+  const goToPreviousNewArrivals = () => {
+    setCurrentNewArrivalsIndex((prevIndex) => 
+      prevIndex === 0 ? newArrivals.length - 1 : prevIndex - 1
+    );
+    if (newArrivalsTimerRef.current) {
+      clearInterval(newArrivalsTimerRef.current);
+      newArrivalsTimerRef.current = setInterval(() => {
+        setCurrentNewArrivalsIndex((prevIndex) => 
+          prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 5000);
+    }
+  };
+
+  const goToNextNewArrivals = () => {
+    setCurrentNewArrivalsIndex((prevIndex) => 
+      prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
+    );
     if (newArrivalsTimerRef.current) {
       clearInterval(newArrivalsTimerRef.current);
       newArrivalsTimerRef.current = setInterval(() => {
@@ -137,12 +148,26 @@ function Home() {
   // Dot indicators navigation
   const goToFeaturedSlide = (index) => {
     setCurrentFeaturedIndex(index);
-    resetFeaturedTimer();
+    if (featuredTimerRef.current) {
+      clearInterval(featuredTimerRef.current);
+      featuredTimerRef.current = setInterval(() => {
+        setCurrentFeaturedIndex((prevIndex) => 
+          prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 5000);
+    }
   };
 
   const goToNewArrivalsSlide = (index) => {
     setCurrentNewArrivalsIndex(index);
-    resetNewArrivalsTimer();
+    if (newArrivalsTimerRef.current) {
+      clearInterval(newArrivalsTimerRef.current);
+      newArrivalsTimerRef.current = setInterval(() => {
+        setCurrentNewArrivalsIndex((prevIndex) => 
+          prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 5000);
+    }
   };
 
   useEffect(() => {
@@ -150,6 +175,8 @@ function Home() {
       try {
         setLoading(true);
         setError(null);
+        
+        console.log('Fetching home data from database...');
         
         const [featuredRes, newArrivalsRes, categoriesRes] = await Promise.allSettled([
           productService.getFeaturedProducts(4),
@@ -160,21 +187,27 @@ function Home() {
         if (featuredRes.status === 'fulfilled' && featuredRes.value?.success) {
           const products = featuredRes.value.data || [];
           setFeaturedProducts(products.slice(0, 4));
+          console.log('Featured products loaded:', products.slice(0, 4).length);
         } else {
+          console.warn('Failed to load featured products');
           setFeaturedProducts([]);
         }
 
         if (newArrivalsRes.status === 'fulfilled' && newArrivalsRes.value?.success) {
           const products = newArrivalsRes.value.data || [];
           setNewArrivals(products.slice(0, 4));
+          console.log('New arrivals loaded:', products.slice(0, 4).length);
         } else {
+          console.warn('Failed to load new arrivals');
           setNewArrivals([]);
         }
 
         if (categoriesRes.status === 'fulfilled' && categoriesRes.value?.success) {
           const categoryData = categoriesRes.value.data || [];
           setCategories(categoryData);
+          console.log('Categories loaded:', categoryData.length);
         } else {
+          console.warn('Failed to load categories from database');
           setCategories([]);
         }
 
@@ -242,8 +275,8 @@ function Home() {
     <>
       <Helmet>
         <title>VedaThrifts - Best Thrift Store in Kenya | Affordable Secondhand Fashion</title>
-        <meta name="description" content="Discover Kenya's best thrift store. Shop quality secondhand clothes, vintage dresses, and sustainable fashion at unbeatable prices." />
-        <meta name="keywords" content="thrift store Kenya, secondhand fashion, vintage clothing, sustainable fashion" />
+        <meta name="description" content="Discover Kenya's best thrift store. Shop quality secondhand clothes, vintage dresses, and sustainable fashion at unbeatable prices. Free delivery available in Nairobi and across Kenya." />
+        <meta name="keywords" content="thrift store Kenya, secondhand fashion, vintage clothing, affordable clothes, sustainable fashion, pre-loved items, VedaThrifts, thrift shopping Nairobi" />
         <meta name="author" content="VedaThrifts" />
         <meta name="robots" content="index, follow" />
         
@@ -252,159 +285,161 @@ function Home() {
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://vedathrifts.com" />
         <meta property="og:image" content="https://vedathrifts.com/og-image-home.jpg" />
+        <meta property="og:image:alt" content="VedaThrifts - Affordable Secondhand Fashion" />
         <meta property="og:site_name" content="VedaThrifts" />
         <meta property="og:locale" content="en_KE" />
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="VedaThrifts - Best Thrift Store in Kenya" />
-        <meta name="twitter:description" content="Discover Kenya's best thrift store. Shop quality secondhand clothes, vintage dresses, and sustainable fashion." />
+        <meta name="twitter:description" content="Discover Kenya's best thrift store. Shop quality secondhand clothes, vintage dresses, and sustainable fashion at unbeatable prices." />
         <meta name="twitter:image" content="https://vedathrifts.com/og-image-home.jpg" />
+        <meta name="twitter:site" content="@VedaThrifts" />
         
         <link rel="canonical" href="https://vedathrifts.com" />
+        
+        <meta name="geo.region" content="KE" />
+        <meta name="geo.placename" content="Nairobi" />
+        <meta name="geo.position" content="-1.286389;36.817223" />
+        <meta name="ICBM" content="-1.286389, 36.817223" />
       </Helmet>
 
       <div className="home">
-        {/* Hero Section */}
         <section className="hero">
-          <div className="hero-overlay"></div>
           <div className="hero-content">
-            <span className="hero-badge">Sustainable Fashion</span>
-            <h1>Welcome to <span>Vedathrifts</span></h1>
+            <h1>Welcome to Vedathrifts</h1>
             <p>Curated vintage • Sustainable style • One-of-a-kind finds</p>
-            <Link to="/shop" className="btn">Shop Now <i className="fas fa-arrow-right"></i></Link>
+            <Link to="/shop" className="btn">Shop Now</Link>
           </div>
         </section>
 
-        {/* Categories Section */}
         {categories.length > 0 && (
           <section className="categories-section">
-            <div className="container">
-              <div className="section-header no-view-all">
-                <h2>Shop by Category</h2>
-                <div className="section-divider"></div>
+            <div className="section-header no-view-all">
+              <h2>Shop by Category</h2>
+            </div>
+            
+            <div className="categories-slider-container">
+              <button className="scroll-btn scroll-left" onClick={scrollCategoriesLeft}>
+                <i className="fas fa-chevron-left"></i>
+              </button>
+              
+              <div className="categories-grid-scroll">
+                {categories.map(category => (
+                  <div key={`category-${category.id}`} className="category-slide">
+                    <CategoryCard category={category} />
+                  </div>
+                ))}
               </div>
               
-              <div className="categories-slider-container">
-                <button className="scroll-btn scroll-left" onClick={scrollCategoriesLeft}>
+              <button className="scroll-btn scroll-right" onClick={scrollCategoriesRight}>
+                <i className="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </section>
+        )}
+
+        {/* Featured Products - Carousel on mobile, grid on desktop */}
+        {featuredProducts.length > 0 && (
+          <section className="featured">
+            <div className="section-header no-view-all">
+              <h2>Featured Products</h2>
+            </div>
+            
+            {/* Desktop grid view */}
+            <div className="product-grid desktop-grid">
+              {featuredProducts.map(product => (
+                <ProductCard key={`featured-${product.id}`} product={product} />
+              ))}
+            </div>
+            
+            {/* Mobile Carousel View */}
+            <div className="mobile-carousel">
+              <div className="carousel-container">
+                <button className="carousel-arrow prev" onClick={goToPreviousFeatured}>
                   <i className="fas fa-chevron-left"></i>
                 </button>
                 
-                <div className="categories-grid-scroll">
-                  {categories.map(category => (
-                    <div key={`category-${category.id}`} className="category-slide">
-                      <CategoryCard category={category} />
-                    </div>
-                  ))}
+                <div className="carousel-slide">
+                  {featuredProducts[currentFeaturedIndex] && (
+                    <ProductCard product={featuredProducts[currentFeaturedIndex]} />
+                  )}
                 </div>
                 
-                <button className="scroll-btn scroll-right" onClick={scrollCategoriesRight}>
+                <button className="carousel-arrow next" onClick={goToNextFeatured}>
                   <i className="fas fa-chevron-right"></i>
                 </button>
               </div>
-            </div>
-          </section>
-        )}
-
-        {/* Featured Products Section */}
-        {featuredProducts.length > 0 && (
-          <section className="featured-section">
-            <div className="container">
-              <div className="section-header no-view-all">
-                <h2>Featured Products</h2>
-                <div className="section-divider"></div>
-                <p className="section-subtitle">Handpicked just for you</p>
-              </div>
               
-              {/* Desktop Grid */}
-              <div className="product-grid desktop-grid">
-                {featuredProducts.map(product => (
-                  <ProductCard key={`featured-${product.id}`} product={product} />
+              {/* Dot indicators */}
+              <div className="carousel-dots">
+                {featuredProducts.map((_, index) => (
+                  <button
+                    key={`featured-dot-${index}`}
+                    className={`carousel-dot ${currentFeaturedIndex === index ? 'active' : ''}`}
+                    onClick={() => goToFeaturedSlide(index)}
+                  />
                 ))}
               </div>
               
-              {/* Mobile Carousel */}
-              <div className="mobile-carousel">
-                <div className="carousel-container">
-                  <button className="carousel-arrow prev" onClick={goToPreviousFeatured}>
-                    <i className="fas fa-chevron-left"></i>
-                  </button>
-                  
-                  <div className="carousel-slide">
-                    {featuredProducts[currentFeaturedIndex] && (
-                      <ProductCard product={featuredProducts[currentFeaturedIndex]} />
-                    )}
-                  </div>
-                  
-                  <button className="carousel-arrow next" onClick={goToNextFeatured}>
-                    <i className="fas fa-chevron-right"></i>
-                  </button>
-                </div>
-                
-                <div className="carousel-dots">
-                  {featuredProducts.map((_, index) => (
-                    <button
-                      key={`featured-dot-${index}`}
-                      className={`carousel-dot ${currentFeaturedIndex === index ? 'active' : ''}`}
-                      onClick={() => goToFeaturedSlide(index)}
-                    />
-                  ))}
-                </div>
+              <div className="carousel-timer-indicator">
+                <div className="timer-progress" key={currentFeaturedIndex}></div>
               </div>
             </div>
           </section>
         )}
 
-        {/* New Arrivals Section */}
+        {/* New Arrivals - Carousel on mobile, grid on desktop */}
         {newArrivals.length > 0 && (
-          <section className="new-arrivals-section">
-            <div className="container">
-              <div className="section-header">
-                <h2>New Arrivals</h2>
-                <div className="section-divider"></div>
-                <p className="section-subtitle">Fresh styles just dropped</p>
+          <section className="new-arrivals">
+            <div className="section-header">
+              <h2>New Arrivals</h2>
+            </div>
+            
+            {/* Desktop grid view */}
+            <div className="product-grid desktop-grid">
+              {newArrivals.map(product => (
+                <ProductCard key={`new-${product.id}`} product={product} />
+              ))}
+            </div>
+            
+            {/* Mobile Carousel View */}
+            <div className="mobile-carousel">
+              <div className="carousel-container">
+                <button className="carousel-arrow prev" onClick={goToPreviousNewArrivals}>
+                  <i className="fas fa-chevron-left"></i>
+                </button>
+                
+                <div className="carousel-slide">
+                  {newArrivals[currentNewArrivalsIndex] && (
+                    <ProductCard product={newArrivals[currentNewArrivalsIndex]} />
+                  )}
+                </div>
+                
+                <button className="carousel-arrow next" onClick={goToNextNewArrivals}>
+                  <i className="fas fa-chevron-right"></i>
+                </button>
               </div>
               
-              {/* Desktop Grid */}
-              <div className="product-grid desktop-grid">
-                {newArrivals.map(product => (
-                  <ProductCard key={`new-${product.id}`} product={product} />
+              {/* Dot indicators */}
+              <div className="carousel-dots">
+                {newArrivals.map((_, index) => (
+                  <button
+                    key={`new-dot-${index}`}
+                    className={`carousel-dot ${currentNewArrivalsIndex === index ? 'active' : ''}`}
+                    onClick={() => goToNewArrivalsSlide(index)}
+                  />
                 ))}
               </div>
               
-              {/* Mobile Carousel */}
-              <div className="mobile-carousel">
-                <div className="carousel-container">
-                  <button className="carousel-arrow prev" onClick={goToPreviousNewArrivals}>
-                    <i className="fas fa-chevron-left"></i>
-                  </button>
-                  
-                  <div className="carousel-slide">
-                    {newArrivals[currentNewArrivalsIndex] && (
-                      <ProductCard product={newArrivals[currentNewArrivalsIndex]} />
-                    )}
-                  </div>
-                  
-                  <button className="carousel-arrow next" onClick={goToNextNewArrivals}>
-                    <i className="fas fa-chevron-right"></i>
-                  </button>
-                </div>
-                
-                <div className="carousel-dots">
-                  {newArrivals.map((_, index) => (
-                    <button
-                      key={`new-dot-${index}`}
-                      className={`carousel-dot ${currentNewArrivalsIndex === index ? 'active' : ''}`}
-                      onClick={() => goToNewArrivalsSlide(index)}
-                    />
-                  ))}
-                </div>
+              <div className="carousel-timer-indicator">
+                <div className="timer-progress" key={currentNewArrivalsIndex}></div>
               </div>
-              
-              <div className="section-footer">
-                <Link to="/shop?sort=newest" className="view-all-link">
-                  View All New Arrivals <i className="fas fa-arrow-right"></i>
-                </Link>
-              </div>
+            </div>
+            
+            <div className="section-footer">
+              <Link to="/shop?sort=newest" className="view-all-link">
+                View All New Arrivals <i className="fas fa-arrow-right"></i>
+              </Link>
             </div>
           </section>
         )}
