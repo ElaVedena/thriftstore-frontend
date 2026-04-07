@@ -177,38 +177,45 @@ function Home() {
         console.log('Fetching home data from database...');
         
         // Fetch featured products (random) and new arrivals (by date) separately
+        // Get more products for featured to avoid overlap with new arrivals
         const [featuredRes, newArrivalsRes, categoriesRes] = await Promise.allSettled([
-          productService.getFeaturedProducts(4),  // Should return random products
-          productService.getNewArrivals(4),       // Should return latest by createdAt
+          productService.getFeaturedProducts(8),  // Fetch more products to ensure we have enough after filtering
+          productService.getNewArrivals(4),       // Only get latest 4 products
           categoryService.getAllCategories()
         ]);
 
-        // Handle featured products - these should be RANDOM
-        if (featuredRes.status === 'fulfilled' && featuredRes.value?.success) {
-          let products = featuredRes.value.data || [];
-          // If the backend doesn't randomize, shuffle them client-side
-          if (products.length > 0) {
-            // Shuffle array for random display
-            const shuffled = [...products].sort(() => 0.5 - Math.random());
-            setFeaturedProducts(shuffled.slice(0, 4));
-          } else {
-            setFeaturedProducts([]);
-          }
-          console.log('Featured products loaded (randomized):', products.length);
-        } else {
-          console.warn('Failed to load featured products');
-          setFeaturedProducts([]);
-        }
-
-        // Handle new arrivals - these should be LATEST BY DATE
+        // Handle new arrivals first - these are the latest 4 products
+        let newArrivalsProducts = [];
         if (newArrivalsRes.status === 'fulfilled' && newArrivalsRes.value?.success) {
-          const products = newArrivalsRes.value.data || [];
-          // Already sorted by createdAt desc from backend, just take first 4
-          setNewArrivals(products.slice(0, 4));
-          console.log('New arrivals loaded (by date):', products.slice(0, 4).length);
+          newArrivalsProducts = newArrivalsRes.value.data || [];
+          setNewArrivals(newArrivalsProducts.slice(0, 4));
+          console.log('New arrivals loaded (by date):', newArrivalsProducts.slice(0, 4).length);
         } else {
           console.warn('Failed to load new arrivals');
           setNewArrivals([]);
+        }
+
+        // Handle featured products - these should be RANDOM and NOT include new arrivals
+        if (featuredRes.status === 'fulfilled' && featuredRes.value?.success) {
+          let products = featuredRes.value.data || [];
+          
+          // Filter out products that are in new arrivals to avoid duplication
+          const newArrivalsIds = new Set(newArrivalsProducts.map(p => p.id));
+          let filteredProducts = products.filter(product => !newArrivalsIds.has(product.id));
+          
+          // If we don't have enough products after filtering, fetch more or use what we have
+          if (filteredProducts.length < 4 && products.length > 0) {
+            // Just use available products, they might be fewer than 4
+            console.log('Limited featured products after filtering:', filteredProducts.length);
+          }
+          
+          // Shuffle array for random display and take first 4
+          const shuffled = [...filteredProducts].sort(() => 0.5 - Math.random());
+          setFeaturedProducts(shuffled.slice(0, 4));
+          console.log('Featured products loaded (randomized, excluding new arrivals):', shuffled.slice(0, 4).length);
+        } else {
+          console.warn('Failed to load featured products');
+          setFeaturedProducts([]);
         }
 
         // Handle categories 
@@ -348,21 +355,21 @@ function Home() {
           </section>
         )}
 
-        {/* Featured Products - Random items */}
+        {/* Featured Products - Random items, 4 on desktop, all on mobile */}
         {featuredProducts.length > 0 && (
           <section className="featured">
             <div className="section-header no-view-all">
               <h2>Featured Products</h2>
             </div>
             
-            {/* Desktop grid view */}
-            <div className="product-grid desktop-grid">
-              {featuredProducts.map(product => (
+            {/* Desktop grid view - only 4 products */}
+            <div className="product-grid desktop-grid desktop-featured-grid">
+              {featuredProducts.slice(0, 4).map(product => (
                 <ProductCard key={`featured-${product.id}`} product={product} />
               ))}
             </div>
             
-            {/* Mobile Carousel View */}
+            {/* Mobile Carousel View - spans all featured products */}
             <div className="mobile-carousel">
               <div className="carousel-container">
                 <button className="carousel-arrow prev" onClick={goToPreviousFeatured}>
@@ -398,21 +405,21 @@ function Home() {
           </section>
         )}
 
-        {/* New Arrivals - Latest by date */}
+        {/* New Arrivals - Latest 4 products, both mobile and desktop */}
         {newArrivals.length > 0 && (
           <section className="new-arrivals">
             <div className="section-header">
               <h2>New Arrivals</h2>
             </div>
             
-            {/* Desktop grid view */}
-            <div className="product-grid desktop-grid">
-              {newArrivals.map(product => (
+            {/* Desktop grid view - exactly 4 products */}
+            <div className="product-grid desktop-grid desktop-newarrivals-grid">
+              {newArrivals.slice(0, 4).map(product => (
                 <ProductCard key={`new-${product.id}`} product={product} />
               ))}
             </div>
             
-            {/* Mobile Carousel View */}
+            {/* Mobile Carousel View - exactly 4 products */}
             <div className="mobile-carousel">
               <div className="carousel-container">
                 <button className="carousel-arrow prev" onClick={goToPreviousNewArrivals}>
