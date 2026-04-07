@@ -13,10 +13,170 @@ function Home() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Carousel states
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
+  const [currentNewArrivalsIndex, setCurrentNewArrivalsIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Refs for scroll containers
   const featuredScrollRef = useRef(null);
   const newArrivalsScrollRef = useRef(null);
+  
+  // Auto-slide timers
+  const featuredTimerRef = useRef(null);
+  const newArrivalsTimerRef = useRef(null);
+
+  // Check if screen is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Auto-slide for featured products on mobile
+  useEffect(() => {
+    if (isMobile && featuredProducts.length > 1) {
+      // Clear any existing timer
+      if (featuredTimerRef.current) {
+        clearInterval(featuredTimerRef.current);
+      }
+      
+      // Start new timer - change every 30 seconds
+      featuredTimerRef.current = setInterval(() => {
+        setCurrentFeaturedIndex((prevIndex) => 
+          prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 30000); // 30 seconds
+      
+      return () => {
+        if (featuredTimerRef.current) {
+          clearInterval(featuredTimerRef.current);
+        }
+      };
+    }
+  }, [isMobile, featuredProducts.length]);
+
+  // Auto-slide for new arrivals on mobile
+  useEffect(() => {
+    if (isMobile && newArrivals.length > 1) {
+      // Clear any existing timer
+      if (newArrivalsTimerRef.current) {
+        clearInterval(newArrivalsTimerRef.current);
+      }
+      
+      // Start new timer - change every 30 seconds
+      newArrivalsTimerRef.current = setInterval(() => {
+        setCurrentNewArrivalsIndex((prevIndex) => 
+          prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 30000); // 30 seconds
+      
+      return () => {
+        if (newArrivalsTimerRef.current) {
+          clearInterval(newArrivalsTimerRef.current);
+        }
+      };
+    }
+  }, [isMobile, newArrivals.length]);
+
+  // Reset current index when products change
+  useEffect(() => {
+    setCurrentFeaturedIndex(0);
+    setCurrentNewArrivalsIndex(0);
+  }, [featuredProducts, newArrivals]);
+
+  // Manual navigation for featured carousel
+  const goToPreviousFeatured = () => {
+    setCurrentFeaturedIndex((prevIndex) => 
+      prevIndex === 0 ? featuredProducts.length - 1 : prevIndex - 1
+    );
+    // Reset timer
+    if (featuredTimerRef.current) {
+      clearInterval(featuredTimerRef.current);
+      featuredTimerRef.current = setInterval(() => {
+        setCurrentFeaturedIndex((prevIndex) => 
+          prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 30000);
+    }
+  };
+
+  const goToNextFeatured = () => {
+    setCurrentFeaturedIndex((prevIndex) => 
+      prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
+    );
+    // Reset timer
+    if (featuredTimerRef.current) {
+      clearInterval(featuredTimerRef.current);
+      featuredTimerRef.current = setInterval(() => {
+        setCurrentFeaturedIndex((prevIndex) => 
+          prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 30000);
+    }
+  };
+
+  // Manual navigation for new arrivals carousel
+  const goToPreviousNewArrivals = () => {
+    setCurrentNewArrivalsIndex((prevIndex) => 
+      prevIndex === 0 ? newArrivals.length - 1 : prevIndex - 1
+    );
+    // Reset timer
+    if (newArrivalsTimerRef.current) {
+      clearInterval(newArrivalsTimerRef.current);
+      newArrivalsTimerRef.current = setInterval(() => {
+        setCurrentNewArrivalsIndex((prevIndex) => 
+          prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 30000);
+    }
+  };
+
+  const goToNextNewArrivals = () => {
+    setCurrentNewArrivalsIndex((prevIndex) => 
+      prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
+    );
+    // Reset timer
+    if (newArrivalsTimerRef.current) {
+      clearInterval(newArrivalsTimerRef.current);
+      newArrivalsTimerRef.current = setInterval(() => {
+        setCurrentNewArrivalsIndex((prevIndex) => 
+          prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 30000);
+    }
+  };
+
+  // Dot indicators navigation
+  const goToFeaturedSlide = (index) => {
+    setCurrentFeaturedIndex(index);
+    // Reset timer
+    if (featuredTimerRef.current) {
+      clearInterval(featuredTimerRef.current);
+      featuredTimerRef.current = setInterval(() => {
+        setCurrentFeaturedIndex((prevIndex) => 
+          prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 30000);
+    }
+  };
+
+  const goToNewArrivalsSlide = (index) => {
+    setCurrentNewArrivalsIndex(index);
+    // Reset timer
+    if (newArrivalsTimerRef.current) {
+      clearInterval(newArrivalsTimerRef.current);
+      newArrivalsTimerRef.current = setInterval(() => {
+        setCurrentNewArrivalsIndex((prevIndex) => 
+          prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 30000);
+    }
+  };
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -26,14 +186,12 @@ function Home() {
         
         console.log('Fetching home data from database...');
         
-        // Fetch only 4 products for featured and new arrivals
         const [featuredRes, newArrivalsRes, categoriesRes] = await Promise.allSettled([
           productService.getFeaturedProducts(4),
           productService.getNewArrivals(4),
           categoryService.getAllCategories()
         ]);
 
-        // Handle featured products - limit to 4
         if (featuredRes.status === 'fulfilled' && featuredRes.value?.success) {
           const products = featuredRes.value.data || [];
           setFeaturedProducts(products.slice(0, 4));
@@ -43,7 +201,6 @@ function Home() {
           setFeaturedProducts([]);
         }
 
-        // Handle new arrivals - limit to 4
         if (newArrivalsRes.status === 'fulfilled' && newArrivalsRes.value?.success) {
           const products = newArrivalsRes.value.data || [];
           setNewArrivals(products.slice(0, 4));
@@ -53,7 +210,6 @@ function Home() {
           setNewArrivals([]);
         }
 
-        // Handle categories 
         if (categoriesRes.status === 'fulfilled' && categoriesRes.value?.success) {
           const categoryData = categoriesRes.value.data || [];
           setCategories(categoryData);
@@ -86,32 +242,6 @@ function Home() {
     const container = document.querySelector('.categories-grid-scroll');
     if (container) {
       container.scrollBy({ left: 300, behavior: 'smooth' });
-    }
-  };
-
-  // Scroll handlers for featured products
-  const scrollFeaturedLeft = () => {
-    if (featuredScrollRef.current) {
-      featuredScrollRef.current.scrollBy({ left: -280, behavior: 'smooth' });
-    }
-  };
-
-  const scrollFeaturedRight = () => {
-    if (featuredScrollRef.current) {
-      featuredScrollRef.current.scrollBy({ left: 280, behavior: 'smooth' });
-    }
-  };
-
-  // Scroll handlers for new arrivals
-  const scrollNewArrivalsLeft = () => {
-    if (newArrivalsScrollRef.current) {
-      newArrivalsScrollRef.current.scrollBy({ left: -280, behavior: 'smooth' });
-    }
-  };
-
-  const scrollNewArrivalsRight = () => {
-    if (newArrivalsScrollRef.current) {
-      newArrivalsScrollRef.current.scrollBy({ left: 280, behavior: 'smooth' });
     }
   };
 
@@ -152,14 +282,12 @@ function Home() {
   return (
     <>
       <Helmet>
-        {/* Primary SEO */}
         <title>VedaThrifts - Best Thrift Store in Kenya | Affordable Secondhand Fashion</title>
         <meta name="description" content="Discover Kenya's best thrift store. Shop quality secondhand clothes, vintage dresses, and sustainable fashion at unbeatable prices. Free delivery available in Nairobi and across Kenya." />
         <meta name="keywords" content="thrift store Kenya, secondhand fashion, vintage clothing, affordable clothes, sustainable fashion, pre-loved items, VedaThrifts, thrift shopping Nairobi" />
         <meta name="author" content="VedaThrifts" />
         <meta name="robots" content="index, follow" />
         
-        {/* Open Graph / Facebook / WhatsApp */}
         <meta property="og:title" content="VedaThrifts - Best Thrift Store in Kenya" />
         <meta property="og:description" content="Discover Kenya's best thrift store. Shop quality secondhand clothes, vintage dresses, and sustainable fashion at unbeatable prices." />
         <meta property="og:type" content="website" />
@@ -169,17 +297,14 @@ function Home() {
         <meta property="og:site_name" content="VedaThrifts" />
         <meta property="og:locale" content="en_KE" />
         
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="VedaThrifts - Best Thrift Store in Kenya" />
         <meta name="twitter:description" content="Discover Kenya's best thrift store. Shop quality secondhand clothes, vintage dresses, and sustainable fashion at unbeatable prices." />
         <meta name="twitter:image" content="https://vedathrifts.com/og-image-home.jpg" />
         <meta name="twitter:site" content="@VedaThrifts" />
         
-        {/* Canonical URL */}
         <link rel="canonical" href="https://vedathrifts.com" />
         
-        {/* Additional SEO */}
         <meta name="geo.region" content="KE" />
         <meta name="geo.placename" content="Nairobi" />
         <meta name="geo.position" content="-1.286389;36.817223" />
@@ -187,7 +312,6 @@ function Home() {
       </Helmet>
 
       <div className="home">
-        {/* Hero section with background image */}
         <section className="hero">
           <div className="hero-content">
             <h1>Welcome to Vedathrifts</h1>
@@ -196,7 +320,6 @@ function Home() {
           </div>
         </section>
 
-        {/* Categories Section - No View All button */}
         {categories.length > 0 && (
           <section className="categories-section">
             <div className="section-header no-view-all">
@@ -223,81 +346,104 @@ function Home() {
           </section>
         )}
 
-        {/* Featured products - Only 4 products, NO View All button */}
+        {/* Featured Products - Carousel on mobile, grid on desktop */}
         {featuredProducts.length > 0 && (
           <section className="featured">
             <div className="section-header no-view-all">
               <h2>Featured Products</h2>
             </div>
             
-            {/* Desktop grid view - 4 products */}
+            {/* Desktop grid view */}
             <div className="product-grid desktop-grid">
               {featuredProducts.map(product => (
-                <ProductCard 
-                  key={`featured-${product.id}`} 
-                  product={product} 
-                />
+                <ProductCard key={`featured-${product.id}`} product={product} />
               ))}
             </div>
             
-            {/* Mobile horizontal scroll view - 4 products */}
-            <div className="product-slider-container mobile-scroll">
-              <button className="scroll-btn scroll-left" onClick={scrollFeaturedLeft}>
-                <i className="fas fa-chevron-left"></i>
-              </button>
+            {/* Mobile Carousel View */}
+            <div className="mobile-carousel">
+              <div className="carousel-container">
+                <button className="carousel-arrow prev" onClick={goToPreviousFeatured}>
+                  <i className="fas fa-chevron-left"></i>
+                </button>
+                
+                <div className="carousel-slide">
+                  {featuredProducts[currentFeaturedIndex] && (
+                    <ProductCard product={featuredProducts[currentFeaturedIndex]} />
+                  )}
+                </div>
+                
+                <button className="carousel-arrow next" onClick={goToNextFeatured}>
+                  <i className="fas fa-chevron-right"></i>
+                </button>
+              </div>
               
-              <div className="product-scroll" ref={featuredScrollRef}>
-                {featuredProducts.map(product => (
-                  <div key={`featured-mobile-${product.id}`} className="product-slide">
-                    <ProductCard product={product} />
-                  </div>
+              {/* Dot indicators */}
+              <div className="carousel-dots">
+                {featuredProducts.map((_, index) => (
+                  <button
+                    key={`featured-dot-${index}`}
+                    className={`carousel-dot ${currentFeaturedIndex === index ? 'active' : ''}`}
+                    onClick={() => goToFeaturedSlide(index)}
+                  />
                 ))}
               </div>
               
-              <button className="scroll-btn scroll-right" onClick={scrollFeaturedRight}>
-                <i className="fas fa-chevron-right"></i>
-              </button>
+              <div className="carousel-timer-indicator">
+                <div className="timer-progress" key={currentFeaturedIndex}></div>
+              </div>
             </div>
           </section>
         )}
 
-        {/* New arrivals - Only 4 products, View All button at the bottom */}
+        {/* New Arrivals - Carousel on mobile, grid on desktop */}
         {newArrivals.length > 0 && (
           <section className="new-arrivals">
             <div className="section-header">
               <h2>New Arrivals</h2>
             </div>
             
-            {/* Desktop grid view - 4 products */}
+            {/* Desktop grid view */}
             <div className="product-grid desktop-grid">
               {newArrivals.map(product => (
-                <ProductCard 
-                  key={`new-${product.id}`} 
-                  product={product} 
-                />
+                <ProductCard key={`new-${product.id}`} product={product} />
               ))}
             </div>
             
-            {/* Mobile horizontal scroll view - 4 products */}
-            <div className="product-slider-container mobile-scroll">
-              <button className="scroll-btn scroll-left" onClick={scrollNewArrivalsLeft}>
-                <i className="fas fa-chevron-left"></i>
-              </button>
+            {/* Mobile Carousel View */}
+            <div className="mobile-carousel">
+              <div className="carousel-container">
+                <button className="carousel-arrow prev" onClick={goToPreviousNewArrivals}>
+                  <i className="fas fa-chevron-left"></i>
+                </button>
+                
+                <div className="carousel-slide">
+                  {newArrivals[currentNewArrivalsIndex] && (
+                    <ProductCard product={newArrivals[currentNewArrivalsIndex]} />
+                  )}
+                </div>
+                
+                <button className="carousel-arrow next" onClick={goToNextNewArrivals}>
+                  <i className="fas fa-chevron-right"></i>
+                </button>
+              </div>
               
-              <div className="product-scroll" ref={newArrivalsScrollRef}>
-                {newArrivals.map(product => (
-                  <div key={`new-mobile-${product.id}`} className="product-slide">
-                    <ProductCard product={product} />
-                  </div>
+              {/* Dot indicators */}
+              <div className="carousel-dots">
+                {newArrivals.map((_, index) => (
+                  <button
+                    key={`new-dot-${index}`}
+                    className={`carousel-dot ${currentNewArrivalsIndex === index ? 'active' : ''}`}
+                    onClick={() => goToNewArrivalsSlide(index)}
+                  />
                 ))}
               </div>
               
-              <button className="scroll-btn scroll-right" onClick={scrollNewArrivalsRight}>
-                <i className="fas fa-chevron-right"></i>
-              </button>
+              <div className="carousel-timer-indicator">
+                <div className="timer-progress" key={currentNewArrivalsIndex}></div>
+              </div>
             </div>
             
-            {/* View All button at the bottom of new arrivals section */}
             <div className="section-footer">
               <Link to="/shop?sort=newest" className="view-all-link">
                 View All New Arrivals <i className="fas fa-arrow-right"></i>
