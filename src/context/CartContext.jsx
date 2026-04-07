@@ -388,7 +388,7 @@ export function CartProvider({ children }) {
                     }
                     showError(response.message || 'Failed to clear cart');
                 } else {
-                    showInfo('Cart cleared', { duration: 2000 });
+                    showSuccess('Cart cleared', { duration: 2000 }); // Changed to green
                 }
             } catch (error) {
                 console.error('Failed to clear cart:', error);
@@ -400,9 +400,9 @@ export function CartProvider({ children }) {
                 showError('Failed to clear cart. Please try again.');
             }
         } else {
-            showInfo('Cart cleared', { duration: 2000 });
+            showSuccess('Cart cleared', { duration: 2000 }); // Changed to green
         }
-    }, [isAuthenticated, user, showError, showInfo]);
+    }, [isAuthenticated, user, showError, showSuccess]);
 
     const refreshCart = useCallback(async () => {
         if (!isAuthenticated || !user) return;
