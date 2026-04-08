@@ -1,13 +1,21 @@
+import { useState } from 'react';
 import '../../components/css/SortBar.css';
 
 function SortBar({ sortBy, onSortChange, totalProducts, viewMode, onViewModeChange }) {
     const sortOptions = [
-        { value: 'default', label: 'Default Sorting' },
+        { value: 'relevance', label: 'Default Sorting' },
         { value: 'price-low', label: 'Price: Low to High' },
         { value: 'price-high', label: 'Price: High to Low' },
         { value: 'rating', label: 'Top Rated' },
         { value: 'name', label: 'Name: A to Z' }
     ];
+
+    const handleSortChange = (e) => {
+        const newSortValue = e.target.value;
+        if (onSortChange) {
+            onSortChange(newSortValue);
+        }
+    };
 
     return (
         <div className="sort-bar">
@@ -23,7 +31,7 @@ function SortBar({ sortBy, onSortChange, totalProducts, viewMode, onViewModeChan
                     <select
                         id="sort"
                         value={sortBy}
-                        onChange={(e) => onSortChange(e.target.value)}
+                        onChange={handleSortChange}
                         className="sort-select"
                     >
                         {sortOptions.map(option => (
@@ -37,14 +45,14 @@ function SortBar({ sortBy, onSortChange, totalProducts, viewMode, onViewModeChan
                 <div className="view-mode">
                     <button
                         className={`view-mode-btn ${viewMode === 'grid' ? 'active' : ''}`}
-                        onClick={() => onViewModeChange('grid')}
+                        onClick={() => onViewModeChange && onViewModeChange('grid')}
                         title="Grid view"
                     >
                         <i className="fas fa-th"></i>
                     </button>
                     <button
                         className={`view-mode-btn ${viewMode === 'list' ? 'active' : ''}`}
-                        onClick={() => onViewModeChange('list')}
+                        onClick={() => onViewModeChange && onViewModeChange('list')}
                         title="List view"
                     >
                         <i className="fas fa-list"></i>
