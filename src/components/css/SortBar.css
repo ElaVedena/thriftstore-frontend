@@ -3,7 +3,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0;
+    padding: 0.4rem 0;
     margin-bottom: 0.75rem;
     border-bottom: 1px solid #eee;
     flex-wrap: wrap;
@@ -59,6 +59,12 @@
     background-size: 0.7rem;
 }
 
+/* Style the dropdown options to be smaller */
+.sort-select option {
+    font-size: 0.7rem;
+    padding: 0.3rem;
+}
+
 .sort-select:focus {
     outline: none;
     border-color: #CEABB1;
@@ -101,7 +107,7 @@
 /* Mobile Responsive for Sort Bar */
 @media (max-width: 768px) {
     .sort-bar {
-        padding: 0.4rem 0;
+        padding: 0.35rem 0;
         margin-bottom: 0.6rem;
         gap: 0.4rem;
     }
@@ -118,6 +124,10 @@
         font-size: 0.6rem;
         padding: 0.3rem 1.3rem 0.3rem 0.5rem;
         background-size: 0.6rem;
+    }
+    
+    .sort-select option {
+        font-size: 0.6rem;
     }
     
     .view-mode-btn {
@@ -139,7 +149,7 @@
 
 @media (max-width: 480px) {
     .sort-bar {
-        padding: 0.35rem 0;
+        padding: 0.3rem 0;
         margin-bottom: 0.5rem;
     }
     
@@ -160,6 +170,10 @@
     .sort-select {
         font-size: 0.55rem;
         padding: 0.25rem 1.2rem 0.25rem 0.45rem;
+    }
+    
+    .sort-select option {
+        font-size: 0.55rem;
     }
     
     .view-mode-btn {
