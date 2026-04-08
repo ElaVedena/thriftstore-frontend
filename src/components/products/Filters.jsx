@@ -138,7 +138,7 @@ function Filters({ filters, onFilterChange, onClearFilters, products }) {
                                     }
                                 }}
                             >
-                                <option value="">All</option>
+                                <option value="">All categories</option>
                                 {categories.map(cat => (
                                     <option key={cat} value={cat}>
                                         {capitalize(cat)}
@@ -161,7 +161,7 @@ function Filters({ filters, onFilterChange, onClearFilters, products }) {
                                     }
                                 }}
                             >
-                                <option value="">All</option>
+                                <option value="">All sizes</option>
                                 {sizes.map(size => (
                                     <option key={size} value={size}>{size}</option>
                                 ))}
@@ -182,7 +182,7 @@ function Filters({ filters, onFilterChange, onClearFilters, products }) {
                                     }
                                 }}
                             >
-                                <option value="">All</option>
+                                <option value="">All conditions</option>
                                 {conditions.map(condition => (
                                     <option key={condition} value={condition}>
                                         {capitalize(condition)}
@@ -205,7 +205,7 @@ function Filters({ filters, onFilterChange, onClearFilters, products }) {
                                     }
                                 }}
                             >
-                                <option value="">All</option>
+                                <option value="">All brands</option>
                                 {brands.map(brand => (
                                     <option key={brand} value={brand}>
                                         {capitalize(brand)}
