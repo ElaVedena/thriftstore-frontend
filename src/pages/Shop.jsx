@@ -148,7 +148,20 @@ function Shop() {
     };
 
     let filtered = filterProducts(allProducts, filterCriteria);
-    filtered = sortProducts(filtered, sortBy);
+    
+    // Apply sorting based on sortBy value
+    if (sortBy === 'price-low') {
+      filtered = [...filtered].sort((a, b) => (a.price || 0) - (b.price || 0));
+    } else if (sortBy === 'price-high') {
+      filtered = [...filtered].sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else if (sortBy === 'rating') {
+      filtered = [...filtered].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    } else if (sortBy === 'name') {
+      filtered = [...filtered].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    } else if (sortBy === 'relevance') {
+      // Default sorting - by createdAt or id
+      filtered = [...filtered].sort((a, b) => (b.createdAt || b.id) - (a.createdAt || a.id));
+    }
 
     setTotalProducts(filtered.length);
     setTotalPages(Math.ceil(filtered.length / productsPerPage));
