@@ -50,33 +50,53 @@
     border-radius: 4px;
     background: white;
     cursor: pointer;
-    font-size: 0.7rem;
+    font-size: 0.7rem !important;
     color: #333;
     appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 0.4rem center;
     background-size: 0.65rem;
     line-height: 1.2;
+    font-family: inherit;
 }
 
-/* Style the dropdown options and selected value to be small */
+/* Force the selected value to stay small */
 .sort-select,
 .sort-select option,
 .sort-select:focus,
 .sort-select:active,
-.sort-select[value] {
-    font-size: 0.7rem;
+.sort-select[value],
+.sort-select:-moz-focusring,
+.sort-select::-ms-expand {
+    font-size: 0.7rem !important;
 }
 
 .sort-select option {
     padding: 0.2rem;
-    font-size: 0.7rem;
+    font-size: 0.7rem !important;
 }
 
 .sort-select:focus {
     outline: none;
     border-color: #CEABB1;
+}
+
+/* Override browser default styling for selected option */
+.sort-select::-ms-value {
+    font-size: 0.7rem !important;
+}
+
+/* For Firefox */
+.sort-select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #333;
+}
+
+.sort-select:-moz-focusring option {
+    font-size: 0.7rem !important;
 }
 
 .view-mode {
@@ -133,8 +153,9 @@
     .sort-select option,
     .sort-select:focus,
     .sort-select:active,
-    .sort-select[value] {
-        font-size: 0.65rem;
+    .sort-select[value],
+    .sort-select:-moz-focusring {
+        font-size: 0.65rem !important;
     }
     
     .sort-select {
@@ -183,8 +204,9 @@
     .sort-select option,
     .sort-select:focus,
     .sort-select:active,
-    .sort-select[value] {
-        font-size: 0.6rem;
+    .sort-select[value],
+    .sort-select:-moz-focusring {
+        font-size: 0.6rem !important;
     }
     
     .sort-select {
