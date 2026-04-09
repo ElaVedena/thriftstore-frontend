@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import ProductCard from "./ProductCard";
 import '../../components/css/ProductGrid.css';
 
@@ -25,4 +26,4 @@ function ProductGrid({ products, onAddToCart }) {
     );
 }
 
-export default ProductGrid;
+export default memo(ProductGrid);
