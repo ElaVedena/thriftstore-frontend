@@ -95,9 +95,9 @@ function App() {
               </KeepAlive>
             </div>
             
-            {/* Other pages that don't need caching */}
+            {/* Other pages that don't need caching - add key to force re-render on URL change */}
             <div style={{ display: activePage !== '/' && activePage !== '/shop' ? 'block' : 'none' }}>
-              <Routes location={location}>
+              <Routes location={location} key={location.pathname}>
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/beauty" element={<Beauty />} />
