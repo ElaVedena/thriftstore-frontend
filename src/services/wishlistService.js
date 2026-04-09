@@ -1,7 +1,7 @@
 import api from './api';
 
 export const wishlistService = {
-    // Get user's wishlist with product details (including stock)
+    // Get user's wishlist with product details
     getWishlist: async () => {
         try {
             const response = await api.get('/wishlist');
@@ -130,7 +130,6 @@ export const wishlistService = {
             };
         }
     },
-
     // Clear entire wishlist
     clearWishlist: async () => {
         try {
