@@ -223,7 +223,7 @@ export const wishlistService = {
             console.error('Get wishlist count error:', error);
             return {
                 success: false,
-                count: 0,s
+                count: 0,
                 message: error.response?.data?.message || 'Failed to get wishlist count'
             };
         }
