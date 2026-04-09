@@ -1,17 +1,19 @@
 .search-bar-container {
     position: relative;
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
 }
+
 .search-bar {
-   display: flex;
-   position: relative;
-   width: 100%;
+    display: flex;
+    position: relative;
+    width: 100%;
 }
+
 .search-input {
-   width: 100%;
-    padding: 1rem 1.2rem;
-    padding-right: 3rem;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    padding-right: 3.5rem;
     border: 2px solid #e0e0e0;
     border-radius: 50px;
     font-size: 1rem;
@@ -24,28 +26,31 @@
     border-color: #CEABB1;
     box-shadow: 0 0 0 3px rgba(206, 171, 177, 0.2);
 }
+
 .search-button {
     position: absolute;
-    right: 5px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
     background: #CEABB1;
     border: none;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     color: white;
-     display: flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
 .search-button:hover {
     background: #b88e96;
     transform: translateY(-50%) scale(1.05);
 }
-.search-suggestions{
+
+.search-suggestions {
     position: absolute;
     top: 100%;
     left: 0;
@@ -58,7 +63,6 @@
     max-height: 300px;
     overflow-y: auto;
 }
-
 
 .suggestion-item {
     padding: 0.8rem 1rem;
@@ -84,7 +88,30 @@
     font-size: 0.95rem;
 }
 
-/* Responsive */
+/* Desktop improvements */
+@media (min-width: 769px) {
+    .search-bar-container {
+        max-width: 550px;
+    }
+    
+    .search-input {
+        padding: 1.1rem 1.8rem;
+        padding-right: 4rem;
+        font-size: 1.05rem;
+    }
+    
+    .search-button {
+        width: 48px;
+        height: 48px;
+        right: 10px;
+    }
+    
+    .search-button i {
+        font-size: 1.1rem;
+    }
+}
+
+/* Mobile - keep as is */
 @media (max-width: 768px) {
     .search-bar-container {
         max-width: 100%;
@@ -93,10 +120,16 @@
     .search-input {
         padding: 0.8rem 1rem;
         padding-right: 2.8rem;
+        font-size: 0.9rem;
     }
     
     .search-button {
         width: 35px;
         height: 35px;
+        right: 5px;
+    }
+    
+    .search-button i {
+        font-size: 0.8rem;
     }
 }
