@@ -116,7 +116,7 @@ function Shop() {
     }
   }, [location.pathname]);
 
-  // Load filters from URL on initial mount only (only on shop page)
+  // Load filters from URL on initial mount only 
   useEffect(() => {
     // Only load filters if we're on the shop page
     if (location.pathname !== '/shop') return;
