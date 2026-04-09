@@ -161,19 +161,6 @@ body:has(.checkout-page) .footer {
     color: #2d2d2d;
 }
 
-.email-notice {
-    background: #e8f4fd;
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    color: #0369a1;
-    font-size: 0.9rem;
-    text-align: left;
-}
-
 /* Payment Success */
 .payment-success {
     background: white;
@@ -204,18 +191,6 @@ body:has(.checkout-page) .footer {
     font-weight: 600;
     color: #CEABB1;
     font-size: 1.1rem;
-}
-
-.email-confirm {
-    background: #e8f4fd;
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1rem 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    color: #0369a1;
 }
 
 .redirect-message {
@@ -317,7 +292,7 @@ body:has(.checkout-page) .footer {
     transform: translateY(-2px);
 }
 
-/* ===== RESPONSIVE BREAKPOINTS ===== */
+/* ===== RESPONSIVE BREAKPOINTS - REDUCE TEXT SIZE ONLY, KEEP 2 COLUMNS ===== */
 
 /* Tablet (max-width: 1024px) */
 @media (max-width: 1024px) {
@@ -331,48 +306,34 @@ body:has(.checkout-page) .footer {
     }
 }
 
-/* Mobile */
+/* Mobile - Reduce text sizes, KEEP 2 COLUMNS */
 @media (max-width: 768px) {
     .checkout-page {
-        padding: 0.8rem;
+        padding: 1rem;
     }
     
     .checkout-header h1 {
-        font-size: 1.3rem;
-        margin-bottom: 0.8rem;
-    }
-    
-    .checkout-header h1::after {
-        width: 40px;
-        height: 2px;
-    }
-    
-    .checkout-steps {
-        margin: 0.8rem 0;
+        font-size: 1.5rem;
     }
     
     .step-number {
-        width: 28px;
-        height: 28px;
-        font-size: 0.7rem;
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
     }
     
     .step-label {
-        font-size: 0.65rem;
+        font-size: 0.75rem;
     }
     
     .step-line {
-        width: 30px;
-        margin: 0 0.4rem;
+        width: 50px;
     }
     
+    /* KEEP 2 COLUMNS - just reduce gap */
     .checkout-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 300px;
         gap: 1rem;
-    }
-    
-    .checkout-sidebar {
-        order: -1;
     }
     
     .payment-processing,
@@ -393,36 +354,20 @@ body:has(.checkout-page) .footer {
     .payment-success h2,
     .payment-error h3,
     .payment-timeout h3 {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
     
     .status-message {
-        font-size: 0.75rem;
-        margin-bottom: 1rem;
+        font-size: 0.8rem;
     }
     
     .detail-row {
-        font-size: 0.7rem;
+        font-size: 0.75rem;
         padding: 0.3rem 0;
-    }
-    
-    .email-notice {
-        font-size: 0.7rem;
-        padding: 0.7rem;
-        gap: 0.5rem;
-    }
-    
-    .email-notice i {
-        font-size: 0.8rem;
     }
     
     .order-number {
         font-size: 0.9rem;
-    }
-    
-    .email-confirm {
-        font-size: 0.7rem;
-        padding: 0.7rem;
     }
     
     .redirect-message {
@@ -436,42 +381,51 @@ body:has(.checkout-page) .footer {
     }
 }
 
-/* Small Mobile (max-width: 480px) */
-@media (max-width: 480px) {
-    .checkout-page {
-        padding: 0.6rem;
+/* Small Mobile (max-width: 600px) - Keep 2 columns, reduce further */
+@media (max-width: 600px) {
+    .checkout-container {
+        grid-template-columns: 1fr 250px;
+        gap: 0.8rem;
     }
     
+    .step-number {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+    
+    .step-label {
+        font-size: 0.7rem;
+    }
+    
+    .step-line {
+        width: 35px;
+    }
+}
+
+/* Extra Small Mobile (max-width: 480px) - Keep 2 columns */
+@media (max-width: 480px) {
     .checkout-header h1 {
-        font-size: 1.1rem;
+        font-size: 1.3rem;
+    }
+    
+    .checkout-container {
+        grid-template-columns: 1fr 220px;
+        gap: 0.6rem;
     }
     
     .step-number {
         width: 24px;
         height: 24px;
-        font-size: 0.6rem;
+        font-size: 0.65rem;
     }
     
     .step-label {
-        font-size: 0.55rem;
+        font-size: 0.6rem;
     }
     
     .step-line {
-        width: 20px;
-    }
-    
-    .payment-processing,
-    .payment-success,
-    .payment-error-container,
-    .payment-timeout {
-        padding: 0.8rem;
-    }
-    
-    .status-icon i,
-    .success-icon i,
-    .payment-error i,
-    .payment-timeout i {
-        font-size: 2rem;
+        width: 25px;
     }
     
     .payment-status-card h3,
@@ -487,11 +441,6 @@ body:has(.checkout-page) .footer {
     
     .detail-row {
         font-size: 0.65rem;
-    }
-    
-    .email-notice {
-        font-size: 0.65rem;
-        padding: 0.5rem;
     }
     
     .retry-btn,

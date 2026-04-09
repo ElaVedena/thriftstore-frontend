@@ -15,17 +15,15 @@ function Checkout() {
     const [step, setStep] = useState('shipping');
     const [shippingInfo, setShippingInfo] = useState(null);
     const [orderNumber, setOrderNumber] = useState(null);
-    const [paymentStatus, setPaymentStatus] = useState('idle'); // idle, processing, success, failed, timeout
+    const [paymentStatus, setPaymentStatus] = useState('idle');
     const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-    // Clear any pending orders on mount
     useEffect(() => {
         const pendingOrder = localStorage.getItem('pendingOrder');
         if (pendingOrder) {
             localStorage.removeItem('pendingOrder');
         }
         
-        // Cleanup polling on unmount
         return () => {
             const pollInterval = sessionStorage.getItem('pollInterval');
             if (pollInterval) {
@@ -35,38 +33,23 @@ function Checkout() {
         };
     }, []);
 
-    // Define shipping cost function - MATCHING OrderSummary.jsx
     const getShippingCost = (county) => {
         if (!county) return 0;
         
-        // Nairobi and surrounding counties
         const nairobiRegion = ['Nairobi', 'Kiambu', 'Machakos', 'Kajiado'];
-        // Central Kenya counties
         const centralRegion = ['Muranga', 'Nyeri', 'Kirinyaga', 'Nyandarua', 'Embu', 'Meru', 'Tharaka Nithi'];
-        // Coastal counties
         const coastalRegion = ['Mombasa', 'Kwale', 'Kilifi', 'Tana River', 'Lamu', 'Taita Taveta'];
-        // Western Kenya counties
         const westernRegion = ['Kisumu', 'Kisii', 'Nyamira', 'Homa Bay', 'Migori', 'Siaya', 'Vihiga', 'Kakamega', 'Bungoma', 'Busia', 'Trans Nzoia'];
-        // Rift Valley counties
         const riftRegion = ['Nakuru', 'Uasin Gishu', 'Kericho', 'Bomet', 'Nandi', 'Baringo', 'Laikipia', 'Samburu', 'Turkana', 'West Pokot', 'Elgeyo Marakwet'];
-        // Northern and remote counties (higher shipping cost)
         const remoteRegion = ['Garissa', 'Wajir', 'Mandera', 'Marsabit', 'Isiolo'];
         
-        if (nairobiRegion.includes(county)) {
-            return 150;
-        } else if (centralRegion.includes(county)) {
-            return 250;
-        } else if (coastalRegion.includes(county)) {
-            return 350;
-        } else if (westernRegion.includes(county)) {
-            return 300;
-        } else if (riftRegion.includes(county)) {
-            return 250;
-        } else if (remoteRegion.includes(county)) {
-            return 500;
-        } else {
-            return 400;
-        }
+        if (nairobiRegion.includes(county)) return 150;
+        if (centralRegion.includes(county)) return 250;
+        if (coastalRegion.includes(county)) return 350;
+        if (westernRegion.includes(county)) return 300;
+        if (riftRegion.includes(county)) return 250;
+        if (remoteRegion.includes(county)) return 500;
+        return 400;
     };
 
     const handleShippingSubmit = (data) => {
@@ -119,8 +102,6 @@ function Checkout() {
                     orderNum = response.data.data.orderNumber;
                 } else if (response.data?.orderNumber) {
                     orderNum = response.data.orderNumber;
-                } else if (response.data?.data?.order_number) {
-                    orderNum = response.data.data.order_number;
                 }
                 
                 if (!orderNum) {
@@ -136,12 +117,7 @@ function Checkout() {
                 
                 showInfo('STK Push sent to your phone. Please check M-Pesa and enter PIN to complete payment.', {
                     title: 'Payment Initiated',
-                    duration: 8000
-                });
-
-                showInfo(`Order confirmation will be sent to ${shippingInfo.email}`, {
-                    title: 'Check Your Email',
-                    duration: 5000
+                    duration: 10000
                 });
                 
                 startPolling(orderNum);
@@ -369,10 +345,6 @@ function Checkout() {
                                                 <strong>KSh {currentShipping.toFixed(2)}</strong>
                                             </div>
                                         </div>
-                                        <div className="email-notice">
-                                            <i className="fas fa-envelope"></i>
-                                            <span>A confirmation email will be sent to {shippingInfo?.email}</span>
-                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -385,10 +357,6 @@ function Checkout() {
                                     <h2>Payment Successful!</h2>
                                     <p>Your order has been confirmed.</p>
                                     <p className="order-number">Order #{orderNumber}</p>
-                                    <p className="email-confirm">
-                                        <i className="fas fa-envelope"></i>
-                                        Confirmation email sent to {shippingInfo?.email}
-                                    </p>
                                     <p className="redirect-message">Redirecting to confirmation page...</p>
                                 </div>
                             )}
