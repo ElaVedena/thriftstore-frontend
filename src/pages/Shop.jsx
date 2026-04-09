@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+// Shop.jsx - Add cache flag to prevent refetching
+import { useState, useEffect, useRef } from 'react';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { productService } from '../services/productService';
 import { useNotification } from '../hooks/useNotification';
@@ -12,6 +13,7 @@ import '../components/css/Shop.css';
 
 function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const [allProducts, setAllProducts] = useState([]); 
   const [displayedProducts, setDisplayedProducts] = useState([]); 
   const [totalProducts, setTotalProducts] = useState(0);
@@ -37,15 +39,18 @@ function Shop() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   
-  // Products per page - 12 for both mobile and desktop
   const [productsPerPage, setProductsPerPage] = useState(12);
   
   const { showError } = useNotification();
+  
+  // Track if data has been loaded
+  const hasLoaded = useRef(false);
+  const previousPath = useRef(location.pathname);
 
-  // Detect screen size and adjust products per page - now 12 for all
+  // Detect screen size
   useEffect(() => {
     const updateProductsPerPage = () => {
-      setProductsPerPage(12); // 12 products for all screen sizes
+      setProductsPerPage(12);
     };
     
     updateProductsPerPage();
@@ -53,8 +58,57 @@ function Shop() {
     return () => window.removeEventListener('resize', updateProductsPerPage);
   }, []);
 
-  // Load filters from URL on initial mount
+  // Save state to sessionStorage before navigation
   useEffect(() => {
+    const saveState = () => {
+      const stateToSave = {
+        allProducts,
+        searchTerm,
+        filters,
+        sortBy,
+        viewMode,
+        currentPage,
+        totalProducts,
+        totalPages,
+        displayedProducts
+      };
+      sessionStorage.setItem('shopState', JSON.stringify(stateToSave));
+    };
+
+    window.addEventListener('beforeunload', saveState);
+    return () => window.removeEventListener('beforeunload', saveState);
+  }, [allProducts, searchTerm, filters, sortBy, viewMode, currentPage, totalProducts, totalPages, displayedProducts]);
+
+  // Restore state from sessionStorage when navigating back
+  useEffect(() => {
+    const savedState = sessionStorage.getItem('shopState');
+    if (savedState && !hasLoaded.current) {
+      try {
+        const parsed = JSON.parse(savedState);
+        if (parsed.allProducts && parsed.allProducts.length > 0) {
+          setAllProducts(parsed.allProducts);
+          setSearchTerm(parsed.searchTerm || '');
+          setFilters(parsed.filters || {});
+          setSortBy(parsed.sortBy || 'relevance');
+          setViewMode(parsed.viewMode || 'grid');
+          setCurrentPage(parsed.currentPage || 0);
+          setTotalProducts(parsed.totalProducts || 0);
+          setTotalPages(parsed.totalPages || 0);
+          setDisplayedProducts(parsed.displayedProducts || []);
+          setLoading(false);
+          hasLoaded.current = true;
+          return;
+        }
+      } catch (e) {
+        console.error('Error restoring shop state:', e);
+      }
+    }
+  }, []);
+
+  // Load filters from URL on initial mount only
+  useEffect(() => {
+    if (hasLoaded.current) return;
+    
     const urlFilters = getSearchParamsFromURL(searchParams);
     
     const newFilters = { ...filters };
@@ -77,7 +131,7 @@ function Shop() {
     if (urlFilters.page) setCurrentPage(parseInt(urlFilters.page) - 1);
     
     setFilters(newFilters);
-  }, [searchParams]);
+  }, []);
 
   // Update URL when filters change
   useEffect(() => {
@@ -100,11 +154,13 @@ function Shop() {
     if (sortBy !== 'relevance') params.set('sort', sortBy);
     if (currentPage > 0) params.set('page', (currentPage + 1).toString());
     
-    setSearchParams(params);
+    setSearchParams(params, { replace: true });
   }, [searchTerm, filters, sortBy, currentPage, setSearchParams]);
 
-  // Fetch all products once
+  // Fetch all products once - only if not already loaded
   useEffect(() => {
+    if (hasLoaded.current && allProducts.length > 0) return;
+    
     const fetchAllProducts = async () => {
       setLoading(true);
       
@@ -114,6 +170,7 @@ function Shop() {
         if (result.success) {
           const productsData = result.data?.content || result.data || [];
           setAllProducts(productsData);
+          hasLoaded.current = true;
         } else {
           showError(result.message || 'Failed to load products');
         }
@@ -142,7 +199,6 @@ function Shop() {
 
     let filtered = filterProducts(allProducts, filterCriteria);
     
-    // Apply sorting based on sortBy value
     if (sortBy === 'price-low') {
       filtered = [...filtered].sort((a, b) => (a.price || 0) - (b.price || 0));
     } else if (sortBy === 'price-high') {
@@ -152,7 +208,6 @@ function Shop() {
     } else if (sortBy === 'name') {
       filtered = [...filtered].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     } else if (sortBy === 'relevance') {
-      // Default sorting - by createdAt or id
       filtered = [...filtered].sort((a, b) => (b.createdAt || b.id) - (a.createdAt || a.id));
     }
 
@@ -212,58 +267,16 @@ function Shop() {
     console.log('Added to cart:', product);
   };
 
-  const getPageTitle = () => {
-    if (filters.category) {
-      const categoryName = filters.category.charAt(0).toUpperCase() + filters.category.slice(1);
-      return `${categoryName} Products`;
-    }
-    return 'Shop All Products';
-  };
-
-  const getPageDescription = () => {
-    if (filters.category) {
-      const categoryName = filters.category.charAt(0).toUpperCase() + filters.category.slice(1);
-      return `Shop ${categoryName} products at VedaThrifts. Find quality secondhand ${filters.category.toLowerCase()}, vintage pieces, and sustainable fashion at affordable prices in Kenya.`;
-    }
-    return 'Shop all products at VedaThrifts. Discover quality secondhand clothing, vintage fashion, and sustainable style. Affordable thrift shopping in Kenya.';
-  };
-
-  const getPageKeywords = () => {
-    const baseKeywords = 'thrift store Kenya, secondhand fashion, vintage clothing, sustainable fashion, affordable clothes';
-    if (filters.category) {
-      return `${filters.category.toLowerCase()}, ${baseKeywords}`;
-    }
-    return baseKeywords;
-  };
-
   return (
     <>
       <Helmet>
-        <title>{getPageTitle()} | VedaThrifts - Thrift Store Kenya</title>
-        <meta name="description" content={getPageDescription()} />
-        <meta name="keywords" content={getPageKeywords()} />
-        <meta name="author" content="VedaThrifts" />
-        <meta name="robots" content="index, follow" />
-        
-        <meta property="og:title" content={`${getPageTitle()} | VedaThrifts`} />
-        <meta property="og:description" content={getPageDescription()} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://vedathrifts.com/shop${window.location.search}`} />
-        <meta property="og:image" content="https://vedathrifts.com/og-image-shop.jpg" />
-        <meta property="og:site_name" content="VedaThrifts" />
-        <meta property="og:locale" content="en_KE" />
-        
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${getPageTitle()} | VedaThrifts`} />
-        <meta name="twitter:description" content={getPageDescription()} />
-        
-        <link rel="canonical" href={`https://vedathrifts.com/shop${window.location.search}`} />
+        <title>Shop | VedaThrifts</title>
       </Helmet>
 
       <div className="shop-page">
         <div className="shop-header">
           <div className="shop-header-left">
-            <h1>{getPageTitle()}</h1>
+            <h1>Shop All Products</h1>
             {filters.category && (
               <p className="category-description">
                 Showing products in category: <strong>{filters.category.charAt(0).toUpperCase() + filters.category.slice(1)}</strong>
@@ -306,7 +319,7 @@ function Shop() {
               onViewModeChange={setViewMode}
             />
 
-            {loading ? (
+            {loading && allProducts.length === 0 ? (
               <div className="products-loading">
                 <i className="fas fa-spinner fa-spin"></i>
                 <p>Loading products...</p>
