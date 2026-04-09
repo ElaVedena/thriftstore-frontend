@@ -1,4 +1,4 @@
-// Shop.jsx - Remove unused variable
+ // Shop.jsx - Add cache flag to prevent refetching
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -45,7 +45,7 @@ function Shop() {
   
   // Track if data has been loaded
   const hasLoaded = useRef(false);
-  const isInitialMount = useRef(true);
+  const previousPath = useRef(location.pathname);
 
   // Detect screen size
   useEffect(() => {
@@ -57,17 +57,6 @@ function Shop() {
     window.addEventListener('resize', updateProductsPerPage);
     return () => window.removeEventListener('resize', updateProductsPerPage);
   }, []);
-
-  // Clear URL params when leaving shop page
-  useEffect(() => {
-    return () => {
-      // When navigating away from shop page, clear all search params from URL
-      if (location.pathname !== '/shop') {
-        // Replace current URL without search params
-        window.history.replaceState({}, '', location.pathname);
-      }
-    };
-  }, [location.pathname]);
 
   // Save state to sessionStorage before navigation
   useEffect(() => {
@@ -93,7 +82,7 @@ function Shop() {
   // Restore state from sessionStorage when navigating back
   useEffect(() => {
     const savedState = sessionStorage.getItem('shopState');
-    if (savedState && !hasLoaded.current && location.pathname === '/shop') {
+    if (savedState && !hasLoaded.current) {
       try {
         const parsed = JSON.parse(savedState);
         if (parsed.allProducts && parsed.allProducts.length > 0) {
@@ -114,12 +103,10 @@ function Shop() {
         console.error('Error restoring shop state:', e);
       }
     }
-  }, [location.pathname]);
+  }, []);
 
-  // Load filters from URL on initial mount only (only on shop page)
+  // Load filters from URL on initial mount only
   useEffect(() => {
-    // Only load filters if we're on the shop page
-    if (location.pathname !== '/shop') return;
     if (hasLoaded.current) return;
     
     const urlFilters = getSearchParamsFromURL(searchParams);
@@ -144,17 +131,10 @@ function Shop() {
     if (urlFilters.page) setCurrentPage(parseInt(urlFilters.page) - 1);
     
     setFilters(newFilters);
-  }, [location.pathname]);
+  }, []);
 
-  // Update URL when filters change (only on shop page)
+  // Update URL when filters change
   useEffect(() => {
-    // Only update URL if we're on the shop page
-    if (location.pathname !== '/shop') return;
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-    
     const params = new URLSearchParams();
     
     if (searchTerm) params.set('q', searchTerm);
@@ -174,13 +154,8 @@ function Shop() {
     if (sortBy !== 'relevance') params.set('sort', sortBy);
     if (currentPage > 0) params.set('page', (currentPage + 1).toString());
     
-    // Only update if there are params, otherwise clear them
-    if (Array.from(params).length > 0) {
-      setSearchParams(params, { replace: true });
-    } else {
-      setSearchParams({}, { replace: true });
-    }
-  }, [searchTerm, filters, sortBy, currentPage, setSearchParams, location.pathname]);
+    setSearchParams(params, { replace: true });
+  }, [searchTerm, filters, sortBy, currentPage, setSearchParams]);
 
   // Fetch all products once - only if not already loaded
   useEffect(() => {
