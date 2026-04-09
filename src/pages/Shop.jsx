@@ -1,4 +1,4 @@
-// Shop.jsx - Add cache flag to prevent refetching
+// Shop.jsx - Remove unused variable
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -116,7 +116,7 @@ function Shop() {
     }
   }, [location.pathname]);
 
-  // Load filters from URL on initial mount only 
+  // Load filters from URL on initial mount only (only on shop page)
   useEffect(() => {
     // Only load filters if we're on the shop page
     if (location.pathname !== '/shop') return;
@@ -144,7 +144,7 @@ function Shop() {
     if (urlFilters.page) setCurrentPage(parseInt(urlFilters.page) - 1);
     
     setFilters(newFilters);
-  }, [location.pathname]); // Add location.pathname as dependency
+  }, [location.pathname]);
 
   // Update URL when filters change (only on shop page)
   useEffect(() => {
