@@ -124,12 +124,6 @@
     margin-top: 0.2rem;
 }
 
-.help-text {
-    color: #999;
-    font-size: 0.8rem;
-    margin-top: 0.2rem;
-}
-
 .mpesa-pay-btn {
     background: #00a859;
     color: white;
@@ -166,7 +160,7 @@
 .payment-features {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     padding: 1rem 0;
     border-top: 1px solid #f0f0f0;
     border-bottom: 1px solid #f0f0f0;
@@ -186,56 +180,6 @@
     font-size: 1.2rem;
 }
 
-.mpesa-instructions {
-    background: #f9f9f9;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-}
-
-.mpesa-instructions h4 {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #2d2d2d;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-}
-
-.mpesa-instructions h4 i {
-    color: #00a859;
-}
-
-.mpesa-instructions ol {
-    margin: 0;
-    padding-left: 1.2rem;
-    color: #4a4a4a;
-    font-size: 0.9rem;
-}
-
-.mpesa-instructions li {
-    margin-bottom: 0.5rem;
-}
-
-.note {
-    margin-top: 1rem;
-    padding: 0.8rem;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.note.warning {
-    background: #fff3e0;
-    color: #f57c00;
-}
-
-.note.info {
-    background: #e3f2fd;
-    color: #1976d2;
-}
-
 .security-badge {
     text-align: center;
     color: #4caf50;
@@ -245,37 +189,221 @@
     justify-content: center;
     gap: 0.5rem;
     padding-top: 1rem;
-    border-top: 1px solid #f0f0f0;
 }
 
 .security-badge i {
     font-size: 1.1rem;
 }
 
+/* ===== MOBILE RESPONSIVE - FURTHER REDUCED TEXT SIZE ===== */
 @media (max-width: 768px) {
     .mpesa-payment {
-        padding: 1.5rem;
+        padding: 1.2rem;
     }
-
+    
+    .payment-icon {
+        width: 55px;
+        height: 55px;
+        font-size: 1.5rem;
+    }
+    
+    .payment-header h3 {
+        font-size: 1.2rem;
+    }
+    
+    .payment-subtitle {
+        font-size: 0.75rem;
+    }
+    
+    .amount-label {
+        font-size: 0.85rem;
+    }
+    
     .amount-value {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
     }
-
-    .payment-features {
-        flex-wrap: wrap;
-        gap: 1rem;
+    
+    .form-group label {
+        font-size: 0.8rem;
     }
-
+    
+    .phone-input {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+    
+    .error-text {
+        font-size: 0.65rem;
+    }
+    
+    .mpesa-pay-btn {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .mpesa-pay-btn i {
+        font-size: 1rem;
+    }
+    
     .feature {
-        flex: 1;
-        min-width: 80px;
+        font-size: 0.7rem;
+    }
+    
+    .feature i {
+        font-size: 1rem;
+    }
+    
+    .security-badge {
+        font-size: 0.75rem;
+    }
+    
+    .security-badge i {
+        font-size: 0.9rem;
+    }
+    
+    .payment-features {
+        margin-bottom: 1rem;
+        padding: 0.8rem 0;
     }
 }
 
 @media (max-width: 480px) {
+    .mpesa-payment {
+        padding: 1rem;
+    }
+    
+    .payment-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .payment-header {
+        margin-bottom: 1rem;
+    }
+    
+    .payment-header h3 {
+        font-size: 1rem;
+    }
+    
+    .payment-subtitle {
+        font-size: 0.65rem;
+    }
+    
     .payment-amount-display {
-        flex-direction: column;
+        padding: 0.7rem;
+        margin-bottom: 1.2rem;
+    }
+    
+    .amount-label {
+        font-size: 0.75rem;
+    }
+    
+    .amount-value {
+        font-size: 1rem;
+    }
+    
+    .payment-form {
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+    }
+    
+    .form-group label {
+        font-size: 0.7rem;
+    }
+    
+    .form-group label i {
+        font-size: 0.8rem;
+    }
+    
+    .phone-input {
+        padding: 0.6rem;
+        font-size: 0.8rem;
+    }
+    
+    .error-text {
+        font-size: 0.6rem;
+    }
+    
+    .mpesa-pay-btn {
+        padding: 0.7rem;
+        font-size: 0.8rem;
+    }
+    
+    .mpesa-pay-btn i {
+        font-size: 0.9rem;
+    }
+    
+    .payment-features {
         gap: 0.5rem;
-        text-align: center;
+        padding: 0.6rem 0;
+        margin-bottom: 0.8rem;
+    }
+    
+    .feature {
+        font-size: 0.6rem;
+        gap: 0.2rem;
+    }
+    
+    .feature i {
+        font-size: 0.9rem;
+    }
+    
+    .security-badge {
+        font-size: 0.65rem;
+        padding-top: 0.8rem;
+    }
+    
+    .security-badge i {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .mpesa-payment {
+        padding: 0.8rem;
+    }
+    
+    .payment-header h3 {
+        font-size: 0.9rem;
+    }
+    
+    .payment-subtitle {
+        font-size: 0.6rem;
+    }
+    
+    .amount-label {
+        font-size: 0.7rem;
+    }
+    
+    .amount-value {
+        font-size: 0.9rem;
+    }
+    
+    .form-group label {
+        font-size: 0.65rem;
+    }
+    
+    .phone-input {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .mpesa-pay-btn {
+        padding: 0.6rem;
+        font-size: 0.75rem;
+    }
+    
+    .feature {
+        font-size: 0.55rem;
+    }
+    
+    .feature i {
+        font-size: 0.8rem;
+    }
+    
+    .security-badge {
+        font-size: 0.6rem;
     }
 }
