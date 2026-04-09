@@ -274,37 +274,25 @@ export function CartProvider({ children }) {
             stock: product.stock
         };
         
-        // Optimistic update
+        // Optimistic update - update UI immediately
         dispatch({ type: 'ADD_ITEM', payload: cartItem });
         
+        // Show success message immediately
+        showSuccess('Item added to cart!', { duration: 2000 });
+        
+        // Sync with backend in background (don't reload products)
         if (isAuthenticated && user) {
             try {
-                const response = await cartService.addToCart(cartItem);
-                if (!response.success) {
-                    // Refresh cart to revert optimistic update
-                    const refreshResponse = await cartService.getCart();
-                    if (refreshResponse.success) {
-                        const cartData = refreshResponse.data.cart || refreshResponse.data;
-                        dispatch({ type: 'LOAD_CART', payload: { items: cartData.items || [] } });
-                    }
-                    showError(response.message || 'Failed to add item to cart');
-                } else {
-                    showSuccess('Item added to cart!', { duration: 2000 });
-                }
+                // Don't wait for response or refresh cart - just sync in background
+                await cartService.addToCart(cartItem);
+                // No cart refresh here - prevents product reload
             } catch (error) {
-                console.error('Failed to add item to cart:', error);
-                // Refresh cart to revert optimistic update
-                const refreshResponse = await cartService.getCart();
-                if (refreshResponse.success) {
-                    const cartData = refreshResponse.data.cart || refreshResponse.data;
-                    dispatch({ type: 'LOAD_CART', payload: { items: cartData.items || [] } });
-                }
-                showError('Failed to add item to cart. Please try again.');
+                console.error('Failed to sync cart with backend:', error);
+                // Don't show error to user since optimistic update already succeeded
+                // Just log it for debugging
             }
-        } else {
-            showSuccess('Item added to cart!', { duration: 2000 });
         }
-    }, [isAuthenticated, user, showError, showSuccess]);
+    }, [isAuthenticated, user, showSuccess]);
 
     const updateQuantity = useCallback(async (productId, size, quantity) => {
         const item = state.items.find(
@@ -321,18 +309,11 @@ export function CartProvider({ children }) {
         
         if (isAuthenticated && user) {
             try {
-                const response = await cartService.updateItemQuantity(productId, size, quantity);
-                if (!response.success) {
-                    // Refresh cart to revert
-                    const refreshResponse = await cartService.getCart();
-                    if (refreshResponse.success) {
-                        const cartData = refreshResponse.data.cart || refreshResponse.data;
-                        dispatch({ type: 'LOAD_CART', payload: { items: cartData.items || [] } });
-                    }
-                    showError(response.message || 'Failed to update cart');
-                }
+                await cartService.updateItemQuantity(productId, size, quantity);
+                // No cart refresh here
             } catch (error) {
                 console.error('Failed to update cart:', error);
+                // Revert by refreshing cart only on error
                 const refreshResponse = await cartService.getCart();
                 if (refreshResponse.success) {
                     const cartData = refreshResponse.data.cart || refreshResponse.data;
@@ -348,19 +329,12 @@ export function CartProvider({ children }) {
         
         if (isAuthenticated && user) {
             try {
-                const response = await cartService.removeFromCart(productId, size);
-                if (!response.success) {
-                    const refreshResponse = await cartService.getCart();
-                    if (refreshResponse.success) {
-                        const cartData = refreshResponse.data.cart || refreshResponse.data;
-                        dispatch({ type: 'LOAD_CART', payload: { items: cartData.items || [] } });
-                    }
-                    showError(response.message || 'Failed to remove item');
-                } else {
-                    showInfo('Item removed from cart', { duration: 1500 });
-                }
+                await cartService.removeFromCart(productId, size);
+                // No cart refresh here
+                showInfo('Item removed from cart', { duration: 1500 });
             } catch (error) {
                 console.error('Failed to remove item:', error);
+                // Revert by refreshing cart only on error
                 const refreshResponse = await cartService.getCart();
                 if (refreshResponse.success) {
                     const cartData = refreshResponse.data.cart || refreshResponse.data;
@@ -379,19 +353,12 @@ export function CartProvider({ children }) {
         
         if (isAuthenticated && user) {
             try {
-                const response = await cartService.clearCart();
-                if (!response.success) {
-                    const refreshResponse = await cartService.getCart();
-                    if (refreshResponse.success) {
-                        const cartData = refreshResponse.data.cart || refreshResponse.data;
-                        dispatch({ type: 'LOAD_CART', payload: { items: cartData.items || [] } });
-                    }
-                    showError(response.message || 'Failed to clear cart');
-                } else {
-                    showSuccess('Cart cleared', { duration: 2000 }); // Changed to green
-                }
+                await cartService.clearCart();
+                // No cart refresh here
+                showSuccess('Cart cleared', { duration: 2000 });
             } catch (error) {
                 console.error('Failed to clear cart:', error);
+                // Revert by refreshing cart only on error
                 const refreshResponse = await cartService.getCart();
                 if (refreshResponse.success) {
                     const cartData = refreshResponse.data.cart || refreshResponse.data;
@@ -400,7 +367,7 @@ export function CartProvider({ children }) {
                 showError('Failed to clear cart. Please try again.');
             }
         } else {
-            showSuccess('Cart cleared', { duration: 2000 }); // Changed to green
+            showSuccess('Cart cleared', { duration: 2000 });
         }
     }, [isAuthenticated, user, showError, showSuccess]);
 

@@ -1,3 +1,4 @@
+// ProductCard.jsx - Ensure no page reload
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import WishlistButton from '../wishlist/WishlistButton';
@@ -7,7 +8,7 @@ import '../../components/css/ProductCard.css';
 function ProductCard({ product, priority = false }) {
     const { addToCart } = useCart();
 
-    const handleAddToCartClick = (e) => {
+    const handleAddToCartClick = async (e) => {
         e.preventDefault();
         e.stopPropagation();
         
@@ -27,7 +28,11 @@ function ProductCard({ product, priority = false }) {
             stock: product.stock
         };
         
-        addToCart(cartItem);
+        // Add to cart - this should NOT trigger page reload
+        await addToCart(cartItem);
+        
+        // Optional: Show success feedback without page reload
+        // You can add a small toast notification here
     };
 
     const imageUrl = product.images?.[0] || product.image;
@@ -52,7 +57,6 @@ function ProductCard({ product, priority = false }) {
                         mobileHeight={120}
                     />
                     
-                    {/* Stock badge only - NO condition badge */}
                     {isInStock ? (
                         <span className="product-stock-badge">{product.stock} left</span>
                     ) : (
