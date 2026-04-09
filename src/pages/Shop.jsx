@@ -37,22 +37,15 @@ function Shop() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   
-  // Products per page - adjusted for mobile to show 4 products without scrolling
-  const [productsPerPage, setProductsPerPage] = useState(8);
+  // Products per page - 12 for both mobile and desktop
+  const [productsPerPage, setProductsPerPage] = useState(12);
   
   const { showError } = useNotification();
 
-  // Detect screen size and adjust products per page
+  // Detect screen size and adjust products per page - now 12 for all
   useEffect(() => {
     const updateProductsPerPage = () => {
-      const width = window.innerWidth;
-      if (width <= 768) {
-        setProductsPerPage(4); // Mobile: 2x2 grid = 4 products
-      } else if (width <= 1024) {
-        setProductsPerPage(6); // Tablet: 3x2 grid = 6 products
-      } else {
-        setProductsPerPage(8); // Desktop: 4x2 grid = 8 products
-      }
+      setProductsPerPage(12); // 12 products for all screen sizes
     };
     
     updateProductsPerPage();
