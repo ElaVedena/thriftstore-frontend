@@ -97,7 +97,7 @@ function App() {
             
             {/* Other pages that don't need caching */}
             <div style={{ display: activePage !== '/' && activePage !== '/shop' ? 'block' : 'none' }}>
-              <Routes>
+              <Routes location={location}>
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/beauty" element={<Beauty />} />
