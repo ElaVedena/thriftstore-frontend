@@ -1,15 +1,14 @@
 // components/common/KeepAlive.jsx
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 // Global cache store
 const componentCache = new Map();
 
-export function KeepAlive({ children, cacheKey, onRestore }) {
+export function KeepAlive({ children, cacheKey }) {
   const [show, setShow] = useState(true);
   const location = useLocation();
   const containerRef = useRef(null);
-  const cachedContentRef = useRef(null);
 
   // Save to cache when component unmounts
   useEffect(() => {
@@ -31,13 +30,19 @@ export function KeepAlive({ children, cacheKey, onRestore }) {
     if (cached && cached.content && containerRef.current) {
       containerRef.current.innerHTML = cached.content;
       setShow(false);
-      if (onRestore) onRestore(cached);
       // Restore scroll position
       setTimeout(() => {
         window.scrollTo(0, cached.scrollPosition || 0);
       }, 100);
     }
-  }, [cacheKey, onRestore]);
+  }, [cacheKey]);
+
+  // Clear cache when component is unmounted from DOM
+  useEffect(() => {
+    return () => {
+      // Don't clear immediately, keep in cache
+    };
+  }, []);
 
   if (!show && componentCache.has(cacheKey)) {
     return <div ref={containerRef} />;
