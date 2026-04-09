@@ -680,7 +680,6 @@
     }
 }
 
-/* Extra Small Mobile (up to 360px) - Ultra compact */
 @media (max-width: 360px) {
     .filters-sidebar {
         width: 105px;
@@ -714,7 +713,6 @@
     }
 }
 
-/* ===== HIDE MOBILE FILTER HEADER ===== */
 .filters-header {
     display: none;
 }
