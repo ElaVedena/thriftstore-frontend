@@ -39,9 +39,16 @@ import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Revenue from './pages/Admin/Revenue/Revenue';
 import { Helmet } from 'react-helmet-async';
+import { useState, useEffect } from 'react';
 
 function App() {
   const location = useLocation();
+  const [activePage, setActivePage] = useState(location.pathname);
+
+  // Track active page
+  useEffect(() => {
+    setActivePage(location.pathname);
+  }, [location.pathname]);
 
   return (
     <NotificationProvider settings={{ position: 'top-right', autoClose: 5000 }}>
@@ -74,48 +81,52 @@ function App() {
             
             <Navbar />
             
-            <Routes location={location}>
-              {/* Home and Shop - cached with KeepAlive */}
-              <Route path="/" element={
-                <KeepAlive cacheKey="/">
-                  <Home />
-                </KeepAlive>
-              } />
-              <Route path="/shop" element={
-                <KeepAlive cacheKey="/shop">
-                  <Shop />
-                </KeepAlive>
-              } />
-              
-              {/* All other routes - no caching */}
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/beauty" element={<Beauty />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/shipping-policy" element={<ShippingPolicy />} />
-              <Route path="/terms" element={<TermsOfService />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
-              <Route path="/orders/:orderId" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
-              <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-              <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-              <Route path="/order-confirmation" element={<ProtectedRoute><OrderConfirmation /></ProtectedRoute>} />
-              <Route path="/track/:orderId" element={<TrackOrder />} />
-              <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
-              <Route path="/admin/products" element={<ProtectedRoute requireAdmin={true}><ProductList /></ProtectedRoute>} />
-              <Route path="/admin/products/add" element={<ProtectedRoute requireAdmin={true}><AddProduct /></ProtectedRoute>} />
-              <Route path="/admin/products/edit/:id" element={<ProtectedRoute requireAdmin={true}><EditProduct /></ProtectedRoute>} />
-              <Route path="/admin/orders" element={<ProtectedRoute requireAdmin={true}><OrderManagement /></ProtectedRoute>} />
-              <Route path="/admin/users" element={<ProtectedRoute requireAdmin={true}><UserManagement /></ProtectedRoute>} />
-              <Route path="/admin/revenue" element={<ProtectedRoute requireAdmin={true}><Revenue /></ProtectedRoute>} />
-            </Routes>
+            {/* Keep Home page always alive */}
+            <div style={{ display: activePage === '/' ? 'block' : 'none' }}>
+              <KeepAlive cacheKey="/">
+                <Home />
+              </KeepAlive>
+            </div>
+            
+            {/* Keep Shop page always alive */}
+            <div style={{ display: activePage === '/shop' ? 'block' : 'none' }}>
+              <KeepAlive cacheKey="/shop">
+                <Shop />
+              </KeepAlive>
+            </div>
+            
+            {/* Other pages that don't need caching - add key to force re-render on URL change */}
+            <div style={{ display: activePage !== '/' && activePage !== '/shop' ? 'block' : 'none' }}>
+              <Routes location={location} key={location.pathname}>
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/beauty" element={<Beauty />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+                <Route path="/orders/:orderId" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
+                <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+                <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+                <Route path="/order-confirmation" element={<ProtectedRoute><OrderConfirmation /></ProtectedRoute>} />
+                <Route path="/track/:orderId" element={<TrackOrder />} />
+                <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
+                <Route path="/admin/products" element={<ProtectedRoute requireAdmin={true}><ProductList /></ProtectedRoute>} />
+                <Route path="/admin/products/add" element={<ProtectedRoute requireAdmin={true}><AddProduct /></ProtectedRoute>} />
+                <Route path="/admin/products/edit/:id" element={<ProtectedRoute requireAdmin={true}><EditProduct /></ProtectedRoute>} />
+                <Route path="/admin/orders" element={<ProtectedRoute requireAdmin={true}><OrderManagement /></ProtectedRoute>} />
+                <Route path="/admin/users" element={<ProtectedRoute requireAdmin={true}><UserManagement /></ProtectedRoute>} />
+                <Route path="/admin/revenue" element={<ProtectedRoute requireAdmin={true}><Revenue /></ProtectedRoute>} />
+              </Routes>
+            </div>
             
             <Footer />
             <ToastContainer />
