@@ -29,7 +29,6 @@ function ShippingForm({ onSubmit, initialData = {} }) {
         // Remove all non-digits
         const cleaned = value.replace(/\D/g, '');
         
-        
         if (cleaned.length === 0) return '';
         if (cleaned.length <= 3) return cleaned;
         if (cleaned.length <= 6) return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
@@ -55,22 +54,18 @@ function ShippingForm({ onSubmit, initialData = {} }) {
         if (!formData.phone.trim()) {
             newErrors.phone = 'Phone number is required';
         } else {
-       
             const phoneDigits = formData.phone.replace(/\s/g, '');
             
-           
             if (phoneDigits.length === 10) {
-               
                 if (!/^(07|01)\d{8}$/.test(phoneDigits)) {
-                    newErrors.phone = 'Enter a valid Kenyan phone number (e.g., 0712 345 678)';
+                    newErrors.phone = 'Enter a valid Kenyan phone number';
                 }
             } else if (phoneDigits.length === 12) {
-                
                 if (!/^254(7|1)\d{8}$/.test(phoneDigits)) {
-                    newErrors.phone = 'Enter a valid Kenyan phone number (e.g., 254712345678)';
+                    newErrors.phone = 'Enter a valid Kenyan phone number';
                 }
             } else {
-                newErrors.phone = 'Phone number must be 10 digits (e.g., 0712 345 678) or 12 digits with country code';
+                newErrors.phone = 'Phone number must be 10 digits';
             }
         }
         
@@ -99,7 +94,7 @@ function ShippingForm({ onSubmit, initialData = {} }) {
         
         let processedValue = value;
         if (name === 'phone') {
-         processedValue = formatPhoneNumber(value);
+            processedValue = formatPhoneNumber(value);
         }
         
         setFormData(prev => ({
@@ -107,7 +102,7 @@ function ShippingForm({ onSubmit, initialData = {} }) {
             [name]: type === 'checkbox' ? checked : processedValue
         }));
         
-                if (errors[name]) {
+        if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
     };
@@ -118,18 +113,18 @@ function ShippingForm({ onSubmit, initialData = {} }) {
         if (field === 'phone' && formData.phone) {
             const phoneDigits = formData.phone.replace(/\s/g, '');
             
-         if (phoneDigits.length === 10) {
+            if (phoneDigits.length === 10) {
                 if (!/^(07|01)\d{8}$/.test(phoneDigits)) {
                     setErrors(prev => ({ 
                         ...prev, 
-                        phone: 'Enter a valid Kenyan phone number (e.g., 0712 345 678)' 
+                        phone: 'Enter a valid Kenyan phone number' 
                     }));
                 }
             } else if (phoneDigits.length === 12) {
                 if (!/^254(7|1)\d{8}$/.test(phoneDigits)) {
                     setErrors(prev => ({ 
                         ...prev, 
-                        phone: 'Enter a valid Kenyan phone number (e.g., 254712345678)' 
+                        phone: 'Enter a valid Kenyan phone number' 
                     }));
                 }
             }
@@ -146,7 +141,6 @@ function ShippingForm({ onSubmit, initialData = {} }) {
         setTouched(allTouched);
         
         if (validateForm()) {
-           
             const submitData = {
                 ...formData,
                 phone: formData.phone.replace(/\s/g, '')
@@ -187,7 +181,7 @@ function ShippingForm({ onSubmit, initialData = {} }) {
                         onChange={handleChange}
                         onBlur={() => handleBlur('fullName')}
                         className={`form-input ${errors.fullName && touched.fullName ? 'error' : ''}`}
-                        placeholder="John Doe"
+                        placeholder=""
                     />
                     {errors.fullName && touched.fullName && (
                         <span className="error-message">
@@ -212,7 +206,7 @@ function ShippingForm({ onSubmit, initialData = {} }) {
                         onChange={handleChange}
                         onBlur={() => handleBlur('email')}
                         className={`form-input ${errors.email && touched.email ? 'error' : ''}`}
-                        placeholder="john@example.com"
+                        placeholder=""
                     />
                     {errors.email && touched.email && (
                         <span className="error-message">
@@ -237,7 +231,7 @@ function ShippingForm({ onSubmit, initialData = {} }) {
                         onChange={handleChange}
                         onBlur={() => handleBlur('phone')}
                         className={`form-input ${errors.phone && touched.phone ? 'error' : ''}`}
-                        placeholder="0712 345 678"
+                        placeholder=""
                         maxLength="13"
                     />
                     {errors.phone && touched.phone ? (
@@ -265,7 +259,7 @@ function ShippingForm({ onSubmit, initialData = {} }) {
                         onChange={handleChange}
                         onBlur={() => handleBlur('address')}
                         className={`form-input ${errors.address && touched.address ? 'error' : ''}`}
-                        placeholder="Street address, building, estate"
+                        placeholder=""
                     />
                     {errors.address && touched.address && (
                         <span className="error-message">
@@ -290,7 +284,7 @@ function ShippingForm({ onSubmit, initialData = {} }) {
                         onChange={handleChange}
                         onBlur={() => handleBlur('city')}
                         className={`form-input ${errors.city && touched.city ? 'error' : ''}`}
-                        placeholder="Nairobi"
+                        placeholder=""
                     />
                     {errors.city && touched.city && (
                         <span className="error-message">
@@ -341,7 +335,7 @@ function ShippingForm({ onSubmit, initialData = {} }) {
                         name="postalCode"
                         value={formData.postalCode}
                         onChange={handleChange}
-                        placeholder="00100"
+                        placeholder=""
                         className="form-input"
                     />
                 </div>
