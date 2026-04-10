@@ -74,7 +74,7 @@ function App() {
             
             <Navbar />
             
-            {/* Use a single Routes component with KeepAlive inside */}
+            {/* All routes wrapped in KeepAlive for pages you want to cache */}
             <Routes location={location}>
               <Route path="/" element={
                 <KeepAlive cacheKey="/">
@@ -86,9 +86,14 @@ function App() {
                   <Shop />
                 </KeepAlive>
               } />
+              <Route path="/beauty" element={
+                <KeepAlive cacheKey="/beauty">
+                  <Beauty />
+                </KeepAlive>
+              } />
+              {/* Pages that don't need caching (they will reload normally) */}
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/beauty" element={<Beauty />} />
               <Route path="/product/:id" element={<ProductDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
