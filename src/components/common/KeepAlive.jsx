@@ -1,21 +1,43 @@
 // components/common/KeepAlive.jsx
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 // Global cache store
 const componentCache = new Map();
 
-export function KeepAlive({ children, cacheKey, onRestore }) {
-  const [show, setShow] = useState(true);
+export function KeepAlive({ children, cacheKey }) {
+  const [cachedContent, setCachedContent] = useState(null);
   const location = useLocation();
   const containerRef = useRef(null);
-  const cachedContentRef = useRef(null);
+  
+  // Check if this is the currently active route
+  const isActive = location.pathname === cacheKey;
 
-  // Save to cache when component unmounts
+  // Load from cache when component becomes active
+  useEffect(() => {
+    if (isActive) {
+      const cached = componentCache.get(cacheKey);
+      if (cached && cached.content && containerRef.current) {
+        // Restore from cache
+        containerRef.current.innerHTML = cached.content;
+        setCachedContent(cached.content);
+        
+        // Restore scroll position
+        setTimeout(() => {
+          window.scrollTo(0, cached.scrollPosition || 0);
+        }, 50);
+      } else {
+        // First time loading - render normally
+        setCachedContent(null);
+      }
+    }
+  }, [isActive, cacheKey]);
+
+  // Save to cache when component becomes inactive
   useEffect(() => {
     return () => {
-      if (containerRef.current && children) {
-        // Save the DOM content
+      if (containerRef.current && containerRef.current.innerHTML && !isActive) {
+        // Save current state to cache
         componentCache.set(cacheKey, {
           content: containerRef.current.innerHTML,
           scrollPosition: window.scrollY,
@@ -23,25 +45,23 @@ export function KeepAlive({ children, cacheKey, onRestore }) {
         });
       }
     };
-  }, [cacheKey, children]);
+  }, [cacheKey, isActive]);
 
-  // Restore from cache when component mounts
-  useEffect(() => {
-    const cached = componentCache.get(cacheKey);
-    if (cached && cached.content && containerRef.current) {
-      containerRef.current.innerHTML = cached.content;
-      setShow(false);
-      if (onRestore) onRestore(cached);
-      // Restore scroll position
-      setTimeout(() => {
-        window.scrollTo(0, cached.scrollPosition || 0);
-      }, 100);
-    }
-  }, [cacheKey, onRestore]);
-
-  if (!show && componentCache.has(cacheKey)) {
-    return <div ref={containerRef} />;
+  // If not active and we have cached content, render the cached version
+  if (!isActive && componentCache.has(cacheKey)) {
+    return (
+      <div 
+        ref={containerRef}
+        style={{ display: 'none' }}
+        dangerouslySetInnerHTML={{ __html: componentCache.get(cacheKey).content }}
+      />
+    );
   }
 
-  return <div ref={containerRef}>{children}</div>;
+  // For active route or first load
+  return (
+    <div ref={containerRef}>
+      {children}
+    </div>
+  );
 }
