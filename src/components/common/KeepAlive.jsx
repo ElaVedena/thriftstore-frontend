@@ -1,54 +1,54 @@
-// components/common/KeepAlive.jsx
-import { useRef, useEffect, useState } from 'react';
+// components/common/KeepAlive.jsx - Working version
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
-// Global cache store - persists across all components
-const componentCache = new Map();
+// Store rendered content globally
+const pageCache = new Map();
 
 export function KeepAlive({ children, cacheKey }) {
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
   const location = useLocation();
-  const containerRef = useRef(null);
-  
-  // Check if this is the currently active route
   const isActive = location.pathname === cacheKey;
+  const containerRef = useRef(null);
+  const hasRendered = useRef(false);
 
-  // Load from cache when component becomes active
+  // On first render, store the content
   useEffect(() => {
-    if (isActive) {
-      const cached = componentCache.get(cacheKey);
-      
-      if (cached && !isFirstLoad) {
-        // Restore from cache (only after first load)
-        if (containerRef.current && cached.content) {
-          containerRef.current.innerHTML = cached.content;
-          
-          // Restore scroll position
-          setTimeout(() => {
-            window.scrollTo(0, cached.scrollPosition || 0);
-          }, 50);
-        }
-      }
-      
-      setIsFirstLoad(false);
+    if (!hasRendered.current && containerRef.current) {
+      hasRendered.current = true;
+      // Store initial content
+      pageCache.set(cacheKey, {
+        content: containerRef.current.innerHTML,
+        scrollY: window.scrollY
+      });
     }
-  }, [isActive, cacheKey, isFirstLoad]);
+  }, [cacheKey]);
 
-  // Save to cache when component becomes inactive
+  // When becoming active, restore content
   useEffect(() => {
-    return () => {
-      if (containerRef.current && containerRef.current.innerHTML && !isActive && !isFirstLoad) {
-        // Save current state to cache
-        componentCache.set(cacheKey, {
-          content: containerRef.current.innerHTML,
-          scrollPosition: window.scrollY,
-          timestamp: Date.now()
-        });
+    if (isActive && containerRef.current) {
+      const cached = pageCache.get(cacheKey);
+      if (cached && cached.content) {
+        // Restore saved content
+        containerRef.current.innerHTML = cached.content;
+        // Restore scroll position
+        setTimeout(() => {
+          window.scrollTo(0, cached.scrollY || 0);
+        }, 50);
       }
-    };
-  }, [cacheKey, isActive, isFirstLoad]);
+    }
+  }, [isActive, cacheKey]);
 
-  // Always render the children, but use CSS to show/hide instead of unmounting
+  // When leaving, save current state
+  useEffect(() => {
+    if (!isActive && containerRef.current && containerRef.current.innerHTML) {
+      pageCache.set(cacheKey, {
+        content: containerRef.current.innerHTML,
+        scrollY: window.scrollY
+      });
+    }
+  }, [isActive, cacheKey]);
+
+  // Always render, use display to show/hide
   return (
     <div 
       ref={containerRef}
