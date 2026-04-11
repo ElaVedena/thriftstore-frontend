@@ -11,6 +11,7 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
     const { showSuccess, showError } = useNotification();
 
     // Determine stock status from item data
+    // Check multiple possible fields for stock status
     const isInStock = 
         item.inStock === true || 
         item.inStock === 'true' ||
@@ -47,8 +48,8 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
         };
         
         addToCart(cartItem);
-        // Only show one notification - remove the duplicate from parent
         if (onAddToCart) onAddToCart(item.name);
+        showSuccess(`${item.name} added to cart!`);
     };
 
     const formatPrice = (price) => {
@@ -122,11 +123,15 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
                     disabled={!isInStock}
                 >
                     <i className="fas fa-shopping-cart"></i>
-                    Add to Cart
+                    {isInStock ? 'Add to Cart' : 'Out of Stock'}
                 </button>
 
-                {/* Only show one stock status indicator */}
-                {!isInStock && (
+                {isInStock ? (
+                    <span className="in-stock">
+                        <i className="fas fa-check-circle"></i>
+                        {isLowStock ? `Only ${stockQuantity} left!` : 'In Stock'}
+                    </span>
+                ) : (
                     <span className="out-of-stock">
                         <i className="fas fa-times-circle"></i>
                         Out of Stock
@@ -137,4 +142,4 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
     );
 }
 
-export default WishlistItem;
+export default WishlistItem;  
