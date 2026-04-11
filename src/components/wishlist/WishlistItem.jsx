@@ -47,8 +47,8 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
         };
         
         addToCart(cartItem);
+        // Only show one notification - remove the duplicate from parent
         if (onAddToCart) onAddToCart(item.name);
-        showSuccess(`${item.name} added to cart!`);
     };
 
     const formatPrice = (price) => {
@@ -125,6 +125,7 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
                     Add to Cart
                 </button>
 
+                {/* Only show one stock status indicator */}
                 {!isInStock && (
                     <span className="out-of-stock">
                         <i className="fas fa-times-circle"></i>

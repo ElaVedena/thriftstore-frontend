@@ -5,7 +5,6 @@ import WishlistItem from '../components/wishlist/WishlistItem';
 import '../components/css/Wishlist.css';
 
 function Wishlist() {
-    // Remove totalItems from destructuring
     const { wishlistItems, isLoading, error, clearWishlist, refreshWishlist } = useWishlist();
     const { showSuccess, showInfo, showWarning, showError } = useNotification();
 
@@ -22,10 +21,11 @@ function Wishlist() {
 
     const handleItemRemoved = (itemName) => {
         showWarning(`${itemName} removed from wishlist`);
-        refreshWishlist();
+        // Don't refresh here - let the context handle it
     };
 
     const handleItemAddedToCart = (itemName) => {
+        // Only show one notification - remove the duplicate from WishlistItem
         showSuccess(`${itemName} added to cart!`, {
             action: {
                 label: 'View Cart',
@@ -82,7 +82,6 @@ function Wishlist() {
                 <div className="header-left">
                     <h1>My Wishlist</h1>
                     <span className="item-count">
-                        {/* Use wishlistItems.length instead of totalItems */}
                         {wishlistItems.length} {wishlistItems.length === 1 ? 'item' : 'items'}
                     </span>
                 </div>
