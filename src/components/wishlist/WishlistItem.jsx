@@ -48,8 +48,9 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
         };
         
         addToCart(cartItem);
+        // Only call parent callback - it will show the notification
         if (onAddToCart) onAddToCart(item.name);
-        showSuccess(`${item.name} added to cart!`);
+        // REMOVED: showSuccess(`${item.name} added to cart!`);
     };
 
     const formatPrice = (price) => {
@@ -142,4 +143,4 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
     );
 }
 
-export default WishlistItem;  
+export default WishlistItem;
