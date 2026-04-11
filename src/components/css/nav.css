@@ -536,10 +536,10 @@ body {
         transform: translateY(-7px) rotate(-45deg);
     }
     
-    /* Mobile Dropdown Menu - Vertical list (one link per line) */
+    /* Mobile Dropdown Menu - Fixed position to appear above filters */
     .mobile-dropdown-menu {
-        position: absolute;
-        top: 100%;
+        position: fixed;
+        top: var(--navbar-height);
         left: 0;
         right: 0;
         width: 100%;
@@ -547,7 +547,7 @@ body {
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.3s ease-out;
-        z-index: 998;
+        z-index: 9999;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         display: block;
     }
