@@ -11,7 +11,6 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
     const { showSuccess, showError } = useNotification();
 
     // Determine stock status from item data
-    // Check multiple possible fields for stock status
     const isInStock = 
         item.inStock === true || 
         item.inStock === 'true' ||
@@ -123,15 +122,10 @@ function WishlistItem({ item, onRemove, onAddToCart }) {
                     disabled={!isInStock}
                 >
                     <i className="fas fa-shopping-cart"></i>
-                    {isInStock ? 'Add to Cart' : 'Out of Stock'}
+                    Add to Cart
                 </button>
 
-                {isInStock ? (
-                    <span className="in-stock">
-                        <i className="fas fa-check-circle"></i>
-                        {isLowStock ? `Only ${stockQuantity} left!` : 'In Stock'}
-                    </span>
-                ) : (
+                {!isInStock && (
                     <span className="out-of-stock">
                         <i className="fas fa-times-circle"></i>
                         Out of Stock
