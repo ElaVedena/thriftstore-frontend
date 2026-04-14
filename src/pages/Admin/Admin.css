@@ -855,7 +855,7 @@ body.admin-page #root {
     color: #c62828;
 }
 
-/* ===== RESPONSIVE - MOBILE ONLY REDUCTIONS ===== */
+/* ===== RESPONSIVE - MOBILE ONLY ===== */
 @media (max-width: 1024px) {
     .admin-main {
         padding: 1rem;
@@ -877,14 +877,17 @@ body.admin-page #root {
     }
 }
 
-/* Tablet */
+/* Tablet - Fix side menu overlap */
 @media (max-width: 768px) {
     .admin-main {
-        margin-left: 70px;
+        margin-left: 0;
         padding: 0.6rem;
+        width: 100%;
     }
     
     .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 0.4rem;
         margin-bottom: 0.8rem;
     }
@@ -1154,20 +1157,41 @@ body.admin-page #root {
         font-size: 0.5rem;
         margin-top: 0.1rem;
     }
+    
+    /* Fix for tables on mobile - make scrollable */
+    .recent-orders {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .recent-table {
+        min-width: 600px;
+    }
+    
+    /* Fix for product grid on mobile */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
 }
 
 /* Small Mobile */
 @media (max-width: 480px) {
     .admin-main {
         margin-left: 0;
-        padding: 0.5rem;
+        padding: 0.4rem;
     }
     
     .admin-header h1 {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     
     .admin-welcome {
+        font-size: 0.5rem;
+    }
+    
+    .admin-btn {
+        padding: 0.25rem 0.5rem;
         font-size: 0.55rem;
     }
     
@@ -1177,21 +1201,21 @@ body.admin-page #root {
     
     .dashboard-section {
         padding: 0.4rem;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.5rem;
     }
     
     .section-header h2 {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
     }
     
     .view-all {
-        font-size: 0.55rem;
+        font-size: 0.5rem;
     }
     
     .recent-table th,
     .recent-table td {
         padding: 0.25rem;
-        font-size: 0.5rem;
+        font-size: 0.45rem;
     }
     
     .low-stock-card {
@@ -1199,36 +1223,36 @@ body.admin-page #root {
     }
     
     .product-info h4 {
-        font-size: 0.6rem;
+        font-size: 0.55rem;
     }
     
     .stock-count {
-        font-size: 0.6rem;
+        font-size: 0.55rem;
     }
     
     .form-section {
-        padding: 0.4rem;
+        padding: 0.35rem;
     }
     
     .form-section h2 {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
     }
     
     .form-group label {
-        font-size: 0.55rem;
+        font-size: 0.5rem;
     }
     
     .form-group input,
     .form-group select,
     .form-group textarea {
-        padding: 0.3rem;
-        font-size: 0.55rem;
+        padding: 0.25rem;
+        font-size: 0.5rem;
     }
     
     .btn-primary,
     .btn-secondary {
-        padding: 0.3rem 0.7rem;
-        font-size: 0.55rem;
+        padding: 0.25rem 0.6rem;
+        font-size: 0.5rem;
     }
     
     .product-thumb {
