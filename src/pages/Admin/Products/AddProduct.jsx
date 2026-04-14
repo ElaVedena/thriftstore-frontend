@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminService } from '../../../services/adminService';
 import { useNotification } from '../../../hooks/useNotification';
@@ -39,6 +39,14 @@ function AddProduct() {
         resizeWidth: 800
     });
 
+    // Add class to body to hide global header and footer
+    useEffect(() => {
+        document.body.classList.add('admin-page');
+        return () => {
+            document.body.classList.remove('admin-page');
+        };
+    }, []);
+
     const categories = [
         'jackets', 'pants', 'dresses', 'shoes', 'accessories', 
         'sweaters', 'skirts', 't-shirts', 'shirts'
@@ -64,7 +72,6 @@ function AddProduct() {
             newErrors.price = 'Price must be greater than 0';
         }
 
-        // Validate category based on selection method
         if (useCustomCategory) {
             if (!formData.customCategory.trim()) {
                 newErrors.customCategory = 'Custom category is required';
@@ -85,12 +92,10 @@ function AddProduct() {
             showWarning('Original price should be higher than selling price');
         }
 
-        // Validate custom size if enabled
         if (useCustomSize && !formData.customSize.trim()) {
             newErrors.customSize = 'Custom size is required';
         }
 
-        // Check if we have any image URLs
         if (!formData.images || formData.images.length === 0) {
             newErrors.images = 'At least one product image is required';
         } else {
@@ -158,13 +163,10 @@ function AddProduct() {
         setLoading(true);
 
         try {
-            // Determine the final category value
             const finalCategory = useCustomCategory ? formData.customCategory : formData.category;
 
-            // Prepare available sizes 
             let finalSizes = [...formData.availableSizes];
             
-            // Add custom size if it exists and not already included
             if (formData.customSize && !finalSizes.includes(formData.customSize)) {
                 finalSizes.push(formData.customSize);
             }
@@ -463,7 +465,6 @@ function AddProduct() {
                             </div>
                         )}
 
-                        {/* Display selected sizes */}
                         {formData.availableSizes.length > 0 && (
                             <div className="selected-sizes">
                                 <p><strong>Selected Sizes:</strong></p>
@@ -490,7 +491,6 @@ function AddProduct() {
                     <div className="form-section">
                         <h2>Product Images</h2>
                         
-                        {/* Image Processing Settings */}
                         <div className="image-processing-settings">
                             <h3>Image Processing Options</h3>
                             <div className="settings-grid">

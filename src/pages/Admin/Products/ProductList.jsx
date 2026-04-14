@@ -17,7 +17,14 @@ function ProductList() {
     const [showDeleted, setShowDeleted] = useState(false); 
     const [imageErrors, setImageErrors] = useState({});
 
-    // Memoize the base URL to prevent recalculation
+    // Add class to body to hide global header and footer
+    useEffect(() => {
+        document.body.classList.add('admin-page');
+        return () => {
+            document.body.classList.remove('admin-page');
+        };
+    }, []);
+
     const baseUrl = useMemo(() => 
         process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8080',
     []);
@@ -29,7 +36,6 @@ function ProductList() {
             if (response.success) {
                 let allProducts = response.data.content || [];
                 
-                // Filter out DELETED products if showDeleted is false
                 if (!showDeleted) {
                     allProducts = allProducts.filter(product => 
                         product.status?.toUpperCase() !== 'DELETED'
@@ -93,12 +99,10 @@ function ProductList() {
         return baseUrl + imageUrl;
     }, [baseUrl]);
 
-    // Handle image error
     const handleImageError = useCallback((productId) => {
         setImageErrors(prev => ({ ...prev, [productId]: true }));
     }, []);
 
-    // Count active products 
     const activeProductCount = products.filter(p => p.status?.toUpperCase() !== 'DELETED').length;
     
     const columns = useMemo(() => [

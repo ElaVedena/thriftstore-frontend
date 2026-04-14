@@ -34,6 +34,14 @@ function EditProduct() {
     const [errors, setErrors] = useState({});
     const [originalData, setOriginalData] = useState(null);
 
+    // Add class to body to hide global header and footer
+    useEffect(() => {
+        document.body.classList.add('admin-page');
+        return () => {
+            document.body.classList.remove('admin-page');
+        };
+    }, []);
+
     const categories = [
         'jackets', 'pants', 'dresses', 'shoes', 'accessories', 
         'sweaters', 'skirts', 't-shirts', 'shirts'
@@ -46,7 +54,6 @@ function EditProduct() {
 
     const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'One Size'];
 
-    // Load product data when component mounts
     useEffect(() => {
         loadProduct();
     }, [id]);
@@ -54,14 +61,12 @@ function EditProduct() {
     const loadProduct = async () => {
         setLoading(true);
         try {
-            // You need to add this method to your adminService
             const response = await adminService.getProductById(id);
             
             if (response.success) {
                 const product = response.data || response.product;
                 setOriginalData(product);
                 
-                // Map the product data to form fields
                 setFormData({
                     name: product.name || '',
                     description: product.description || '',
@@ -123,7 +128,6 @@ function EditProduct() {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
         
-        // Clear error for this field if it exists
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
@@ -149,7 +153,6 @@ function EditProduct() {
         setSaving(true);
 
         try {
-            // Prepare the data for update
             const productData = {
                 name: formData.name,
                 description: formData.description || '',
@@ -184,7 +187,6 @@ function EditProduct() {
         }
     };
 
-    // Check if form has been modified
     const hasChanges = () => {
         if (!originalData) return false;
         
