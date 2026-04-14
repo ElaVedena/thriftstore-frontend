@@ -13,6 +13,14 @@ function OrderManagement() {
     const [dateRange, setDateRange] = useState('3days');
     const { showSuccess, showError } = useNotification();
 
+    // Add class to body to hide global header and footer
+    useEffect(() => {
+        document.body.classList.add('admin-page');
+        return () => {
+            document.body.classList.remove('admin-page');
+        };
+    }, []);
+
     // Statuses that should be visible to admin (excluding PENDING and PENDING_PAYMENT)
     const VISIBLE_STATUSES = ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
     

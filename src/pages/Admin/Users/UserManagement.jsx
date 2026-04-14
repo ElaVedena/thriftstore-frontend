@@ -14,6 +14,14 @@ function UserManagement() {
         number: 0
     });
 
+    // Add class to body to hide global header and footer
+    useEffect(() => {
+        document.body.classList.add('admin-page');
+        return () => {
+            document.body.classList.remove('admin-page');
+        };
+    }, []);
+
     useEffect(() => {
         loadUsers();
     }, []);
@@ -33,7 +41,6 @@ function UserManagement() {
                         number: response.number || 0
                     });
                 } 
-               
                 else if (response.data) {
                     setUsers(response.data.content || response.data);
                 }
@@ -59,7 +66,6 @@ function UserManagement() {
         try {
             const response = await adminService.updateUserRole(user.id, newRole);
             if (response && response.success) {
-                // Update the user in the local state
                 setUsers(prevUsers => 
                     prevUsers.map(u => 
                         u.id === user.id 
@@ -67,7 +73,6 @@ function UserManagement() {
                             : u
                     )
                 );
-                
             }
         } catch (error) {
             console.error('Failed to update user role:', error);
@@ -80,7 +85,6 @@ function UserManagement() {
             try {
                 const response = await adminService.toggleUserStatus(user.id);
                 if (response && response.success) {
-                    // Update the user in local state
                     setUsers(prevUsers => 
                         prevUsers.map(u => 
                             u.id === user.id 
@@ -160,7 +164,6 @@ function UserManagement() {
             key: 'totalSpent',
             label: 'Total Spent',
             render: (value, user) => {
-                
                 if (value !== undefined) return formatPrice(value);
                 return formatPrice(0);
             }
