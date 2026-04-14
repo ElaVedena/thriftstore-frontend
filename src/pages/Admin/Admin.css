@@ -858,264 +858,390 @@ body.admin-page #root {
 /* ===== RESPONSIVE - MOBILE ONLY REDUCTIONS ===== */
 @media (max-width: 1024px) {
     .admin-main {
-        padding: 1.2rem;
+        padding: 1rem;
     }
     
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
+        gap: 0.8rem;
     }
     
     .form-grid {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: 0.8rem;
     }
     
     .settings-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
     }
 }
 
-/* Mobile - Further reduced text sizes only, desktop unchanged */
+/* Tablet */
 @media (max-width: 768px) {
     .admin-main {
         margin-left: 70px;
-        padding: 0.8rem;
+        padding: 0.6rem;
+    }
+    
+    .admin-header {
+        gap: 0.4rem;
+        margin-bottom: 0.8rem;
     }
     
     .admin-header h1 {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
     
     .admin-welcome {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
     }
     
     .admin-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.6rem;
+        gap: 0.25rem;
     }
     
     .stats-grid {
-        gap: 0.8rem;
+        gap: 0.5rem;
+        margin-bottom: 0.8rem;
     }
     
     .dashboard-section {
-        padding: 0.8rem;
+        padding: 0.5rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .section-header {
+        margin-bottom: 0.5rem;
     }
     
     .section-header h2 {
-        font-size: 0.9rem;
+        font-size: 0.75rem;
     }
     
     .view-all {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
+        gap: 0.25rem;
     }
     
     .recent-table th {
-        padding: 0.5rem;
-        font-size: 0.65rem;
+        padding: 0.35rem;
+        font-size: 0.55rem;
     }
     
     .recent-table td {
-        padding: 0.5rem;
-        font-size: 0.65rem;
+        padding: 0.35rem;
+        font-size: 0.55rem;
     }
     
     .low-stock-grid {
-        gap: 0.6rem;
+        gap: 0.4rem;
+    }
+    
+    .low-stock-card {
+        padding: 0.4rem;
     }
     
     .product-info h4 {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
+        margin-bottom: 0.1rem;
     }
     
     .product-category {
-        font-size: 0.6rem;
+        font-size: 0.5rem;
     }
     
     .stock-count {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
+        margin-bottom: 0.1rem;
     }
     
     .restock-link {
-        font-size: 0.6rem;
+        font-size: 0.5rem;
+    }
+    
+    .filter-tabs {
+        gap: 0.25rem;
     }
     
     .filter-tab {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.7rem;
-    }
-    
-    .status-select {
-        font-size: 0.65rem;
-        padding: 0.2rem 0.35rem;
-    }
-    
-    .role-select {
-        font-size: 0.65rem;
-        padding: 0.2rem 0.35rem;
-    }
-    
-    .status-toggle {
-        width: 24px;
-        height: 24px;
+        padding: 0.25rem 0.5rem;
         font-size: 0.6rem;
     }
     
+    .status-select {
+        font-size: 0.55rem;
+        padding: 0.15rem 0.3rem;
+    }
+    
+    .role-select {
+        font-size: 0.55rem;
+        padding: 0.15rem 0.3rem;
+    }
+    
+    .status-toggle {
+        width: 20px;
+        height: 20px;
+        font-size: 0.5rem;
+    }
+    
+    .form-section {
+        padding: 0.5rem;
+    }
+    
     .form-section h2 {
-        font-size: 0.85rem;
+        font-size: 0.7rem;
+        margin-bottom: 0.6rem;
+        padding-bottom: 0.25rem;
+    }
+    
+    .form-section h2::after {
+        width: 25px;
+        height: 1.5px;
+    }
+    
+    .form-group {
+        margin-bottom: 0.6rem;
     }
     
     .form-group label {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
+        margin-bottom: 0.25rem;
     }
     
     .form-group input,
     .form-group select,
     .form-group textarea {
-        padding: 0.45rem;
-        font-size: 0.7rem;
+        padding: 0.35rem;
+        font-size: 0.6rem;
+    }
+    
+    .form-group .error {
+        font-size: 0.5rem;
+        margin-top: 0.1rem;
+    }
+    
+    .form-row {
+        gap: 0.5rem;
     }
     
     .checkbox-label {
-        font-size: 0.65rem;
+        font-size: 0.55rem;
+        gap: 0.2rem;
+    }
+    
+    .checkbox-label input[type="checkbox"] {
+        width: 12px;
+        height: 12px;
     }
     
     .btn-primary,
     .btn-secondary {
-        padding: 0.45rem 1.2rem;
-        font-size: 0.7rem;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.6rem;
+    }
+    
+    .form-actions {
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+    }
+    
+    .radio-group {
+        gap: 10px;
+        margin-bottom: 8px;
     }
     
     .radio-label {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
+        gap: 4px;
     }
     
     .size-tag {
+        font-size: 8px;
+        padding: 2px 4px;
+        gap: 2px;
+    }
+    
+    .remove-size {
         font-size: 10px;
-        padding: 3px 6px;
+        padding: 0 2px;
+    }
+    
+    .image-processing-settings {
+        padding: 0.5rem;
+        margin-bottom: 0.6rem;
     }
     
     .image-processing-settings h3 {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .settings-grid {
+        gap: 0.4rem;
     }
     
     .setting-item label {
-        font-size: 0.6rem;
+        font-size: 0.5rem;
+    }
+    
+    .setting-item small {
+        font-size: 0.45rem;
     }
     
     .products-stats {
-        font-size: 0.7rem;
-        padding: 6px 12px;
+        font-size: 0.6rem;
+        padding: 4px 8px;
+        margin-bottom: 10px;
+        gap: 0.25rem;
     }
     
     .deleted-warning {
+        font-size: 0.5rem;
+        padding: 0.15rem 0.4rem;
+        gap: 0.25rem;
+    }
+    
+    .deleted-warning i {
         font-size: 0.6rem;
+    }
+    
+    .date-range-filter {
+        gap: 0.5rem;
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
     }
     
     .filter-label {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
+        gap: 0.25rem;
     }
     
     .date-btn {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.6rem;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.5rem;
     }
     
     .orders-info {
-        font-size: 0.65rem;
-        padding: 0.4rem 0.6rem;
+        font-size: 0.55rem;
+        padding: 0.3rem 0.5rem;
+        margin: 0.5rem 0;
+        gap: 0.25rem;
     }
     
     .status-badge {
-        font-size: 0.6rem;
-        padding: 0.2rem 0.4rem;
+        font-size: 0.5rem;
+        padding: 0.15rem 0.3rem;
+    }
+    
+    .admin-loading {
+        min-height: 250px;
+    }
+    
+    .admin-loading i {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .admin-loading p {
+        font-size: 0.7rem;
+    }
+    
+    .field-hint {
+        font-size: 0.5rem;
+        margin-top: 0.1rem;
     }
 }
 
-/* Small Mobile - Even further reductions */
+/* Small Mobile */
 @media (max-width: 480px) {
     .admin-main {
         margin-left: 0;
-        padding: 0.6rem;
+        padding: 0.5rem;
     }
     
     .admin-header h1 {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
     }
     
     .admin-welcome {
-        font-size: 0.65rem;
+        font-size: 0.55rem;
     }
     
     .stats-grid {
-        gap: 0.6rem;
+        gap: 0.4rem;
     }
     
     .dashboard-section {
-        padding: 0.6rem;
+        padding: 0.4rem;
+        margin-bottom: 0.6rem;
     }
     
     .section-header h2 {
-        font-size: 0.85rem;
+        font-size: 0.7rem;
+    }
+    
+    .view-all {
+        font-size: 0.55rem;
     }
     
     .recent-table th,
     .recent-table td {
-        padding: 0.4rem;
-        font-size: 0.6rem;
+        padding: 0.25rem;
+        font-size: 0.5rem;
     }
     
     .low-stock-card {
-        padding: 0.5rem;
+        padding: 0.35rem;
     }
     
     .product-info h4 {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
     }
     
     .stock-count {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
     }
     
     .form-section {
-        padding: 0.6rem;
+        padding: 0.4rem;
+    }
+    
+    .form-section h2 {
+        font-size: 0.65rem;
+    }
+    
+    .form-group label {
+        font-size: 0.55rem;
     }
     
     .form-group input,
     .form-group select,
     .form-group textarea {
-        padding: 0.4rem;
-        font-size: 0.65rem;
-    }
-    
-    .form-group label {
-        font-size: 0.65rem;
+        padding: 0.3rem;
+        font-size: 0.55rem;
     }
     
     .btn-primary,
     .btn-secondary {
-        padding: 0.4rem 1rem;
-        font-size: 0.65rem;
-    }
-    
-    .size-tag {
-        font-size: 9px;
-        padding: 2px 5px;
+        padding: 0.3rem 0.7rem;
+        font-size: 0.55rem;
     }
     
     .product-thumb {
-        width: 30px;
-        height: 30px;
+        width: 25px;
+        height: 25px;
     }
     
     .image-placeholder {
-        width: 30px;
-        height: 30px;
+        width: 25px;
+        height: 25px;
     }
     
     .image-placeholder i {
-        font-size: 12px;
+        font-size: 10px;
     }
 }
