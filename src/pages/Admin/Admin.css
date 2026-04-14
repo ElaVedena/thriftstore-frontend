@@ -1,3 +1,21 @@
+/* Hide global header and footer on admin pages */
+body.admin-page .navbar,
+body.admin-page .footer,
+body.admin-page > header,
+body.admin-page > footer {
+    display: none !important;
+}
+
+/* Ensure admin layout takes full height */
+body.admin-page {
+    margin: 0;
+    padding: 0;
+}
+
+body.admin-page #root {
+    min-height: 100vh;
+}
+
 .admin-layout {
     display: flex;
     min-height: 100vh;
@@ -22,6 +40,12 @@
 .admin-header h1 {
     font-size: 1.6rem;
     color: #2d2d2d;
+    margin: 0;
+}
+
+.admin-welcome {
+    color: #666;
+    font-size: 0.9rem;
     margin: 0;
 }
 
@@ -255,6 +279,31 @@
     cursor: pointer;
 }
 
+.status-select.status-pending {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.status-select.status-processing {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-select.status-shipped {
+    background: #e8eaf6;
+    color: #3f51b5;
+}
+
+.status-select.status-delivered {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-select.status-cancelled {
+    background: #ffebee;
+    color: #c62828;
+}
+
 /* Role Select */
 .role-select {
     padding: 0.25rem 0.4rem;
@@ -262,6 +311,16 @@
     font-size: 0.75rem;
     border: 1px solid #ddd;
     cursor: pointer;
+}
+
+.role-select.role-admin {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.role-select.role-user {
+    background: #e8f5e9;
+    color: #2e7d32;
 }
 
 /* Status Control */
@@ -282,6 +341,26 @@
     justify-content: center;
     transition: all 0.3s ease;
     font-size: 0.7rem;
+}
+
+.status-toggle.active {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.status-toggle.active:hover {
+    background: #c62828;
+    color: white;
+}
+
+.status-toggle.suspended {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-toggle.suspended:hover {
+    background: #2e7d32;
+    color: white;
 }
 
 /* Product Thumbnail */
@@ -726,6 +805,56 @@
     margin-top: 0.2rem;
 }
 
+/* No Low Stock */
+.no-low-stock {
+    text-align: center;
+    padding: 2rem;
+    color: #4caf50;
+}
+
+.no-low-stock i {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.no-low-stock p {
+    font-size: 0.9rem;
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.status-badge.pending {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.status-badge.processing {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-badge.shipped {
+    background: #e8eaf6;
+    color: #3f51b5;
+}
+
+.status-badge.delivered {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-badge.cancelled {
+    background: #ffebee;
+    color: #c62828;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
     .admin-main {
@@ -762,6 +891,10 @@
     
     .admin-header h1 {
         font-size: 1.3rem;
+    }
+    
+    .admin-welcome {
+        font-size: 0.8rem;
     }
     
     .header-actions {

@@ -11,6 +11,14 @@ function Dashboard() {
     const [loading, setLoading] = useState(true);
     const { showError } = useNotification();
 
+    // Add class to body to hide global header and footer
+    useEffect(() => {
+        document.body.classList.add('admin-page');
+        return () => {
+            document.body.classList.remove('admin-page');
+        };
+    }, []);
+
     const loadDashboardStats = useCallback(async () => {
         try {
             const response = await adminService.getDashboardStats();
@@ -53,7 +61,7 @@ function Dashboard() {
             <main className="admin-main">
                 <div className="admin-header">
                     <h1>Dashboard</h1>
-                    <p>Welcome back, Admin</p>
+                    <p className="admin-welcome">Welcome back, Admin</p>
                 </div>
 
                 {/* Stats Cards - Now showing active products count */}
