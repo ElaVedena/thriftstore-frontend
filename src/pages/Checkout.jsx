@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useNotification } from '../hooks/useNotification';
@@ -33,16 +33,23 @@ function Checkout() {
         };
     }, []);
 
-    // TESTING SHIPPING COSTS - All counties between 1-5 shillings
     const getShippingCost = (county) => {
         if (!county) return 0;
         
-        // For testing purposes, return random shipping between 1-5 shillings
-        // Using county name to determine consistent shipping for same county
-        const countyHash = county.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        const shippingAmount = (countyHash % 5) + 1; // Returns 1, 2, 3, 4, or 5
+        const nairobiRegion = ['Nairobi', 'Kiambu', 'Machakos', 'Kajiado'];
+        const centralRegion = ['Muranga', 'Nyeri', 'Kirinyaga', 'Nyandarua', 'Embu', 'Meru', 'Tharaka Nithi'];
+        const coastalRegion = ['Mombasa', 'Kwale', 'Kilifi', 'Tana River', 'Lamu', 'Taita Taveta'];
+        const westernRegion = ['Kisumu', 'Kisii', 'Nyamira', 'Homa Bay', 'Migori', 'Siaya', 'Vihiga', 'Kakamega', 'Bungoma', 'Busia', 'Trans Nzoia'];
+        const riftRegion = ['Nakuru', 'Uasin Gishu', 'Kericho', 'Bomet', 'Nandi', 'Baringo', 'Laikipia', 'Samburu', 'Turkana', 'West Pokot', 'Elgeyo Marakwet'];
+        const remoteRegion = ['Garissa', 'Wajir', 'Mandera', 'Marsabit', 'Isiolo'];
         
-        return shippingAmount;
+        if (nairobiRegion.includes(county)) return 150;
+        if (centralRegion.includes(county)) return 250;
+        if (coastalRegion.includes(county)) return 350;
+        if (westernRegion.includes(county)) return 300;
+        if (riftRegion.includes(county)) return 250;
+        if (remoteRegion.includes(county)) return 500;
+        return 400;
     };
 
     const handleShippingSubmit = (data) => {
