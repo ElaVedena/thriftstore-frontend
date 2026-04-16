@@ -43,12 +43,12 @@ function Checkout() {
         const riftRegion = ['Nakuru', 'Uasin Gishu', 'Kericho', 'Bomet', 'Nandi', 'Baringo', 'Laikipia', 'Samburu', 'Turkana', 'West Pokot', 'Elgeyo Marakwet'];
         const remoteRegion = ['Garissa', 'Wajir', 'Mandera', 'Marsabit', 'Isiolo'];
         
-        if (nairobiRegion.includes(county)) return 150;
-        if (centralRegion.includes(county)) return 250;
-        if (coastalRegion.includes(county)) return 350;
-        if (westernRegion.includes(county)) return 300;
-        if (riftRegion.includes(county)) return 250;
-        if (remoteRegion.includes(county)) return 500;
+        if (nairobiRegion.includes(county)) return 1;
+        if (centralRegion.includes(county)) return 1;
+        if (coastalRegion.includes(county)) return 1;
+        if (westernRegion.includes(county)) return 1;
+        if (riftRegion.includes(county)) return 1;
+        if (remoteRegion.includes(county)) return 1;
         return 400;
     };
 

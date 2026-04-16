@@ -22,19 +22,19 @@ function OrderSummary({ selectedCounty }) {
         const remoteRegion = ['Garissa', 'Wajir', 'Mandera', 'Marsabit', 'Isiolo'];
         
         if (nairobiRegion.includes(county)) {
-            return 150; // KSh 150 for Nairobi and surrounding
+            return 1; // KSh 150 for Nairobi and surrounding
         } else if (centralRegion.includes(county)) {
-            return 250; // KSh 250 for Central Kenya
+            return 1; // KSh 250 for Central Kenya
         } else if (coastalRegion.includes(county)) {
-            return 350; // KSh 350 for Coast
+            return 1; // KSh 350 for Coast
         } else if (westernRegion.includes(county)) {
-            return 300; // KSh 300 for Western Kenya
+            return 1; // KSh 300 for Western Kenya
         } else if (riftRegion.includes(county)) {
-            return 250; // KSh 250 for Rift Valley
+            return 1; // KSh 250 for Rift Valley
         } else if (remoteRegion.includes(county)) {
-            return 500; // KSh 500 for remote areas
+            return 1; // KSh 500 for remote areas
         } else {
-            return 400; // Default for other counties
+            return 1; // Default for other counties
         }
     };
 
