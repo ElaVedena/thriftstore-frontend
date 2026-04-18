@@ -1,43 +1,47 @@
 import '../../components/css/OrderStatusBadge.css';
 
 function OrderStatusBadge({ status }) {
+    // Normalize status to lowercase for consistent comparison
     const normalizedStatus = status ? status.toLowerCase() : '';
     
     const getStatusClass = () => {
         switch (normalizedStatus) {
             case 'paid':
-            case 'delivered':
-                return 'status-delivered';
-            case 'shipped':
-                return 'status-shipped';
+                return 'status-paid';
             case 'processing':
                 return 'status-processing';
-            case 'pending':
-            case 'pending_payment':
-                return 'status-pending';
+            case 'shipped':
+                return 'status-shipped';
+            case 'delivered':
+                return 'status-delivered';
             case 'cancelled':
             case 'payment_failed':
                 return 'status-cancelled';
+            case 'pending':
+            case 'pending_payment':
+                return 'status-pending';
             default:
-                return '';
+                return 'status-pending';
         }
     };
 
     const getStatusIcon = () => {
         switch (normalizedStatus) {
             case 'paid':
-            case 'delivered':
                 return 'fas fa-check-circle';
+            case 'processing':
+                return 'fas fa-cog fa-spin';
             case 'shipped':
                 return 'fas fa-truck';
-            case 'processing':
-                return 'fas fa-cog';
+            case 'delivered':
+                return 'fas fa-check-double';
+            case 'cancelled':
+                return 'fas fa-ban';
+            case 'payment_failed':
+                return 'fas fa-exclamation-triangle';
             case 'pending':
             case 'pending_payment':
                 return 'fas fa-clock';
-            case 'cancelled':
-            case 'payment_failed':
-                return 'fas fa-times-circle';
             default:
                 return 'fas fa-circle';
         }
@@ -46,7 +50,24 @@ function OrderStatusBadge({ status }) {
     const getDisplayText = () => {
         if (!status) return 'Unknown';
         
-        // Convert from backend format
+        // Handle specific backend statuses
+        const statusMap = {
+            'paid': 'Paid',
+            'processing': 'Processing',
+            'shipped': 'Shipped',
+            'delivered': 'Delivered',
+            'cancelled': 'Cancelled',
+            'payment_failed': 'Payment Failed',
+            'pending': 'Pending',
+            'pending_payment': 'Pending Payment'
+        };
+        
+        // Check if status exists in map
+        if (statusMap[normalizedStatus]) {
+            return statusMap[normalizedStatus];
+        }
+        
+        // Fallback: Convert from backend format (e.g., "PAID" -> "Paid")
         return status
             .toLowerCase()
             .split('_')
@@ -55,7 +76,7 @@ function OrderStatusBadge({ status }) {
     };
 
     return (
-        <span className={`order-status-badge ${getStatusClass()}`}>
+        <span className={`order-status-badge ${getStatusClass()}`} title={getDisplayText()}>
             <i className={getStatusIcon()}></i>
             <span>{getDisplayText()}</span>
         </span>
