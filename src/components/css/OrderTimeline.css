@@ -138,9 +138,22 @@
     text-transform: capitalize;
 }
 
+.timeline-date-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
 .timeline-date {
     color: #666;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.timeline-relative {
+    color: #999;
+    font-size: 0.65rem;
     font-weight: 400;
 }
 
@@ -195,37 +208,197 @@
     font-size: 0.95rem;
 }
 
+/* ===== MOBILE RESPONSIVE ===== */
+
+/* Tablet (max-width: 768px) */
 @media (max-width: 768px) {
     .order-timeline {
-        padding-left: 30px;
+        padding-left: 25px;
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 
     .order-timeline::before {
-        left: 15px;
+        left: 12px;
     }
 
     .timeline-dot {
-        left: -30px;
-        width: 30px;
-        height: 30px;
+        left: -25px;
+        width: 26px;
+        height: 26px;
     }
 
     .timeline-dot i {
-        font-size: 14px;
+        font-size: 12px;
+    }
+
+    .timeline-content {
+        padding: 12px 15px;
+    }
+
+    .timeline-content::before {
+        left: -6px;
+        top: 10px;
+        border-right: 6px solid white;
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
     }
 
     .timeline-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 5px;
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .timeline-header h4 {
+        font-size: 0.85rem;
+    }
+
+    .timeline-date-wrapper {
+        align-items: flex-start;
+    }
+
+    .timeline-date {
+        font-size: 0.65rem;
+    }
+
+    .timeline-relative {
+        font-size: 0.55rem;
+    }
+
+    .timeline-description {
+        font-size: 0.75rem;
+        margin-top: 6px;
     }
 
     .timeline-metadata {
-        flex-direction: column;
+        margin-top: 10px;
+        padding-top: 10px;
         gap: 8px;
+        flex-direction: column;
+    }
+
+    .metadata-item {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+        gap: 4px;
+    }
+
+    .metadata-item i {
+        font-size: 0.65rem;
     }
 }
 
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .order-timeline {
+        padding-left: 20px;
+    }
+
+    .order-timeline::before {
+        left: 10px;
+    }
+
+    .timeline-event {
+        margin-bottom: 20px;
+    }
+
+    .timeline-dot {
+        left: -20px;
+        width: 22px;
+        height: 22px;
+    }
+
+    .timeline-dot i {
+        font-size: 10px;
+    }
+
+    .timeline-content {
+        padding: 10px 12px;
+    }
+
+    .timeline-content::before {
+        left: -5px;
+        top: 8px;
+        border-right: 5px solid white;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+    }
+
+    .timeline-header h4 {
+        font-size: 0.8rem;
+    }
+
+    .timeline-date {
+        font-size: 0.6rem;
+    }
+
+    .timeline-relative {
+        font-size: 0.5rem;
+    }
+
+    .timeline-description {
+        font-size: 0.7rem;
+        line-height: 1.4;
+    }
+
+    .metadata-item {
+        font-size: 0.65rem;
+        padding: 2px 6px;
+    }
+
+    .timeline-empty {
+        padding: 25px 15px;
+    }
+
+    .timeline-empty i {
+        font-size: 2rem;
+    }
+
+    .timeline-empty p {
+        font-size: 0.8rem;
+    }
+}
+
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .order-timeline {
+        padding-left: 18px;
+    }
+
+    .timeline-dot {
+        left: -18px;
+        width: 20px;
+        height: 20px;
+    }
+
+    .timeline-dot i {
+        font-size: 9px;
+    }
+
+    .timeline-content {
+        padding: 8px 10px;
+    }
+
+    .timeline-header h4 {
+        font-size: 0.75rem;
+    }
+
+    .timeline-date {
+        font-size: 0.55rem;
+    }
+
+    .timeline-description {
+        font-size: 0.65rem;
+    }
+
+    .metadata-item {
+        font-size: 0.6rem;
+    }
+}
+
+/* Animations */
 @keyframes pulse {
     0% {
         box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
@@ -252,4 +425,11 @@
 
 .timeline-event.active .timeline-header h4 {
     color: #007bff;
+}
+
+/* Desktop hover effects only (not on mobile) */
+@media (min-width: 769px) {
+    .timeline-event:hover {
+        transform: translateX(5px);
+    }
 }
