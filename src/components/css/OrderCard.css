@@ -245,7 +245,7 @@
     flex-wrap: wrap;
 }
 
-.view-order-btn, .review-all-btn, .track-order-btn {
+.view-order-btn, .review-all-btn, .track-order-btn, .print-order-btn {
     padding: 8px 16px;
     border-radius: 6px;
     font-size: 0.9rem;
@@ -293,9 +293,20 @@
     box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
 }
 
+.print-order-btn {
+    background: #6c757d;
+    color: white;
+}
+
+.print-order-btn:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
 .view-order-btn:active,
 .review-all-btn:active,
-.track-order-btn:active {
+.track-order-btn:active,
+.print-order-btn:active {
     transform: translateY(0);
 }
 
@@ -309,190 +320,254 @@
     100% { background-position: -200% 0; }
 }
 
-/* ===== MOBILE RESPONSIVE ===== */
+/* ===== MOBILE RESPONSIVE - REDUCED TEXT SIZE & SPACING ===== */
 
 /* Tablet (max-width: 768px) */
 @media (max-width: 768px) {
+    .order-card {
+        margin-bottom: 12px;
+        border-radius: 8px;
+    }
+    
     .order-card-header {
         flex-direction: column;
         align-items: flex-start;
-        padding: 12px 15px;
+        padding: 10px 12px;
+        gap: 8px;
     }
-
-    .order-date {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 3px;
+    
+    .order-info {
+        gap: 4px;
     }
-
+    
+    .order-number .label,
+    .order-date .label {
+        font-size: 0.7rem;
+    }
+    
+    .order-number .value {
+        font-size: 0.8rem;
+    }
+    
+    .order-date .value {
+        font-size: 0.75rem;
+    }
+    
+    .relative-date {
+        font-size: 0.65rem;
+    }
+    
     .order-card-items {
-        padding: 15px;
+        padding: 12px;
+        gap: 10px;
     }
-
+    
     .order-item-preview {
-        flex-wrap: wrap;
-        padding: 10px;
+        padding: 8px;
+        gap: 10px;
     }
-
+    
     .item-image {
-        width: 70px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
     }
-
+    
+    .item-quantity {
+        font-size: 0.55rem;
+        padding: 2px 4px;
+        min-width: 16px;
+    }
+    
     .item-details h4 {
-        white-space: normal;
-        word-break: break-word;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
+        margin-bottom: 3px;
     }
-
+    
+    .item-size,
+    .item-condition {
+        font-size: 0.6rem;
+        padding: 2px 6px;
+    }
+    
+    .item-price {
+        font-size: 0.8rem;
+        margin-top: 3px;
+    }
+    
     .order-card-footer {
         flex-direction: column;
         align-items: stretch;
-        padding: 12px 15px;
+        padding: 10px 12px;
+        gap: 10px;
     }
-
+    
     .order-total {
         justify-content: space-between;
     }
-
+    
+    .order-total .label {
+        font-size: 0.8rem;
+    }
+    
+    .order-total .value {
+        font-size: 1rem;
+    }
+    
     .order-actions {
         flex-direction: column;
         width: 100%;
+        gap: 8px;
     }
-
-    .view-order-btn, .review-all-btn, .track-order-btn {
+    
+    .view-order-btn, .review-all-btn, .track-order-btn, .print-order-btn {
         width: 100%;
         justify-content: center;
-        padding: 10px 16px;
+        padding: 8px 12px;
+        font-size: 0.8rem;
     }
 }
 
 /* Small Mobile (max-width: 480px) */
 @media (max-width: 480px) {
     .order-card-header {
-        padding: 10px 12px;
+        padding: 8px 10px;
     }
-
+    
     .order-number .label,
     .order-date .label {
-        font-size: 0.8rem;
+        font-size: 0.65rem;
     }
-
+    
     .order-number .value {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
     }
-
+    
     .order-date .value {
-        font-size: 0.8rem;
-    }
-
-    .relative-date {
         font-size: 0.7rem;
     }
-
-    .order-card-items {
-        padding: 12px;
-        gap: 10px;
-    }
-
-    .order-item-preview {
-        padding: 8px;
-        gap: 10px;
-    }
-
-    .item-image {
-        width: 60px;
-        height: 60px;
-    }
-
-    .item-quantity {
+    
+    .relative-date {
         font-size: 0.6rem;
-        padding: 2px 5px;
-        min-width: 18px;
-        top: -4px;
-        right: -4px;
     }
-
+    
+    .order-card-items {
+        padding: 10px;
+        gap: 8px;
+    }
+    
+    .order-item-preview {
+        padding: 6px;
+        gap: 8px;
+    }
+    
+    .item-image {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .item-quantity {
+        font-size: 0.5rem;
+        padding: 2px 4px;
+        min-width: 14px;
+        top: -6px;
+        right: -6px;
+    }
+    
     .item-details h4 {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
     }
-
+    
     .item-size,
     .item-condition {
-        font-size: 0.65rem;
-        padding: 2px 6px;
+        font-size: 0.55rem;
+        padding: 2px 5px;
     }
-
+    
     .item-price {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
     }
-
-    .more-items {
-        font-size: 0.8rem;
-        padding: 8px;
-    }
-
+    
     .order-card-footer {
-        padding: 10px 12px;
+        padding: 8px 10px;
     }
-
+    
     .order-total .label {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
     }
-
+    
     .order-total .value {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
-
-    .view-order-btn, .review-all-btn, .track-order-btn {
-        padding: 8px 12px;
-        font-size: 0.85rem;
+    
+    .view-order-btn, .review-all-btn, .track-order-btn, .print-order-btn {
+        padding: 6px 10px;
+        font-size: 0.75rem;
     }
 }
 
 /* Extra Small Mobile (max-width: 360px) */
 @media (max-width: 360px) {
     .order-card-header {
-        padding: 8px 10px;
+        padding: 6px 8px;
     }
-
+    
     .order-number .label,
     .order-date .label {
-        font-size: 0.75rem;
+        font-size: 0.6rem;
     }
-
+    
     .order-number .value {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
-
+    
+    .order-date .value {
+        font-size: 0.65rem;
+    }
+    
+    .relative-date {
+        font-size: 0.55rem;
+    }
+    
     .order-card-items {
-        padding: 10px;
+        padding: 8px;
+        gap: 6px;
     }
-
+    
+    .order-item-preview {
+        padding: 5px;
+        gap: 6px;
+    }
+    
     .item-image {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
     }
-
+    
     .item-details h4 {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
-
+    
+    .item-size,
+    .item-condition {
+        font-size: 0.5rem;
+        padding: 1px 4px;
+    }
+    
     .item-price {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
-
-    .order-card-footer {
-        padding: 8px 10px;
+    
+    .order-total .label {
+        font-size: 0.7rem;
     }
-
+    
     .order-total .value {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
-
-    .view-order-btn, .review-all-btn, .track-order-btn {
-        padding: 6px 10px;
-        font-size: 0.8rem;
+    
+    .view-order-btn, .review-all-btn, .track-order-btn, .print-order-btn {
+        padding: 5px 8px;
+        font-size: 0.7rem;
     }
 }
 
