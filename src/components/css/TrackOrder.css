@@ -10,14 +10,14 @@
 }
 
 .track-order-header h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     font-weight: 600;
 }
 
 .track-order-header p {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: #CEABB1;
     font-weight: 500;
 }
@@ -28,7 +28,7 @@
     background: white;
     border-radius: 12px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    padding: 40px;
+    padding: 30px;
 }
 
 .track-order-loading {
@@ -44,7 +44,7 @@
 
 .track-order-loading p {
     color: #666;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .track-order-error {
@@ -62,7 +62,7 @@
 
 .track-order-error p {
     color: #666;
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: 20px;
 }
 
@@ -82,8 +82,8 @@
 }
 
 .tracking-progress {
-    margin-bottom: 40px;
-    padding: 20px 0;
+    margin-bottom: 30px;
+    padding: 15px 0;
 }
 
 .progress-bar {
@@ -117,22 +117,22 @@
 }
 
 .step i {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     background: white;
     border: 2px solid #f0f0f0;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #999;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     transition: all 0.3s ease;
 }
 
 .step span {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #999;
     font-weight: 500;
     transition: all 0.3s ease;
@@ -151,21 +151,21 @@
 .tracking-details {
     background: #f8f5f6;
     border-radius: 8px;
-    padding: 25px;
-    margin-bottom: 30px;
+    padding: 20px;
+    margin-bottom: 25px;
 }
 
 .tracking-details h2 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-weight: 600;
 }
 
 .details-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 15px;
 }
 
 .detail-item {
@@ -174,64 +174,65 @@
 }
 
 .detail-item .label {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: #999;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 .detail-item .value {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #333;
     font-weight: 500;
 }
 
 .detail-item .value.total {
     color: #CEABB1;
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 .tracking-address {
     background: white;
     border: 1px solid #f0f0f0;
     border-radius: 8px;
-    padding: 25px;
-    margin-bottom: 30px;
+    padding: 20px;
+    margin-bottom: 25px;
 }
 
 .tracking-address h2 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     font-weight: 600;
 }
 
 .tracking-address p {
     color: #666;
-    line-height: 1.8;
+    line-height: 1.6;
     margin: 0;
+    font-size: 0.9rem;
 }
 
 .tracking-items {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .tracking-items h2 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-weight: 600;
 }
 
 .items-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
 }
 
 .tracking-item {
     display: flex;
-    gap: 20px;
-    padding: 15px;
+    gap: 15px;
+    padding: 12px;
     background: #f8f5f6;
     border-radius: 8px;
     transition: transform 0.3s ease;
@@ -242,8 +243,8 @@
 }
 
 .tracking-item .item-image {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     flex-shrink: 0;
     border-radius: 8px;
     overflow: hidden;
@@ -260,28 +261,28 @@
 }
 
 .tracking-item .item-info h3 {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     color: #333;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-weight: 600;
 }
 
 .tracking-item .item-info p {
     color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 5px;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
 }
 
 .tracking-item .item-info .item-price {
     color: #CEABB1;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 .tracking-actions {
     display: flex;
-    gap: 15px;
-    margin-top: 30px;
+    gap: 12px;
+    margin-top: 25px;
     padding-top: 20px;
     border-top: 1px solid #f0f0f0;
 }
@@ -297,7 +298,7 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     transition: all 0.3s ease;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .back-to-orders:hover {
@@ -317,7 +318,7 @@
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
 }
 
@@ -327,38 +328,221 @@
     box-shadow: 0 4px 12px rgba(206, 171, 177, 0.3);
 }
 
+.status-message-card {
+    background: linear-gradient(135deg, #f8f5f6, #faf5f6);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-left: 4px solid #CEABB1;
+}
+
+.status-message-card i {
+    font-size: 2rem;
+    color: #CEABB1;
+}
+
+.status-message-content {
+    flex: 1;
+}
+
+.status-message-content h3 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.status-message-content p {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ===== MOBILE RESPONSIVE - REDUCED TEXT SIZE & SPACING ===== */
+
+/* Tablet (max-width: 768px) */
 @media (max-width: 768px) {
     .track-order-page {
-        padding: 20px 15px;
+        padding: 15px 12px;
+    }
+
+    .track-order-header {
+        margin-bottom: 25px;
     }
 
     .track-order-header h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
+    }
+
+    .track-order-header p {
+        font-size: 0.85rem;
     }
 
     .track-order-container {
-        padding: 25px;
+        padding: 20px;
+    }
+
+    .tracking-progress {
+        margin-bottom: 20px;
+        padding: 10px 0;
+    }
+
+    .step i {
+        width: 30px;
+        height: 30px;
+        font-size: 0.85rem;
+    }
+
+    .step span {
+        font-size: 0.7rem;
+    }
+
+    .tracking-details,
+    .tracking-address {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .tracking-details h2,
+    .tracking-address h2,
+    .tracking-items h2 {
+        font-size: 1rem;
+        margin-bottom: 12px;
     }
 
     .details-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
+        gap: 12px;
+    }
+
+    .detail-item .label {
+        font-size: 0.65rem;
+    }
+
+    .detail-item .value {
+        font-size: 0.8rem;
+    }
+
+    .detail-item .value.total {
+        font-size: 0.9rem;
+    }
+
+    .tracking-address p {
+        font-size: 0.8rem;
+    }
+
+    .tracking-item {
+        gap: 12px;
+        padding: 10px;
+    }
+
+    .tracking-item .item-image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .tracking-item .item-info h3 {
+        font-size: 0.85rem;
+    }
+
+    .tracking-item .item-info p {
+        font-size: 0.7rem;
+    }
+
+    .tracking-item .item-info .item-price {
+        font-size: 0.8rem;
+    }
+
+    .status-message-card {
+        padding: 15px;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .status-message-card i {
+        font-size: 1.5rem;
+    }
+
+    .status-message-content h3 {
+        font-size: 0.85rem;
+    }
+
+    .status-message-content p {
+        font-size: 0.7rem;
+    }
+
+    .tracking-actions {
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 15px;
+    }
+
+    .back-to-orders,
+    .review-order-btn {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .track-order-header h1 {
+        font-size: 1.3rem;
+    }
+
+    .track-order-header p {
+        font-size: 0.75rem;
+    }
+
+    .track-order-container {
+        padding: 15px;
     }
 
     .progress-steps {
         flex-direction: column;
         align-items: flex-start;
-        gap: 15px;
+        gap: 12px;
     }
 
     .step {
         width: 100%;
         flex-direction: row;
-        gap: 15px;
+        justify-content: flex-start;
+        gap: 12px;
     }
 
     .step i {
         margin-bottom: 0;
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+
+    .step span {
+        font-size: 0.7rem;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .tracking-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .tracking-item .item-image {
+        width: 80px;
+        height: 80px;
+    }
+
+    .tracking-item:hover {
+        transform: none;
     }
 
     .tracking-actions {
@@ -370,30 +554,58 @@
         width: 100%;
         justify-content: center;
     }
+
+    .status-message-card {
+        flex-direction: column;
+        text-align: center;
+    }
 }
 
-@media (max-width: 480px) {
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
     .track-order-header h1 {
-        font-size: 1.8rem;
+        font-size: 1.2rem;
     }
 
     .track-order-container {
-        padding: 20px;
+        padding: 12px;
     }
 
-    .tracking-item {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
+    .tracking-details,
+    .tracking-address {
+        padding: 12px;
     }
 
-    .tracking-item .item-image {
-        width: 120px;
-        height: 120px;
+    .tracking-details h2,
+    .tracking-address h2,
+    .tracking-items h2 {
+        font-size: 0.9rem;
     }
 
-    .tracking-item:hover {
-        transform: none;
+    .detail-item .label {
+        font-size: 0.6rem;
+    }
+
+    .detail-item .value {
+        font-size: 0.75rem;
+    }
+
+    .tracking-item .item-info h3 {
+        font-size: 0.8rem;
+    }
+
+    .tracking-item .item-info p {
+        font-size: 0.65rem;
+    }
+
+    .step i {
+        width: 24px;
+        height: 24px;
+        font-size: 0.65rem;
+    }
+
+    .step span {
+        font-size: 0.65rem;
     }
 }
 
@@ -410,17 +622,4 @@
 
 .track-order-container {
     animation: slideIn 0.5s ease;
-}
-
-.step.pending i { border-color: #ff9800; color: #ff9800; }
-.step.processing i { border-color: #2196f3; color: #2196f3; }
-.step.shipped i { border-color: #9c27b0; color: #9c27b0; }
-.step.delivered i { border-color: #4caf50; color: #4caf50; }
-
-.step.active.pending i,
-.step.active.processing i,
-.step.active.shipped i,
-.step.active.delivered i {
-    background: currentColor;
-    color: white;
 }
