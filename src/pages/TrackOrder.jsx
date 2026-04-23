@@ -10,8 +10,46 @@ function TrackOrder() {
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [imageErrors, setImageErrors] = useState({});
 
-    // Wrap loadOrder in useCallback
+    // Helper function to get the correct image URL from different possible sources
+    const getImageUrl = (item) => {
+        // Check multiple possible image fields
+        const possibleImageFields = [
+            item.imageUrl,
+            item.image,
+            item.productImage,
+            item.mainImage,
+            item.product?.imageUrl,
+            item.product?.image,
+            item.product?.images?.[0],
+            item.images?.[0]
+        ];
+        
+        for (const field of possibleImageFields) {
+            if (field && typeof field === 'string' && field.trim() !== '') {
+                // If it's a relative path, construct full URL
+                if (field.startsWith('/uploads/') || field.startsWith('/images/')) {
+                    const baseUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || '';
+                    return baseUrl + field;
+                }
+                // If it's a Cloudinary URL or absolute URL, return as is
+                if (field.startsWith('http://') || field.startsWith('https://') || field.startsWith('cloudinary://')) {
+                    return field;
+                }
+                return field;
+            }
+        }
+        
+        // Return null if no image found
+        return null;
+    };
+
+    // Handle image loading error
+    const handleImageError = (itemId) => {
+        setImageErrors(prev => ({ ...prev, [itemId]: true }));
+    };
+
     const loadOrder = useCallback(async () => {
         setLoading(true);
         setError(null);
@@ -26,6 +64,24 @@ function TrackOrder() {
                 // If order is nested inside a 'data' property
                 if (orderData.data && !orderData.orderNumber) {
                     orderData = orderData.data;
+                }
+                
+                // Ensure items array exists
+                if (!orderData.items) {
+                    orderData.items = [];
+                }
+                
+                // Log image URLs for debugging
+                if (orderData.items && orderData.items.length > 0) {
+                    orderData.items.forEach((item, idx) => {
+                        console.log(`Item ${idx} image sources:`, {
+                            imageUrl: item.imageUrl,
+                            image: item.image,
+                            productImage: item.productImage,
+                            productImages: item.product?.images,
+                            finalUrl: getImageUrl(item)
+                        });
+                    });
                 }
                 
                 console.log('Extracted order data:', orderData);
@@ -51,12 +107,6 @@ function TrackOrder() {
     const getNormalizedStatus = (status) => {
         if (!status) return 'pending';
         return status.toLowerCase();
-    };
-
-    // Helper function to check if order status matches a given status
-    const isStatus = (statusToCheck) => {
-        const currentStatus = getNormalizedStatus(order?.status);
-        return currentStatus === statusToCheck.toLowerCase();
     };
 
     // Get status for progress bar (mapping backend statuses to progress steps)
@@ -227,25 +277,41 @@ function TrackOrder() {
                 <div className="tracking-items">
                     <h2>Items in this Order</h2>
                     <div className="items-list">
-                        {(order.items || []).map((item, index) => (
-                            <div key={item.id || index} className="tracking-item">
-                                <div className="item-image">
-                                    <CloudinaryImage 
-                                        src={item.imageUrl || item.product?.images?.[0]}
-                                        alt={item.productName || item.name}
-                                        width={80}
-                                        height={80}
-                                    />
+                        {(order.items || []).map((item, index) => {
+                            const imageUrl = getImageUrl(item);
+                            const hasError = imageErrors[item.id || index];
+                            
+                            return (
+                                <div key={item.id || index} className="tracking-item">
+                                    <div className="item-image">
+                                        {!hasError && imageUrl ? (
+                                            <CloudinaryImage 
+                                                src={imageUrl}
+                                                alt={item.productName || item.name || 'Product'}
+                                                width={80}
+                                                height={80}
+                                                crop="scale"
+                                                quality="auto"
+                                                format="auto"
+                                                onError={() => handleImageError(item.id || index)}
+                                                fallback="/placeholder-image.jpg"
+                                            />
+                                        ) : (
+                                            <div className="image-placeholder">
+                                                <i className="fas fa-image"></i>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="item-info">
+                                        <h3>{item.productName || item.name || 'Product'}</h3>
+                                        {(item.size || item.selectedSize) && (
+                                            <p>Size: {item.size || item.selectedSize}</p>
+                                        )}
+                                        <p className="item-price">{formatPrice(item.price)} x {item.quantity}</p>
+                                    </div>
                                 </div>
-                                <div className="item-info">
-                                    <h3>{item.productName || item.name}</h3>
-                                    {(item.size || item.selectedSize) && (
-                                        <p>Size: {item.size || item.selectedSize}</p>
-                                    )}
-                                    <p className="item-price">{formatPrice(item.price)} x {item.quantity}</p>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
 
