@@ -50,27 +50,53 @@
     border: 1px solid #c3e6cb;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-    .order-status-badge {
-        gap: 0.35rem;
-        padding: 0.25rem 0.6rem;
-        font-size: 0.75rem;
-    }
-    
-    .order-status-badge i {
-        font-size: 0.7rem;
-    }
-}
+/* ===== MOBILE RESPONSIVE - FURTHER REDUCED ===== */
 
-@media (max-width: 480px) {
+/* Tablet (max-width: 768px) */
+@media (max-width: 768px) {
     .order-status-badge {
         gap: 0.3rem;
         padding: 0.2rem 0.5rem;
         font-size: 0.7rem;
+        border-radius: 16px;
     }
     
     .order-status-badge i {
         font-size: 0.65rem;
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .order-status-badge {
+        gap: 0.25rem;
+        padding: 0.15rem 0.4rem;
+        font-size: 0.65rem;
+        border-radius: 14px;
+    }
+    
+    .order-status-badge i {
+        font-size: 0.6rem;
+    }
+}
+
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .order-status-badge {
+        gap: 0.2rem;
+        padding: 0.12rem 0.35rem;
+        font-size: 0.6rem;
+        border-radius: 12px;
+    }
+    
+    .order-status-badge i {
+        font-size: 0.55rem;
+    }
+}
+
+/* Remove hover effects on mobile for better touch response */
+@media (max-width: 768px) {
+    .order-status-badge {
+        cursor: default;
     }
 }
