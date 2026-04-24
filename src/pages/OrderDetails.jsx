@@ -29,7 +29,6 @@ function OrderDetails() {
             const response = await productService.getProductById(productId);
             if (response.success) {
                 const product = response.data;
-                // Check multiple possible image fields
                 const imageUrl = product?.images?.[0] || 
                                 product?.imageUrl || 
                                 product?.image ||
@@ -51,13 +50,11 @@ function OrderDetails() {
                 const orderData = orderRes.data?.data || orderRes.data;
                 setOrder(orderData);
                 
-                // Fetch images for each item
                 if (orderData?.items && orderData.items.length > 0) {
                     const itemsWithImagesPromises = orderData.items.map(async (item) => {
                         const productId = item.productId || item.id;
                         let imageUrl = item.imageUrl || item.image || item.productImage;
                         
-                        // If no image URL in order item, fetch from product
                         if (!imageUrl && productId) {
                             imageUrl = await fetchProductImage(productId);
                         }
@@ -182,6 +179,297 @@ function OrderDetails() {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
     })}`;
+
+    // Custom print receipt function
+    const handlePrintReceipt = () => {
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        
+        const formatReceiptDate = (date) => {
+            if (!date) return 'N/A';
+            return new Date(date).toLocaleDateString('en-KE', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        };
+
+        const receiptHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Order Receipt - ${order.orderNumber || order.id}</title>
+                <meta charset="UTF-8">
+                <style>
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                    }
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                        padding: 20px;
+                        background: white;
+                        color: #333;
+                    }
+                    .receipt {
+                        max-width: 800px;
+                        margin: 0 auto;
+                        background: white;
+                        padding: 20px;
+                    }
+                    .receipt-header {
+                        text-align: center;
+                        margin-bottom: 25px;
+                        padding-bottom: 15px;
+                        border-bottom: 2px solid #CEABB1;
+                    }
+                    .receipt-header h1 {
+                        font-size: 24px;
+                        color: #2d2d2d;
+                        margin-bottom: 5px;
+                    }
+                    .receipt-header p {
+                        color: #666;
+                        font-size: 12px;
+                    }
+                    .order-info {
+                        margin-bottom: 25px;
+                        padding: 12px;
+                        background: #f8f5f6;
+                        border-radius: 6px;
+                    }
+                    .order-info h3 {
+                        font-size: 14px;
+                        margin-bottom: 10px;
+                        color: #2d2d2d;
+                    }
+                    .order-info-row {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 6px;
+                        font-size: 12px;
+                    }
+                    .order-info-row .label {
+                        color: #666;
+                    }
+                    .order-info-row .value {
+                        font-weight: 600;
+                        color: #2d2d2d;
+                    }
+                    .items-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 25px;
+                    }
+                    .items-table th {
+                        text-align: left;
+                        padding: 8px;
+                        background: #f0f0f0;
+                        font-size: 11px;
+                        font-weight: 600;
+                        color: #2d2d2d;
+                        border-bottom: 1px solid #ddd;
+                    }
+                    .items-table td {
+                        padding: 8px;
+                        font-size: 11px;
+                        color: #666;
+                        border-bottom: 1px solid #eee;
+                    }
+                    .items-table .item-name {
+                        font-weight: 500;
+                        color: #2d2d2d;
+                    }
+                    .summary {
+                        margin-top: 15px;
+                        padding-top: 15px;
+                        border-top: 1px solid #e0e0e0;
+                        text-align: right;
+                    }
+                    .summary-row {
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-bottom: 6px;
+                        font-size: 12px;
+                    }
+                    .summary-row .label {
+                        width: 130px;
+                        color: #666;
+                    }
+                    .summary-row .value {
+                        width: 100px;
+                        text-align: right;
+                        font-weight: 500;
+                        color: #2d2d2d;
+                    }
+                    .summary-row.total {
+                        font-size: 14px;
+                        font-weight: bold;
+                        margin-top: 8px;
+                        padding-top: 8px;
+                        border-top: 2px solid #CEABB1;
+                    }
+                    .summary-row.total .value {
+                        color: #CEABB1;
+                    }
+                    .payment-info {
+                        margin-top: 20px;
+                        padding: 12px;
+                        background: #f9f9f9;
+                        border-radius: 6px;
+                    }
+                    .payment-info h3 {
+                        font-size: 13px;
+                        margin-bottom: 8px;
+                        color: #2d2d2d;
+                    }
+                    .payment-detail {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 5px;
+                        font-size: 11px;
+                    }
+                    .payment-detail .label {
+                        color: #666;
+                    }
+                    .payment-detail .value {
+                        color: #2d2d2d;
+                    }
+                    .footer {
+                        text-align: center;
+                        margin-top: 25px;
+                        padding-top: 15px;
+                        border-top: 1px solid #e0e0e0;
+                        font-size: 10px;
+                        color: #999;
+                    }
+                    @media print {
+                        body {
+                            padding: 0;
+                            margin: 0;
+                        }
+                        .receipt {
+                            padding: 15px;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="receipt">
+                    <div class="receipt-header">
+                        <h1>VedaThrifts</h1>
+                        <p>Official Order Receipt</p>
+                    </div>
+                    
+                    <div class="order-info">
+                        <h3>Order Information</h3>
+                        <div class="order-info-row">
+                            <span class="label">Order Number:</span>
+                            <span class="value">${order.orderNumber || order.id}</span>
+                        </div>
+                        <div class="order-info-row">
+                            <span class="label">Order Date:</span>
+                            <span class="value">${formatReceiptDate(order.createdAt)}</span>
+                        </div>
+                        <div class="order-info-row">
+                            <span class="label">Order Status:</span>
+                            <span class="value">${order.status || 'Processing'}</span>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-bottom: 8px; font-size: 13px;">Items Ordered</h3>
+                    <table class="items-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Size</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${(order.items || []).map(item => `
+                                <tr>
+                                    <td class="item-name">${item.productName || item.name || 'Product'}</td>
+                                    <td>${item.size || item.selectedSize || '-'}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>${formatPrice(item.price)}</td>
+                                    <td>${formatPrice((item.price || 0) * (item.quantity || 1))}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div class="summary">
+                        <div class="summary-row">
+                            <span class="label">Subtotal:</span>
+                            <span class="value">${formatPrice(order.subtotal)}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Shipping:</span>
+                            <span class="value">${formatPrice(order.shippingCost || 0)}</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span class="label">Total:</span>
+                            <span class="value">${formatPrice(order.total)}</span>
+                        </div>
+                    </div>
+
+                    <div class="payment-info">
+                        <h3>Payment Information</h3>
+                        <div class="payment-detail">
+                            <span class="label">Payment Method:</span>
+                            <span class="value">${order.paymentMethod || 'M-PESA'}</span>
+                        </div>
+                        ${order.mpesaReceiptNumber ? `
+                        <div class="payment-detail">
+                            <span class="label">Receipt No:</span>
+                            <span class="value">${order.mpesaReceiptNumber}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    ${order.shippingAddress ? `
+                    <div class="payment-info">
+                        <h3>Shipping Address</h3>
+                        <div class="payment-detail">
+                            <span class="label">Address:</span>
+                            <span class="value">${order.shippingAddress}</span>
+                        </div>
+                        <div class="payment-detail">
+                            <span class="label">City/County:</span>
+                            <span class="value">${order.city || ''} ${order.county ? ', ' + order.county : ''}</span>
+                        </div>
+                        <div class="payment-detail">
+                            <span class="label">Phone:</span>
+                            <span class="value">${order.phone || 'N/A'}</span>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <div class="footer">
+                        <p>Thank you for shopping with VedaThrifts!</p>
+                        <p>For inquiries: support@vedathrifts.com</p>
+                    </div>
+                </div>
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        setTimeout(function() {
+                            window.close();
+                        }, 500);
+                    };
+                </script>
+            </body>
+            </html>
+        `;
+        
+        printWindow.document.write(receiptHTML);
+        printWindow.document.close();
+    };
 
     if (loading) {
         return (
@@ -328,7 +616,7 @@ function OrderDetails() {
                                 Write a Review
                             </button>
                         )}
-                        <button onClick={() => window.print()} className="print-order-btn">
+                        <button onClick={handlePrintReceipt} className="print-order-btn">
                             <i className="fas fa-print"></i>
                             Print Receipt
                         </button>
