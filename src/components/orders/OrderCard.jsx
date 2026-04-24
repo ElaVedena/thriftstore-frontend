@@ -95,6 +95,275 @@ function OrderCard({ order }) {
         setSelectedProduct(null);
     };
 
+    // Custom print receipt function - only prints order details, not entire page
+    const handlePrintReceipt = () => {
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        
+        const receiptHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Order Receipt - ${order.orderNumber || order.id}</title>
+                <meta charset="UTF-8">
+                <style>
+                    body {
+                        font-family: 'Arial', sans-serif;
+                        padding: 40px 20px;
+                        background: white;
+                        color: #333;
+                        margin: 0;
+                    }
+                    .receipt {
+                        max-width: 800px;
+                        margin: 0 auto;
+                        background: white;
+                        padding: 30px;
+                        border: 1px solid #e0e0e0;
+                        border-radius: 8px;
+                    }
+                    .receipt-header {
+                        text-align: center;
+                        margin-bottom: 30px;
+                        padding-bottom: 20px;
+                        border-bottom: 2px solid #CEABB1;
+                    }
+                    .receipt-header h1 {
+                        font-size: 28px;
+                        color: #2d2d2d;
+                        margin: 0 0 5px 0;
+                    }
+                    .receipt-header p {
+                        color: #666;
+                        font-size: 14px;
+                        margin: 0;
+                    }
+                    .order-info {
+                        margin-bottom: 30px;
+                        padding: 15px;
+                        background: #f8f5f6;
+                        border-radius: 8px;
+                    }
+                    .order-info h3 {
+                        font-size: 16px;
+                        margin: 0 0 10px 0;
+                        color: #2d2d2d;
+                    }
+                    .order-info-row {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 8px;
+                        font-size: 14px;
+                    }
+                    .order-info-row .label {
+                        color: #666;
+                    }
+                    .order-info-row .value {
+                        font-weight: 600;
+                        color: #2d2d2d;
+                    }
+                    .items-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 30px;
+                    }
+                    .items-table th {
+                        text-align: left;
+                        padding: 12px;
+                        background: #f0f0f0;
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #2d2d2d;
+                        border-bottom: 1px solid #ddd;
+                    }
+                    .items-table td {
+                        padding: 12px;
+                        font-size: 13px;
+                        color: #666;
+                        border-bottom: 1px solid #eee;
+                    }
+                    .items-table .item-name {
+                        font-weight: 500;
+                        color: #2d2d2d;
+                    }
+                    .summary {
+                        margin-top: 20px;
+                        padding-top: 20px;
+                        border-top: 1px solid #e0e0e0;
+                        text-align: right;
+                    }
+                    .summary-row {
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-bottom: 8px;
+                        font-size: 14px;
+                    }
+                    .summary-row .label {
+                        width: 150px;
+                        color: #666;
+                    }
+                    .summary-row .value {
+                        width: 120px;
+                        text-align: right;
+                        font-weight: 500;
+                        color: #2d2d2d;
+                    }
+                    .summary-row.total {
+                        font-size: 18px;
+                        font-weight: bold;
+                        margin-top: 10px;
+                        padding-top: 10px;
+                        border-top: 2px solid #CEABB1;
+                    }
+                    .summary-row.total .value {
+                        color: #CEABB1;
+                        font-weight: bold;
+                    }
+                    .payment-info {
+                        margin-top: 30px;
+                        padding: 15px;
+                        background: #f9f9f9;
+                        border-radius: 8px;
+                    }
+                    .payment-info h3 {
+                        font-size: 14px;
+                        margin: 0 0 10px 0;
+                        color: #2d2d2d;
+                    }
+                    .footer {
+                        text-align: center;
+                        margin-top: 30px;
+                        padding-top: 20px;
+                        border-top: 1px solid #e0e0e0;
+                        font-size: 11px;
+                        color: #999;
+                    }
+                    @media print {
+                        body {
+                            padding: 0;
+                            margin: 0;
+                        }
+                        .receipt {
+                            border: none;
+                            padding: 20px;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="receipt">
+                    <div class="receipt-header">
+                        <h1>VedaThrifts</h1>
+                        <p>Order Receipt</p>
+                    </div>
+                    
+                    <div class="order-info">
+                        <h3>Order Information</h3>
+                        <div class="order-info-row">
+                            <span class="label">Order Number:</span>
+                            <span class="value">${order.orderNumber || order.id}</span>
+                        </div>
+                        <div class="order-info-row">
+                            <span class="label">Order Date:</span>
+                            <span class="value">${formatShortDate(order.createdAt || order.orderDate)}</span>
+                        </div>
+                        <div class="order-info-row">
+                            <span class="label">Order Status:</span>
+                            <span class="value">${order.status || 'Processing'}</span>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-bottom: 10px; font-size: 16px;">Items Ordered</h3>
+                    <table class="items-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Size</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${(order.items || []).map(item => `
+                                <tr>
+                                    <td class="item-name">${item.productName || item.name || 'Product'}</td>
+                                    <td>${item.size || item.selectedSize || '-'}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>${formatPrice(item.price)}</td>
+                                    <td>${formatPrice((item.price || 0) * (item.quantity || 1))}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div class="summary">
+                        <div class="summary-row">
+                            <span class="label">Subtotal:</span>
+                            <span class="value">${formatPrice(order.subtotal)}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Shipping:</span>
+                            <span class="value">${formatPrice(order.shippingCost || 0)}</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span class="label">Total:</span>
+                            <span class="value">${formatPrice(order.total)}</span>
+                        </div>
+                    </div>
+
+                    <div class="payment-info">
+                        <h3>Payment Information</h3>
+                        <div class="order-info-row">
+                            <span class="label">Payment Method:</span>
+                            <span class="value">${order.paymentMethod || 'M-PESA'}</span>
+                        </div>
+                        ${order.mpesaReceiptNumber ? `
+                        <div class="order-info-row">
+                            <span class="label">M-Pesa Receipt:</span>
+                            <span class="value">${order.mpesaReceiptNumber}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    ${order.shippingAddress ? `
+                    <div class="payment-info">
+                        <h3>Shipping Address</h3>
+                        <div class="order-info-row">
+                            <span class="label">Address:</span>
+                            <span class="value">${order.shippingAddress}</span>
+                        </div>
+                        <div class="order-info-row">
+                            <span class="label">City:</span>
+                            <span class="value">${order.city || ''} ${order.county ? ', ' + order.county : ''}</span>
+                        </div>
+                        <div class="order-info-row">
+                            <span class="label">Phone:</span>
+                            <span class="value">${order.phone || 'N/A'}</span>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <div class="footer">
+                        <p>Thank you for shopping with VedaThrifts!</p>
+                        <p>For any inquiries, please contact us at support@vedathrifts.com</p>
+                    </div>
+                </div>
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        setTimeout(function() {
+                            window.close();
+                        }, 500);
+                    };
+                </script>
+            </body>
+            </html>
+        `;
+        
+        printWindow.document.write(receiptHTML);
+        printWindow.document.close();
+    };
+
     // Get delivered items for review
     const deliveredItems = getDisplayStatus(order.status) === 'delivered' && order.items ? order.items : [];
 
@@ -173,7 +442,7 @@ function OrderCard({ order }) {
                         
                         {/* Print Receipt - Only show for paid/completed orders */}
                         {isOrderPaid() && (
-                            <button onClick={() => window.print()} className="print-order-btn">
+                            <button onClick={handlePrintReceipt} className="print-order-btn">
                                 <i className="fas fa-print"></i>
                                 Print Receipt
                             </button>
