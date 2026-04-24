@@ -571,68 +571,6 @@
     }
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-    .order-card {
-        background: #1a1a1a;
-        border-color: #333;
-    }
-
-    .order-card-header {
-        background: linear-gradient(135deg, #2d2d2d 0%, #262626 100%);
-        border-bottom-color: #333;
-    }
-
-    .order-number .label,
-    .order-date .label {
-        color: #999;
-    }
-
-    .order-number .value,
-    .order-date .value {
-        color: #fff;
-    }
-
-    .relative-date {
-        color: #666;
-    }
-
-    .order-item-preview {
-        background: #242424;
-    }
-
-    .order-item-preview:hover {
-        background: #2a2a2a;
-    }
-
-    .item-details h4 {
-        color: #fff;
-    }
-
-    .item-price {
-        color: #CEABB1;
-    }
-
-    .more-items {
-        background: #242424;
-        border-color: #333;
-        color: #999;
-    }
-
-    .order-card-footer {
-        background: #242424;
-        border-top-color: #333;
-    }
-
-    .order-total .label {
-        color: #999;
-    }
-
-    .order-total .value {
-        color: #fff;
-    }
-}
-
 /* Print Styles */
 @media print {
     .order-card {
