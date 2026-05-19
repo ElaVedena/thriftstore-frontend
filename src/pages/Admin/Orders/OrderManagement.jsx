@@ -11,6 +11,7 @@ function OrderManagement() {
     const [filter, setFilter] = useState('all');
     const [updatingOrderId, setUpdatingOrderId] = useState(null);
     const [dateRange, setDateRange] = useState('3days');
+    const [expandedItems, setExpandedItems] = useState({});
     const { showSuccess, showError } = useNotification();
 
     // Add class to body to hide global header and footer
@@ -132,54 +133,89 @@ function OrderManagement() {
         }
     };
 
-    // Helper function to get item names as a formatted string
-    const getItemNames = (items) => {
-        if (!items || items.length === 0) return '-';
-        const names = items.map(item => item.productName || item.name || 'Product');
-        if (names.length === 1) return names[0];
-        return `${names[0]} +${names.length - 1} more`;
+    const toggleItemsExpanded = (orderId) => {
+        setExpandedItems(prev => ({
+            ...prev,
+            [orderId]: !prev[orderId]
+        }));
     };
 
-    // Helper function to get item images (first item's image)
-    const getItemImage = (items) => {
-        if (!items || items.length === 0) return null;
-        const firstItem = items[0];
-        return firstItem.imageUrl || firstItem.image || firstItem.productImage || null;
-    };
-
-    // Helper function to render items with images
-    const renderItemsCell = (items) => {
+    // Helper function to render items with all items visible
+    const renderItemsCell = (items, orderId) => {
         if (!items || items.length === 0) return '-';
         
+        const isExpanded = expandedItems[orderId];
         const firstItem = items[0];
-        const itemName = firstItem.productName || firstItem.name || 'Product';
-        const itemImage = firstItem.imageUrl || firstItem.image || firstItem.productImage;
         const itemCount = items.length;
+        const hasMultipleItems = itemCount > 1;
         
         return (
             <div className="items-cell">
-                {itemImage && (
+                {firstItem.imageUrl && (
                     <img 
-                        src={itemImage} 
-                        alt={itemName}
+                        src={firstItem.imageUrl} 
+                        alt={firstItem.productName || firstItem.name || 'Product'}
                         className="item-thumbnail"
-                        style={{ 
-                            width: '35px', 
-                            height: '35px', 
-                            objectFit: 'cover', 
-                            borderRadius: '4px',
-                            marginRight: '8px',
-                            verticalAlign: 'middle'
-                        }}
                         onError={(e) => {
                             e.target.style.display = 'none';
                         }}
                     />
                 )}
                 <div className="items-info">
-                    <div className="items-name">{itemName}</div>
-                    {itemCount > 1 && (
-                        <div className="items-more">+{itemCount - 1} more item(s)</div>
+                    {isExpanded ? (
+                        // Show all items when expanded
+                        <div className="items-list-full">
+                            {items.map((item, idx) => (
+                                <div key={idx} className="item-row">
+                                    {item.imageUrl && (
+                                        <img 
+                                            src={item.imageUrl} 
+                                            alt={item.productName || item.name || 'Product'}
+                                            className="item-row-thumbnail"
+                                            onError={(e) => {
+                                                e.target.style.display = 'none';
+                                            }}
+                                        />
+                                    )}
+                                    <span className="item-row-name">
+                                        {item.productName || item.name || 'Product'}
+                                    </span>
+                                    {item.size && (
+                                        <span className="item-row-size">({item.size})</span>
+                                    )}
+                                    <span className="item-row-qty">x{item.quantity}</span>
+                                </div>
+                            ))}
+                            {hasMultipleItems && (
+                                <button 
+                                    className="show-less-btn"
+                                    onClick={() => toggleItemsExpanded(orderId)}
+                                >
+                                    <i className="fas fa-chevron-up"></i> Show Less
+                                </button>
+                            )}
+                        </div>
+                    ) : (
+                        // Show condensed view with option to expand
+                        <>
+                            <div className="items-compact">
+                                <span className="items-name">
+                                    {firstItem.productName || firstItem.name || 'Product'}
+                                </span>
+                                {firstItem.size && (
+                                    <span className="items-size">({firstItem.size})</span>
+                                )}
+                                <span className="items-qty">x{firstItem.quantity}</span>
+                            </div>
+                            {hasMultipleItems && (
+                                <button 
+                                    className="show-more-btn"
+                                    onClick={() => toggleItemsExpanded(orderId)}
+                                >
+                                    <i className="fas fa-chevron-down"></i> +{itemCount - 1} more item(s)
+                                </button>
+                            )}
+                        </>
                     )}
                 </div>
             </div>
@@ -215,7 +251,7 @@ function OrderManagement() {
         {
             key: 'items',
             label: 'Items',
-            render: (_, item) => renderItemsCell(item.items)
+            render: (_, item) => renderItemsCell(item.items, item.id)
         },
         {
             key: 'status',
