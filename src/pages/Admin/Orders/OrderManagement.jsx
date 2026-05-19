@@ -52,6 +52,7 @@ function OrderManagement() {
                 allOrders = allOrders.map(order => ({
                     ...order,
                     userName: order.user?.name || order.userName || order.customerName || '-',
+                    userPhone: order.user?.phone || order.userPhone || order.customerPhone || order.phone || '-',
                     userEmail: order.user?.email || order.userEmail || order.customerEmail || '-'
                 }));
                 
@@ -131,6 +132,60 @@ function OrderManagement() {
         }
     };
 
+    // Helper function to get item names as a formatted string
+    const getItemNames = (items) => {
+        if (!items || items.length === 0) return '-';
+        const names = items.map(item => item.productName || item.name || 'Product');
+        if (names.length === 1) return names[0];
+        return `${names[0]} +${names.length - 1} more`;
+    };
+
+    // Helper function to get item images (first item's image)
+    const getItemImage = (items) => {
+        if (!items || items.length === 0) return null;
+        const firstItem = items[0];
+        return firstItem.imageUrl || firstItem.image || firstItem.productImage || null;
+    };
+
+    // Helper function to render items with images
+    const renderItemsCell = (items) => {
+        if (!items || items.length === 0) return '-';
+        
+        const firstItem = items[0];
+        const itemName = firstItem.productName || firstItem.name || 'Product';
+        const itemImage = firstItem.imageUrl || firstItem.image || firstItem.productImage;
+        const itemCount = items.length;
+        
+        return (
+            <div className="items-cell">
+                {itemImage && (
+                    <img 
+                        src={itemImage} 
+                        alt={itemName}
+                        className="item-thumbnail"
+                        style={{ 
+                            width: '35px', 
+                            height: '35px', 
+                            objectFit: 'cover', 
+                            borderRadius: '4px',
+                            marginRight: '8px',
+                            verticalAlign: 'middle'
+                        }}
+                        onError={(e) => {
+                            e.target.style.display = 'none';
+                        }}
+                    />
+                )}
+                <div className="items-info">
+                    <div className="items-name">{itemName}</div>
+                    {itemCount > 1 && (
+                        <div className="items-more">+{itemCount - 1} more item(s)</div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
     const columns = [
         {
             key: 'orderNumber',
@@ -143,9 +198,9 @@ function OrderManagement() {
             render: (_, item) => item.userName || item.user?.name || '-'
         },
         {
-            key: 'email',
-            label: 'Email',
-            render: (_, item) => item.userEmail || item.user?.email || '-'
+            key: 'phone',
+            label: 'Phone',
+            render: (_, item) => item.userPhone || item.user?.phone || item.phone || '-'
         },
         {
             key: 'createdAt',
@@ -160,7 +215,7 @@ function OrderManagement() {
         {
             key: 'items',
             label: 'Items',
-            render: (_, item) => item.items?.length || 0
+            render: (_, item) => renderItemsCell(item.items)
         },
         {
             key: 'status',
@@ -199,7 +254,8 @@ function OrderManagement() {
                 orderNumber: o.orderNumber,
                 status: o.status,
                 date: o.createdAt,
-                customer: o.userName
+                customer: o.userName,
+                items: o.items?.length
             })));
         }
     }, [orders]);
