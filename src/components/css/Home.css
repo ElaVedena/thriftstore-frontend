@@ -152,7 +152,7 @@
     border-radius: 2px;
 }
 
-/* ===== CATEGORIES GRID - NEW STYLES (Replaces horizontal scroll) ===== */
+/* ===== CATEGORIES GRID - 4 columns on desktop ===== */
 .categories-section {
     padding: 3rem 2rem;
     max-width: 1400px;
@@ -161,7 +161,7 @@
 
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
     margin-top: 1rem;
 }
@@ -357,23 +357,25 @@
 
 /* ===== RESPONSIVE BREAKPOINTS ===== */
 
-/* Desktop - 3 columns for categories */
-@media (min-width: 1025px) {
+/* Large Desktop - 4 columns for categories (default) */
+@media (min-width: 1200px) {
     .categories-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 2rem;
     }
-}
-
-/* Desktop - Product grid 4 columns */
-@media (min-width: 1200px) {
+    
     .product-grid {
         grid-template-columns: repeat(4, 1fr);
     }
 }
 
-/* Desktop - Product grid 3 columns */
-@media (max-width: 1199px) and (min-width: 901px) {
+/* Desktop - 4 columns for categories */
+@media (min-width: 1025px) and (max-width: 1199px) {
+    .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+    
     .product-grid {
         grid-template-columns: repeat(3, 1fr);
     }
