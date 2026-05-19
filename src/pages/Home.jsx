@@ -48,7 +48,7 @@ function Home() {
         setCurrentFeaturedIndex((prevIndex) => 
           prevIndex === featuredProducts.length - 1 ? 0 : prevIndex + 1
         );
-      }, 2000); // 2 seconds
+      }, 2000);
       
       return () => {
         if (featuredTimerRef.current) {
@@ -69,7 +69,7 @@ function Home() {
         setCurrentNewArrivalsIndex((prevIndex) => 
           prevIndex === newArrivals.length - 1 ? 0 : prevIndex + 1
         );
-      }, 2000); // 2 seconds
+      }, 2000);
       
       return () => {
         if (newArrivalsTimerRef.current) {
@@ -176,49 +176,36 @@ function Home() {
         
         console.log('Fetching home data from database...');
         
-        // Fetch featured products (random) and new arrivals (by date) separately
-        // Get more products for featured to avoid overlap with new arrivals
         const [featuredRes, newArrivalsRes, categoriesRes] = await Promise.allSettled([
-          productService.getFeaturedProducts(8),  // Fetch more products to ensure we have enough after filtering
-          productService.getNewArrivals(4),       // Only get latest 4 products
+          productService.getFeaturedProducts(8),
+          productService.getNewArrivals(4),
           categoryService.getAllCategories()
         ]);
 
-        // Handle new arrivals first - these are the latest 4 products
         let newArrivalsProducts = [];
         if (newArrivalsRes.status === 'fulfilled' && newArrivalsRes.value?.success) {
           newArrivalsProducts = newArrivalsRes.value.data || [];
           setNewArrivals(newArrivalsProducts.slice(0, 4));
-          console.log('New arrivals loaded (by date):', newArrivalsProducts.slice(0, 4).length);
+          console.log('New arrivals loaded:', newArrivalsProducts.slice(0, 4).length);
         } else {
           console.warn('Failed to load new arrivals');
           setNewArrivals([]);
         }
 
-        // Handle featured products - these should be RANDOM and NOT include new arrivals
         if (featuredRes.status === 'fulfilled' && featuredRes.value?.success) {
           let products = featuredRes.value.data || [];
           
-          // Filter out products that are in new arrivals to avoid duplication
           const newArrivalsIds = new Set(newArrivalsProducts.map(p => p.id));
           let filteredProducts = products.filter(product => !newArrivalsIds.has(product.id));
           
-          // If we don't have enough products after filtering, fetch more or use what we have
-          if (filteredProducts.length < 4 && products.length > 0) {
-            // Just use available products, they might be fewer than 4
-            console.log('Limited featured products after filtering:', filteredProducts.length);
-          }
-          
-          // Shuffle array for random display and take first 4
           const shuffled = [...filteredProducts].sort(() => 0.5 - Math.random());
           setFeaturedProducts(shuffled.slice(0, 4));
-          console.log('Featured products loaded (randomized, excluding new arrivals):', shuffled.slice(0, 4).length);
+          console.log('Featured products loaded:', shuffled.slice(0, 4).length);
         } else {
           console.warn('Failed to load featured products');
           setFeaturedProducts([]);
         }
 
-        // Handle categories 
         if (categoriesRes.status === 'fulfilled' && categoriesRes.value?.success) {
           const categoryData = categoriesRes.value.data || [];
           setCategories(categoryData);
@@ -238,21 +225,6 @@ function Home() {
 
     fetchHomeData();
   }, []);
-
-  // Scroll handlers for category slider
-  const scrollCategoriesLeft = () => {
-    const container = document.querySelector('.categories-grid-scroll');
-    if (container) {
-      container.scrollBy({ left: -300, behavior: 'smooth' });
-    }
-  };
-
-  const scrollCategoriesRight = () => {
-    const container = document.querySelector('.categories-grid-scroll');
-    if (container) {
-      container.scrollBy({ left: 300, behavior: 'smooth' });
-    }
-  };
 
   if (loading) {
     return (
@@ -329,47 +301,36 @@ function Home() {
           </div>
         </section>
 
+        {/* Shop by Category - Now using GRID layout instead of horizontal scroll */}
         {categories.length > 0 && (
           <section className="categories-section">
             <div className="section-header no-view-all">
               <h2>Shop by Category</h2>
             </div>
             
-            <div className="categories-slider-container">
-              <button className="scroll-btn scroll-left" onClick={scrollCategoriesLeft}>
-                <i className="fas fa-chevron-left"></i>
-              </button>
-              
-              <div className="categories-grid-scroll">
-                {categories.map(category => (
-                  <div key={`category-${category.id}`} className="category-slide">
-                    <CategoryCard category={category} />
-                  </div>
-                ))}
-              </div>
-              
-              <button className="scroll-btn scroll-right" onClick={scrollCategoriesRight}>
-                <i className="fas fa-chevron-right"></i>
-              </button>
+            <div className="categories-grid">
+              {categories.map(category => (
+                <div key={`category-${category.id}`} className="category-item">
+                  <CategoryCard category={category} />
+                </div>
+              ))}
             </div>
           </section>
         )}
 
-        {/* Featured Products - Random items, 4 on desktop, all on mobile */}
+        {/* Featured Products */}
         {featuredProducts.length > 0 && (
           <section className="featured">
             <div className="section-header no-view-all">
               <h2>Featured Products</h2>
             </div>
             
-            {/* Desktop grid view - only 4 products */}
-            <div className="product-grid desktop-grid desktop-featured-grid">
+            <div className="product-grid desktop-grid">
               {featuredProducts.slice(0, 4).map(product => (
                 <ProductCard key={`featured-${product.id}`} product={product} />
               ))}
             </div>
             
-            {/* Mobile Carousel View - spans all featured products */}
             <div className="mobile-carousel">
               <div className="carousel-container">
                 <button className="carousel-arrow prev" onClick={goToPreviousFeatured}>
@@ -387,7 +348,6 @@ function Home() {
                 </button>
               </div>
               
-              {/* Dot indicators */}
               <div className="carousel-dots">
                 {featuredProducts.map((_, index) => (
                   <button
@@ -405,21 +365,19 @@ function Home() {
           </section>
         )}
 
-        {/* New Arrivals - Latest 4 products, both mobile and desktop */}
+        {/* New Arrivals */}
         {newArrivals.length > 0 && (
           <section className="new-arrivals">
             <div className="section-header">
               <h2>New Arrivals</h2>
             </div>
             
-            {/* Desktop grid view - exactly 4 products */}
-            <div className="product-grid desktop-grid desktop-newarrivals-grid">
+            <div className="product-grid desktop-grid">
               {newArrivals.slice(0, 4).map(product => (
                 <ProductCard key={`new-${product.id}`} product={product} />
               ))}
             </div>
             
-            {/* Mobile Carousel View - exactly 4 products */}
             <div className="mobile-carousel">
               <div className="carousel-container">
                 <button className="carousel-arrow prev" onClick={goToPreviousNewArrivals}>
@@ -437,7 +395,6 @@ function Home() {
                 </button>
               </div>
               
-              {/* Dot indicators */}
               <div className="carousel-dots">
                 {newArrivals.map((_, index) => (
                   <button
