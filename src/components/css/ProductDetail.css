@@ -43,15 +43,17 @@
     aspect-ratio: 1 / 1;
 }
 
+/* FIXED: Changed from contain to cover to prevent stretching */
 .product-gallery .main-image {
     width: 100%;
     height: 100%;
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+    object-position: center;
 }
 
-/* Thumbnail images */
+/* Thumbnail images - already using cover, keep as is */
 .product-gallery .thumbnail-list {
     display: flex;
     flex-wrap: wrap;
