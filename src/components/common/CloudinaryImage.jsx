@@ -11,7 +11,7 @@ function CloudinaryImage({
     onLoad,
     onError,
     priority = false,
-    crop = 'fill',      // Changed from 'scale' to 'fill' to prevent stretching
+    crop = 'limit',      // Changed from 'fill' to 'limit' - never stretches, only scales down
     quality = 'auto',
     format = 'auto',
     removeBackground = false,
@@ -22,7 +22,6 @@ function CloudinaryImage({
 }) {
     const [isLoaded, setIsLoaded] = useState(false);
     const [hasError, setHasError] = useState(false);
-    const [currentSrc, setCurrentSrc] = useState(src);
     const [isMobile, setIsMobile] = useState(false);
     const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
@@ -74,34 +73,23 @@ function CloudinaryImage({
             // Remove version prefix (e.g., v123456/)
             publicId = publicId.replace(/^v\d+\//, '');
             
-            // Determine dimensions based on device
-            let imgWidth = finalWidth;
-            let imgHeight = finalHeight;
-            
-            if (responsive && isMobile && mobileWidth) {
-                imgWidth = mobileWidth;
-                imgHeight = mobileHeight || mobileWidth;
-            }
-            
             // Build transformations
             const transformations = [];
             
-            // Size transformation - using c_fill (crops to fill exactly)
-            if (imgWidth && imgHeight) {
-                transformations.push(`w_${imgWidth},h_${imgHeight},c_fill`);
-            } else if (imgWidth) {
-                transformations.push(`w_${imgWidth},c_fill`);
-            } else if (imgHeight) {
-                transformations.push(`h_${imgHeight},c_fill`);
+            // Use limit mode - NEVER stretches, only scales down to fit within dimensions
+            // This preserves aspect ratio and prevents distortion
+            if (finalWidth && finalHeight) {
+                transformations.push(`w_${finalWidth},h_${finalHeight},c_limit`);
+            } else if (finalWidth) {
+                transformations.push(`w_${finalWidth},c_limit`);
+            } else if (finalHeight) {
+                transformations.push(`h_${finalHeight},c_limit`);
             }
-            
-            // Add gravity to focus on the main subject
-            transformations.push('g_auto');
             
             // Quality and format
             transformations.push(`q_${quality},f_${format}`);
             
-            // Background removal - using correct Cloudinary syntax
+            // Background removal (optional)
             if (removeBackground) {
                 transformations.push('e_bgremoval');
             }
@@ -129,7 +117,7 @@ function CloudinaryImage({
             
             const sizeOptions = [120, 240, 360, 480, 600];
             const srcSet = sizeOptions.map(size => {
-                return `${baseUrl}w_${size},h_${size},c_fill,g_auto,q_${quality},f_${format}/${publicId} ${size}w`;
+                return `${baseUrl}w_${size},h_${size},c_limit,q_${quality},f_${format}/${publicId} ${size}w`;
             }).join(', ');
             
             return srcSet;

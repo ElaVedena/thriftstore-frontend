@@ -9,11 +9,10 @@
     justify-content: center;
 }
 
-/* FIXED: Changed from contain to cover */
 .image {
     width: 100%;
     height: 100%;
-    object-fit: cover;  /* Changed from 'contain' to 'cover' */
+    object-fit: contain;  /* Keep contain so image shows fully without cropping */
     object-position: center;
     opacity: 0;
     transition: opacity 0.2s ease;
