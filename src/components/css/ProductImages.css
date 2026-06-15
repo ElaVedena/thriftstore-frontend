@@ -19,8 +19,10 @@
     height: 100%;
 }
 
+/* FIX: Changed from contain to cover */
 .main-image .cloudinary-image {
-    object-fit: contain; 
+    object-fit: cover;  /* Changed from 'contain' to 'cover' */
+    object-position: center;
 }
 
 .main-image.no-image {
@@ -66,6 +68,7 @@
 
 .thumbnail .cloudinary-image {
     object-fit: cover;
+    object-position: center;
 }
 
 @media (max-width: 768px) {
