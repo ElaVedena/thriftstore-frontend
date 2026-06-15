@@ -11,7 +11,7 @@ function CloudinaryImage({
     onLoad,
     onError,
     priority = false,
-    crop = 'scale',      // Default: NO cropping (scale)
+    crop = 'fill',      // Changed from 'scale' to 'fill' to prevent stretching
     quality = 'auto',
     format = 'auto',
     removeBackground = false,
@@ -86,14 +86,17 @@ function CloudinaryImage({
             // Build transformations
             const transformations = [];
             
-            // Size transformation - using c_scale (NO cropping)
+            // Size transformation - using c_fill (crops to fill exactly)
             if (imgWidth && imgHeight) {
-                transformations.push(`w_${imgWidth},h_${imgHeight},c_${crop}`);
+                transformations.push(`w_${imgWidth},h_${imgHeight},c_fill`);
             } else if (imgWidth) {
-                transformations.push(`w_${imgWidth},c_${crop}`);
+                transformations.push(`w_${imgWidth},c_fill`);
             } else if (imgHeight) {
-                transformations.push(`h_${imgHeight},c_${crop}`);
+                transformations.push(`h_${imgHeight},c_fill`);
             }
+            
+            // Add gravity to focus on the main subject
+            transformations.push('g_auto');
             
             // Quality and format
             transformations.push(`q_${quality},f_${format}`);
@@ -126,7 +129,7 @@ function CloudinaryImage({
             
             const sizeOptions = [120, 240, 360, 480, 600];
             const srcSet = sizeOptions.map(size => {
-                return `${baseUrl}w_${size},h_${size},c_${crop},q_${quality},f_${format}/${publicId} ${size}w`;
+                return `${baseUrl}w_${size},h_${size},c_fill,g_auto,q_${quality},f_${format}/${publicId} ${size}w`;
             }).join(', ');
             
             return srcSet;
@@ -177,7 +180,6 @@ function CloudinaryImage({
                 loading={priority ? 'eager' : (lazy ? 'lazy' : 'eager')}
                 onLoad={handleImageLoad}
                 onError={handleImageError}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 {...props}
             />
         </div>
