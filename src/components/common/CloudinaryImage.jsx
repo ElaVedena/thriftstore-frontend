@@ -11,7 +11,7 @@ function CloudinaryImage({
     onLoad,
     onError,
     priority = false,
-    crop = 'limit',      // Changed from 'fill' to 'limit' - never stretches, only scales down
+    crop = 'limit',
     quality = 'auto',
     format = 'auto',
     removeBackground = false,
@@ -76,22 +76,34 @@ function CloudinaryImage({
             // Build transformations
             const transformations = [];
             
-            // Use limit mode - NEVER stretches, only scales down to fit within dimensions
-            // This preserves aspect ratio and prevents distortion
+            // ONLY add transformations if width/height are explicitly provided
+            // Otherwise, don't transform the image at all
             if (finalWidth && finalHeight) {
-                transformations.push(`w_${finalWidth},h_${finalHeight},c_limit`);
+                // Use 'c_scale' with 'limit' - only scales down, never up
+                transformations.push(`w_${finalWidth},h_${finalHeight},c_scale`);
             } else if (finalWidth) {
-                transformations.push(`w_${finalWidth},c_limit`);
+                transformations.push(`w_${finalWidth},c_scale`);
             } else if (finalHeight) {
-                transformations.push(`h_${finalHeight},c_limit`);
+                transformations.push(`h_${finalHeight},c_scale`);
             }
             
-            // Quality and format
-            transformations.push(`q_${quality},f_${format}`);
+            // Only add quality/format if they're not 'auto'
+            // This prevents unnecessary transformations
+            if (quality && quality !== 'auto') {
+                transformations.push(`q_${quality}`);
+            }
+            if (format && format !== 'auto') {
+                transformations.push(`f_${format}`);
+            }
             
-            // Background removal (optional)
+            // Background removal (optional - only if explicitly requested)
             if (removeBackground) {
                 transformations.push('e_bgremoval');
+            }
+            
+            // If no transformations needed, return the original URL
+            if (transformations.length === 0) {
+                return src;
             }
             
             const transformationString = transformations.join(',');
@@ -117,7 +129,8 @@ function CloudinaryImage({
             
             const sizeOptions = [120, 240, 360, 480, 600];
             const srcSet = sizeOptions.map(size => {
-                return `${baseUrl}w_${size},h_${size},c_limit,q_${quality},f_${format}/${publicId} ${size}w`;
+                // Use c_scale to simply scale down, preserving aspect ratio
+                return `${baseUrl}w_${size},h_${size},c_scale/${publicId} ${size}w`;
             }).join(', ');
             
             return srcSet;
@@ -137,6 +150,17 @@ function CloudinaryImage({
         if (onLoad) onLoad();
     };
 
+    // If dimensions are provided, use them for the container
+    const containerStyle = {
+        width: finalWidth || '100%',
+        height: finalHeight || '100%'
+    };
+
+    // Remove dimensions from props to avoid conflicting with container
+    const imgProps = { ...props };
+    delete imgProps.width;
+    delete imgProps.height;
+
     const imageUrl = getOptimizedUrl();
     const srcSet = getResponsiveSrcSet();
     const sizes = responsive ? "(max-width: 480px) 120px, (max-width: 768px) 240px, 360px" : undefined;
@@ -145,7 +169,7 @@ function CloudinaryImage({
         return (
             <div 
                 className={`image-fallback ${className}`}
-                style={{ width: finalWidth, height: finalHeight }}
+                style={containerStyle}
             >
                 <i className="fas fa-image"></i>
             </div>
@@ -153,7 +177,7 @@ function CloudinaryImage({
     }
 
     return (
-        <div className={`image-container ${className}`} style={{ width: finalWidth, height: finalHeight }}>
+        <div className={`image-container ${className}`} style={containerStyle}>
             {!isLoaded && (
                 <div className="image-placeholder">
                     <div className="shimmer"></div>
@@ -168,7 +192,7 @@ function CloudinaryImage({
                 loading={priority ? 'eager' : (lazy ? 'lazy' : 'eager')}
                 onLoad={handleImageLoad}
                 onError={handleImageError}
-                {...props}
+                {...imgProps}
             />
         </div>
     );
