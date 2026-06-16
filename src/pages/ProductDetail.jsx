@@ -84,12 +84,10 @@ function ProductDetail() {
         
         let description = product.description || `${product.name} - Quality secondhand item available at VedaThrifts.`;
         
-        // Truncate to 150-160 characters for SEO
         if (description.length > 155) {
             description = description.substring(0, 152) + '...';
         }
         
-        // Add price and condition if available
         if (product.price) {
             description += ` Price: KES ${product.price}.`;
         }
@@ -130,40 +128,28 @@ function ProductDetail() {
         return 'https://vedathrifts.com/default-product.jpg';
     };
 
-    // Get optimized product image for different devices
+    // FIX: Remove width/height from image optimization to preserve aspect ratio
     const getOptimizedProductImage = (imageUrl, isMobile = false) => {
         if (!imageUrl) return getProductImage();
         
+        // Use 'limit' crop to preserve aspect ratio
         if (isMobile) {
-            // Mobile: 400x400 for product detail (fits well on phone screens)
             return getOptimizedImageUrl(imageUrl, {
                 width: 400,
                 height: 400,
-                crop: 'scale',
+                crop: 'limit',  // Changed from 'scale' to 'limit'
                 quality: 'auto',
                 format: 'webp'
             });
         } else {
-            // Desktop: 800x800 for larger screens
             return getOptimizedImageUrl(imageUrl, {
                 width: 800,
                 height: 800,
-                crop: 'scale',
+                crop: 'limit',  // Changed from 'scale' to 'limit'
                 quality: 'auto',
                 format: 'auto'
             });
         }
-    };
-
-    // Get image with background removed (optional - for cleaner product display)
-    const getProductImageNoBg = (imageUrl) => {
-        if (!imageUrl) return getProductImage();
-        
-        return getImageWithBackgroundRemoved(imageUrl, {
-            width: 600,
-            height: 600,
-            crop: 'scale'
-        });
     };
 
     const getProductPrice = () => {
@@ -215,20 +201,17 @@ function ProductDetail() {
     return (
         <>
             <Helmet>
-                {/* Primary SEO */}
                 <title>{getProductTitle()}</title>
                 <meta name="description" content={getProductDescription()} />
                 <meta name="keywords" content={getProductKeywords()} />
                 <meta name="author" content="VedaThrifts" />
                 <meta name="robots" content="index, follow" />
                 
-                {/* Product-specific SEO */}
                 <meta name="product:brand" content={product.brand || 'VedaThrifts'} />
                 <meta name="product:condition" content={getProductCondition()} />
                 <meta name="product:availability" content={getProductAvailability()} />
                 <meta name="product:retailer_item_id" content={product.id} />
                 
-                {/* Open Graph / Facebook / WhatsApp */}
                 <meta property="og:title" content={getProductTitle()} />
                 <meta property="og:description" content={getProductDescription()} />
                 <meta property="og:type" content="product" />
@@ -243,7 +226,6 @@ function ProductDetail() {
                 <meta property="product:retailer_item_id" content={product.id} />
                 <meta property="product:condition" content={getProductCondition()} />
                 
-                {/* Twitter Card */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={getProductTitle()} />
                 <meta name="twitter:description" content={getProductDescription()} />
@@ -253,10 +235,8 @@ function ProductDetail() {
                 <meta name="twitter:label2" content="Condition" />
                 <meta name="twitter:data2" content={getProductCondition()} />
                 
-                {/* Canonical URL */}
                 <link rel="canonical" href={`https://vedathrifts.com/product/${product.id}`} />
                 
-                {/* Breadcrumb structured data */}
                 <script type="application/ld+json">
                     {JSON.stringify({
                         "@context": "https://schema.org/",

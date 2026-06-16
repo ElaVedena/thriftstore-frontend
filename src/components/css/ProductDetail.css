@@ -43,17 +43,17 @@
     aspect-ratio: 1 / 1;
 }
 
-/* FIXED: Changed from contain to cover to prevent stretching */
+/* FIXED: Use contain to show full image without cropping */
 .product-gallery .main-image {
     width: 100%;
     height: 100%;
     max-width: 100%;
     max-height: 100%;
-    object-fit: cover;
+    object-fit: contain;  /* Changed from 'cover' to 'contain' */
     object-position: center;
 }
 
-/* Thumbnail images - already using cover, keep as is */
+/* Thumbnail images - use contain for thumbnails too */
 .product-gallery .thumbnail-list {
     display: flex;
     flex-wrap: wrap;
@@ -64,10 +64,12 @@
 .product-gallery .thumbnail {
     width: 70px;
     height: 70px;
-    object-fit: cover;
+    object-fit: contain;  /* Changed from 'cover' to 'contain' */
     cursor: pointer;
     border-radius: 4px;
     border: 1px solid #e0e0e0;
+    background: #f5f5f5;
+    padding: 2px;
 }
 
 .product-gallery .thumbnail:hover {
