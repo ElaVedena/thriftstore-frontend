@@ -41,7 +41,6 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
     // Helper to extract public ID from Cloudinary URL
     const extractPublicIdFromUrl = (url) => {
         if (!url) return null;
-        // Cloudinary URL format: https://res.cloudinary.com/cloud_name/image/upload/v123456/folder/public_id.jpg
         const matches = url.match(/\/v\d+\/(.+)\./);
         return matches ? matches[1] : null;
     };
@@ -51,12 +50,10 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         const errors = [];
 
         for (const file of files) {
-            // Check file size (max 5MB as per backend)
             if (file.size > 5 * 1024 * 1024) {
                 errors.push(`${file.name} is too large. Max size is 5MB`);
                 continue;
             }
-            // Check file type
             if (!file.type.startsWith('image/')) {
                 errors.push(`${file.name} is not an image`);
                 continue;
@@ -75,15 +72,11 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
             return;
         }
 
-        // Validate files
         const { validFiles, errors } = validateFiles(files);
-        
-        // Show validation errors
         errors.forEach(error => showError(error));
 
         if (validFiles.length === 0) return;
 
-        // Create FormData - backend expects parameter name "files"
         const formData = new FormData();
         validFiles.forEach(file => {
             formData.append('files', file);
@@ -92,7 +85,6 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         setUploading(true);
         setUploadProgress(0);
 
-        // Create temporary previews for immediate feedback
         const tempPreviews = validFiles.map(file => ({
             url: null,
             preview: URL.createObjectURL(file),
@@ -121,13 +113,10 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
             console.log('Upload response:', response.data);
 
             if (response.data.success) {
-                // Backend returns data directly as array of URLs
                 const uploadedUrls = response.data.data || [];
                 
-                // Remove temporary previews 
                 const previewsWithoutTemp = previews.filter(p => !p.isUploading);
                 
-                // Add new uploaded images
                 const finalPreviews = [
                     ...previewsWithoutTemp,
                     ...uploadedUrls.map(url => ({
@@ -141,33 +130,24 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
 
                 setPreviews(finalPreviews);
                 
-                // Send only the URLs to parent component
                 const imageUrlsOnly = finalPreviews
                     .filter(img => img.url)
                     .map(img => img.url);
                 
                 onImagesChange(imageUrlsOnly);
-                
                 showSuccess(`${validFiles.length} image(s) uploaded successfully`);
             } else {
                 showError(response.data.message || 'Failed to upload images');
-                // Remove failed uploads
                 const filteredPreviews = previews.filter(p => !p.isUploading);
                 setPreviews(filteredPreviews);
                 onImagesChange(filteredPreviews.map(p => p.url).filter(Boolean));
             }
         } catch (error) {
             console.error('Upload error:', error);
-            console.error('Error response:', error.response?.data);
-            
-            // Show specific error message from backend if available
             const errorMessage = error.response?.data?.message || 'Failed to upload images. Please try again.';
             showError(errorMessage);
             
-            // Remove failed uploads
             const filteredPreviews = previews.filter(p => !p.isUploading);
-            
-            // Clean up blob URLs
             filteredPreviews.forEach(p => {
                 if (p.preview?.startsWith('blob:')) {
                     URL.revokeObjectURL(p.preview);
@@ -179,7 +159,6 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         } finally {
             setUploading(false);
             setUploadProgress(0);
-            // Clear file input
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -189,12 +168,10 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
     const handleRemove = async (index) => {
         const imageToRemove = previews[index];
         
-        // Clean up blob URL if it exists
         if (imageToRemove.preview?.startsWith('blob:')) {
             URL.revokeObjectURL(imageToRemove.preview);
         }
 
-        // Delete from Cloudinary if it's an existing image (has publicId)
         if (imageToRemove.publicId && !imageToRemove.isUploading) {
             try {
                 await api.delete('/uploads/images', {
@@ -203,14 +180,12 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                 showInfo('Image deleted from storage');
             } catch (error) {
                 console.error('Failed to delete from Cloudinary:', error);
-                // Continue with removal from UI even if server delete fails
             }
         }
         
         const newPreviews = previews.filter((_, i) => i !== index);
         setPreviews(newPreviews);
         
-        // Send only URLs to parent
         const imageUrlsOnly = newPreviews
             .filter(img => img.url)
             .map(img => img.url);
@@ -227,7 +202,6 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
         newPreviews.splice(dropIndex, 0, draggedItem);
         setPreviews(newPreviews);
         
-        // Send only URLs to parent
         const imageUrlsOnly = newPreviews
             .filter(img => img.url)
             .map(img => img.url);
@@ -345,9 +319,10 @@ function ImageUpload({ images = [], onImagesChange, maxImages = 5 }) {
                 disabled={uploading}
             />
 
+            {/* UPDATED: Removed the misleading hint about resizing */}
             <p className="upload-hint">
                 <i className="fas fa-info-circle"></i>
-                Max {maxImages} images, 5MB each. Images will be automatically resized to 400x400 and background removed.
+                Max {maxImages} images, 5MB each. Upload images at their original size.
                 {previews.length > 0 && (
                     <span className="image-count"> ({previews.length}/{maxImages})</span>
                 )}
