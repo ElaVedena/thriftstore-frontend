@@ -11,6 +11,9 @@
     overflow: hidden;
     background: #f5f5f5;
     border: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .main-image .cloudinary-image-container,
@@ -19,9 +22,9 @@
     height: 100%;
 }
 
-/* FIX: Changed from contain to cover */
+/* FIX: Use contain to show entire image without cropping */
 .main-image .cloudinary-image {
-    object-fit: cover;  /* Changed from 'contain' to 'cover' */
+    object-fit: contain;  /* Changed from 'cover' to 'contain' */
     object-position: center;
 }
 
@@ -48,6 +51,10 @@
     padding: 0;
     background: none;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
 }
 
 .thumbnail:hover {
@@ -66,8 +73,9 @@
     height: 100%;
 }
 
+/* FIX: Use contain for thumbnails too */
 .thumbnail .cloudinary-image {
-    object-fit: cover;
+    object-fit: contain;  /* Changed from 'cover' to 'contain' */
     object-position: center;
 }
 
