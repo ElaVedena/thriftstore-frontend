@@ -30,9 +30,6 @@ function ProductCard({ product, priority = false }) {
         
         // Add to cart - this should NOT trigger page reload
         await addToCart(cartItem);
-        
-        // Optional: Show success feedback without page reload
-        // You can add a small toast notification here
     };
 
     const imageUrl = product.images?.[0] || product.image;
@@ -45,16 +42,17 @@ function ProductCard({ product, priority = false }) {
                     <CloudinaryImage
                         src={imageUrl}
                         alt={product.name || 'Product'}
-                        width={280}
-                        height={240}
-                        crop="scale"
+                        // FIX: Remove width and height to let CSS handle sizing
+                        // This preserves the natural aspect ratio
+                        crop="limit"  // Changed from 'scale' to 'limit'
                         quality="auto"
                         format="auto"
                         className="product-img"
                         priority={priority}
                         responsive={true}
-                        mobileWidth={120}
-                        mobileHeight={120}
+                        // Keep these for responsive but use 'limit' crop
+                        mobileWidth={200}  // Increased for better quality
+                        mobileHeight={200}
                     />
                     
                     {isInStock ? (
