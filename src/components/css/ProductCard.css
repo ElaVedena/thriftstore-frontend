@@ -28,7 +28,7 @@
 .product-image {
     position: relative;
     width: 100%;
-    aspect-ratio: 3 / 4;  /* Changed from 1/1 to 3/4 - taller like cart page */
+    aspect-ratio: 3 / 4;
     overflow: hidden;
     background-color: #f5f5f5;
     display: flex;
@@ -189,7 +189,7 @@
 
 /* ===== RESPONSIVE STYLES ===== */
 
-/* Desktop (1025px and above) */
+/* Desktop (1025px and above) - Keep as is */
 @media (min-width: 1025px) {
     .product-card {
         max-width: 280px;
@@ -201,7 +201,7 @@
     }
 }
 
-/* Tablet (768px - 1024px): 3 columns */
+/* Tablet (768px - 1024px) */
 @media (max-width: 1024px) {
     .product-image {
         aspect-ratio: 3 / 4;
@@ -222,57 +222,56 @@
     }
 }
 
-/* Mobile (480px - 768px): 3 columns */
+/* Mobile (480px - 768px) - Taller image, more compact info */
 @media (max-width: 768px) {
     .product-image {
-        aspect-ratio: 2.5 / 3.5;  /* Slightly taller on mobile */
+        aspect-ratio: 2 / 3;  /* Taller ratio to show more image */
     }
     
     .add-to-cart-icon {
-        width: 26px;
-        height: 26px;
-        bottom: 52px;
+        width: 24px;
+        height: 24px;
+        bottom: 48px;
         right: 5px;
+        opacity: 1;
+        transform: translateY(0);
     }
     
     .add-to-cart-icon i {
-        font-size: 0.8rem;
-    }
-    
-    .product-name {
-        font-size: 0.65rem;
-        min-height: 1.5em;
-    }
-    
-    .price {
         font-size: 0.7rem;
     }
     
+    .product-name {
+        font-size: 0.6rem;
+        min-height: 1.3em;
+        -webkit-line-clamp: 1;  /* Show only 1 line on mobile */
+    }
+    
+    .price {
+        font-size: 0.65rem;
+    }
+    
     .product-info {
-        padding: 4px 5px 5px 5px;
+        padding: 3px 5px 5px 5px;
         gap: 2px;
     }
     
     .product-stock-badge {
-        font-size: 0.45rem;
-        padding: 2px 4px;
+        font-size: 0.4rem;
+        padding: 1px 4px;
+        bottom: 5px;
+        left: 5px;
     }
     
     .wishlist-button {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
+        bottom: 5px;
+        right: 5px;
     }
     
     .wishlist-button i {
-        font-size: 0.7rem;
-    }
-    
-    .add-to-cart-icon {
-        opacity: 1;
-        transform: translateY(0);
-        width: 24px;
-        height: 24px;
-        bottom: 48px;
+        font-size: 0.6rem;
     }
     
     .product-card:hover .add-to-cart-icon {
@@ -280,49 +279,53 @@
     }
 }
 
-/* Small Mobile (360px - 480px): 2 columns */
+/* Small Mobile (360px - 480px) - Even taller image */
 @media (max-width: 480px) {
     .product-image {
-        aspect-ratio: 2.2 / 3.2;
+        aspect-ratio: 1.8 / 2.8;  /* Even taller for small screens */
     }
     
     .product-name {
-        font-size: 0.6rem;
-        min-height: 1.4em;
+        font-size: 0.55rem;
+        min-height: 1.2em;
     }
     
     .price {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
     }
     
     .product-info {
-        padding: 3px 4px 4px 4px;
-        gap: 2px;
+        padding: 2px 4px 4px 4px;
+        gap: 1px;
     }
     
     .product-stock-badge {
-        font-size: 0.4rem;
+        font-size: 0.35rem;
         padding: 1px 3px;
     }
     
     .wishlist-button {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
+    }
+    
+    .wishlist-button i {
+        font-size: 0.5rem;
     }
     
     .add-to-cart-icon {
-        width: 22px;
-        height: 22px;
-        bottom: 44px;
+        width: 20px;
+        height: 20px;
+        bottom: 40px;
         right: 4px;
     }
     
     .add-to-cart-icon i {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
     }
 }
 
-/* Extra Small Mobile (below 360px): 1 column */
+/* Extra Small Mobile (below 360px) */
 @media (max-width: 360px) {
     .product-card {
         max-width: 280px;
@@ -330,15 +333,15 @@
     }
     
     .product-image {
-        aspect-ratio: 2 / 3;
+        aspect-ratio: 1.5 / 2.5;
     }
     
     .product-name {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
         min-height: auto;
     }
     
     .price {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
     }
 }
