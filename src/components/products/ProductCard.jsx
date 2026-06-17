@@ -12,7 +12,6 @@ function ProductCard({ product, priority = false }) {
         e.preventDefault();
         e.stopPropagation();
         
-        // Check if product is in stock
         if (product.stock <= 0) {
             alert('Sorry, this product is out of stock');
             return;
@@ -28,7 +27,6 @@ function ProductCard({ product, priority = false }) {
             stock: product.stock
         };
         
-        // Add to cart - this should NOT trigger page reload
         await addToCart(cartItem);
     };
 
@@ -42,17 +40,14 @@ function ProductCard({ product, priority = false }) {
                     <CloudinaryImage
                         src={imageUrl}
                         alt={product.name || 'Product'}
-                        // FIX: Remove width and height to let CSS handle sizing
-                        // This preserves the natural aspect ratio
-                        crop="limit"  // Changed from 'scale' to 'limit'
+                        // REMOVE ALL DIMENSIONS - Let CSS handle sizing
+                        // No width, height, mobileWidth, or mobileHeight
+                        crop="limit"
                         quality="auto"
                         format="auto"
                         className="product-img"
                         priority={priority}
-                        responsive={true}
-                        // Keep these for responsive but use 'limit' crop
-                        mobileWidth={200}  // Increased for better quality
-                        mobileHeight={200}
+                        responsive={false}  // Disable responsive mode
                     />
                     
                     {isInStock ? (
