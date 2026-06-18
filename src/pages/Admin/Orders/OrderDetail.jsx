@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { adminService } from '../../../services/adminService';
+import { productService } from '../../../services/productService';
 import { useNotification } from '../../../hooks/useNotification';
 import Sidebar from '../../../components/admin/Sidebar';
 import '../Admin.css';
@@ -14,6 +15,7 @@ function OrderDetail() {
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
     const [imageErrors, setImageErrors] = useState({});
+    const [enrichedItems, setEnrichedItems] = useState([]);
 
     // Add class to body to hide global header and footer
     useEffect(() => {
@@ -33,21 +35,13 @@ function OrderDetail() {
             const response = await adminService.getOrderById(id);
             if (response.success) {
                 const orderData = response.data;
-                
-                // Ensure items array exists and has proper data
-                if (orderData && orderData.items) {
-                    // Log items for debugging
-                    console.log('Order items:', orderData.items);
-                    
-                    // Ensure each item has a size field
-                    orderData.items = orderData.items.map(item => ({
-                        ...item,
-                        // Try to get size from various possible fields
-                        size: item.size || item.selectedSize || item.productSize || item.sizeName || '-'
-                    }));
-                }
-                
                 setOrder(orderData);
+                
+                // Enrich items with product details
+                if (orderData && orderData.items) {
+                    const enriched = await enrichOrderItems(orderData.items);
+                    setEnrichedItems(enriched);
+                }
             } else {
                 showError(response.message || 'Failed to load order details');
             }
@@ -57,6 +51,56 @@ function OrderDetail() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const enrichOrderItems = async (items) => {
+        const enriched = [];
+        
+        for (const item of items) {
+            let enrichedItem = { ...item };
+            
+            // Try to get product ID from various possible fields
+            const productId = item.productId || item.product?.id || item.id;
+            
+            if (productId) {
+                try {
+                    // Fetch product details to get size and image
+                    const productResponse = await productService.getProductById(productId);
+                    if (productResponse.success && productResponse.data) {
+                        const product = productResponse.data;
+                        
+                        // Get the correct size - prefer product size or item size
+                        const productSize = product.size || product.availableSizes?.[0] || 'One Size';
+                        
+                        enrichedItem = {
+                            ...enrichedItem,
+                            // Use product data for missing fields
+                            size: item.size || item.selectedSize || productSize,
+                            imageUrl: item.imageUrl || item.image || product.images?.[0] || product.imageUrl,
+                            productName: item.productName || item.name || product.name,
+                            brand: product.brand,
+                            condition: product.condition
+                        };
+                    }
+                } catch (error) {
+                    console.error(`Failed to fetch product ${productId}:`, error);
+                }
+            }
+            
+            // If still no size, check item fields directly
+            if (!enrichedItem.size) {
+                enrichedItem.size = item.size || item.selectedSize || item.productSize || 'One Size';
+            }
+            
+            // If still no image, try multiple fields
+            if (!enrichedItem.imageUrl) {
+                enrichedItem.imageUrl = item.imageUrl || item.image || item.productImage || item.mainImage || null;
+            }
+            
+            enriched.push(enrichedItem);
+        }
+        
+        return enriched;
     };
 
     const handleStatusChange = async (newStatus) => {
@@ -98,12 +142,12 @@ function OrderDetail() {
         
         // Return the first valid image URL
         for (const img of possibleImages) {
-            if (img && typeof img === 'string' && img.trim() !== '') {
+            if (img && typeof img === 'string' && img.trim() !== '' && img !== 'null' && img !== 'undefined') {
                 return img;
             }
         }
         
-        return '/placeholder-image.jpg';
+        return null;
     };
 
     const formatPrice = (price) => `KSh ${Number(price).toLocaleString()}`;
@@ -144,6 +188,9 @@ function OrderDetail() {
             </div>
         );
     }
+
+    // Use enriched items if available, otherwise use order items
+    const displayItems = enrichedItems.length > 0 ? enrichedItems : (order.items || []);
 
     return (
         <div className="admin-layout">
@@ -257,7 +304,7 @@ function OrderDetail() {
                         </div>
                     </div>
 
-                    {/* Order Items - FIXED: Shows size and image properly */}
+                    {/* Order Items - FIXED: Shows size and image */}
                     <div className="detail-section full-width">
                         <h2>Order Items</h2>
                         <div className="items-table-container">
@@ -273,10 +320,12 @@ function OrderDetail() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {(order.items || []).map((item, index) => {
+                                    {displayItems.map((item, index) => {
                                         const imageUrl = getItemImage(item);
                                         const hasError = imageErrors[item.id || index];
-                                        const itemSize = item.size || item.selectedSize || item.productSize || '-';
+                                        const itemSize = item.size || item.selectedSize || item.productSize || 'One Size';
+                                        const productName = item.productName || item.name || item.product?.name || 'Product';
+                                        const brand = item.brand || item.product?.brand;
                                         
                                         return (
                                             <tr key={item.id || index}>
@@ -284,7 +333,7 @@ function OrderDetail() {
                                                     {!hasError && imageUrl ? (
                                                         <img 
                                                             src={imageUrl} 
-                                                            alt={item.productName || item.name || 'Product'}
+                                                            alt={productName}
                                                             className="item-thumb"
                                                             onError={() => handleImageError(item.id || index)}
                                                         />
@@ -295,8 +344,8 @@ function OrderDetail() {
                                                     )}
                                                 </td>
                                                 <td className="product-name-cell">
-                                                    {item.productName || item.name || 'Product'}
-                                                    {item.brand && <span className="product-brand">({item.brand})</span>}
+                                                    {productName}
+                                                    {brand && <span className="product-brand">({brand})</span>}
                                                 </td>
                                                 <td className="size-cell">
                                                     <span className="size-badge">{itemSize}</span>
