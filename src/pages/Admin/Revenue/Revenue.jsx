@@ -13,7 +13,8 @@ function Revenue() {
     const [customStartDate, setCustomStartDate] = useState('');
     const [customEndDate, setCustomEndDate] = useState('');
     const [showCustomPicker, setShowCustomPicker] = useState(false);
-    const { showError } = useNotification();
+    const [debugInfo, setDebugInfo] = useState(null);
+    const { showError, showInfo } = useNotification();
 
     useEffect(() => {
         loadRevenueData();
@@ -29,12 +30,39 @@ function Revenue() {
                 response = await adminService.getRevenueStats(filter);
             }
             
+            console.log('Revenue response:', response);
+            
             if (response.success) {
-                setRevenueData(response.data);
+                // Handle different response structures
+                let data = response.data;
+                
+                // If data is wrapped in a data property
+                if (data && data.data) {
+                    data = data.data;
+                }
+                
+                // Ensure we have the expected structure
+                const formattedData = {
+                    totalRevenue: data?.totalRevenue || data?.total || 0,
+                    orderCount: data?.orderCount || data?.totalOrders || data?.ordersCount || 0,
+                    dailyData: data?.dailyData || data?.daily || [],
+                    topProducts: data?.topProducts || data?.products || [],
+                    recentOrders: data?.recentOrders || data?.orders || [],
+                    maxRevenue: data?.maxRevenue || 0
+                };
+                
+                console.log('Formatted revenue data:', formattedData);
+                setRevenueData(formattedData);
+                
+                // Show info if no data found
+                if (formattedData.totalRevenue === 0 && formattedData.orderCount === 0) {
+                    showInfo('No revenue data found for the selected period. Try adjusting your filters.');
+                }
             } else {
-                showError(response.message);
+                showError(response.message || 'Failed to load revenue data');
             }
         } catch (error) {
+            console.error('Revenue data error:', error);
             showError('Failed to load revenue data');
         } finally {
             setLoading(false);
@@ -61,6 +89,17 @@ function Revenue() {
         }
     };
 
+    // Add debug button to check orders directly
+    const checkOrders = async () => {
+        try {
+            const response = await adminService.getOrders();
+            console.log('All orders:', response);
+            showInfo(`Found ${response.data?.content?.length || response.data?.length || 0} orders in the system`);
+        } catch (error) {
+            console.error('Error checking orders:', error);
+        }
+    };
+
     if (loading) {
         return (
             <div className="admin-layout">
@@ -83,7 +122,20 @@ function Revenue() {
                 <div className="admin-header">
                     <h1>Revenue Analytics</h1>
                     <p>Track your sales and revenue performance</p>
+                    <button onClick={checkOrders} className="admin-btn secondary" style={{ marginTop: '0.5rem' }}>
+                        <i className="fas fa-database"></i>
+                        Check Orders
+                    </button>
                 </div>
+
+                {/* Debug Info */}
+                {debugInfo && (
+                    <div className="debug-info" style={{ background: '#f0f0f0', padding: '1rem', borderRadius: '4px', marginBottom: '1rem' }}>
+                        <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.8rem' }}>
+                            {JSON.stringify(debugInfo, null, 2)}
+                        </pre>
+                    </div>
+                )}
 
                 {/* Filter Tabs */}
                 <div className="revenue-filters-container">
@@ -183,13 +235,14 @@ function Revenue() {
                 </div>
 
                 {/* Chart Section */}
-                {revenueData?.dailyData && revenueData.dailyData.length > 0 && (
+                {revenueData?.dailyData && revenueData.dailyData.length > 0 ? (
                     <div className="revenue-chart-section">
                         <h2>Daily Breakdown</h2>
                         <div className="chart-container">
                             <div className="chart-bars">
                                 {revenueData.dailyData.map((day, index) => {
-                                    const heightPercent = (day.total / revenueData.maxRevenue) * 100;
+                                    const maxVal = revenueData.maxRevenue || Math.max(...revenueData.dailyData.map(d => d.total), 1);
+                                    const heightPercent = (day.total / maxVal) * 100;
                                     return (
                                         <div key={index} className="chart-bar-item">
                                             <div className="chart-bar-wrapper">
@@ -213,10 +266,15 @@ function Revenue() {
                             </div>
                         </div>
                     </div>
+                ) : (
+                    <div className="no-data-message" style={{ textAlign: 'center', padding: '2rem', background: 'white', borderRadius: '8px' }}>
+                        <i className="fas fa-chart-bar" style={{ fontSize: '2rem', color: '#ccc' }}></i>
+                        <p style={{ marginTop: '0.5rem', color: '#666' }}>No daily data available for this period</p>
+                    </div>
                 )}
 
                 {/* Top Products Section */}
-                {revenueData?.topProducts && revenueData.topProducts.length > 0 && (
+                {revenueData?.topProducts && revenueData.topProducts.length > 0 ? (
                     <div className="top-products-section">
                         <h2>Top Selling Products</h2>
                         <div className="top-products-table">
@@ -247,10 +305,15 @@ function Revenue() {
                             </table>
                         </div>
                     </div>
+                ) : (
+                    <div className="no-data-message" style={{ textAlign: 'center', padding: '1.5rem', background: 'white', borderRadius: '8px' }}>
+                        <i className="fas fa-box" style={{ fontSize: '2rem', color: '#ccc' }}></i>
+                        <p style={{ marginTop: '0.5rem', color: '#666' }}>No product data available</p>
+                    </div>
                 )}
 
                 {/* Recent Transactions */}
-                {revenueData?.recentOrders && revenueData.recentOrders.length > 0 && (
+                {revenueData?.recentOrders && revenueData.recentOrders.length > 0 ? (
                     <div className="recent-transactions">
                         <h2>Recent Transactions</h2>
                         <div className="transactions-table">
@@ -282,13 +345,18 @@ function Revenue() {
                             </table>
                         </div>
                     </div>
+                ) : (
+                    <div className="no-data-message" style={{ textAlign: 'center', padding: '1.5rem', background: 'white', borderRadius: '8px' }}>
+                        <i className="fas fa-receipt" style={{ fontSize: '2rem', color: '#ccc' }}></i>
+                        <p style={{ marginTop: '0.5rem', color: '#666' }}>No recent transactions</p>
+                    </div>
                 )}
 
                 {/* Export Button */}
                 <div className="export-section">
                     <button className="export-btn" onClick={() => {
-                        // Implement export functionality
-                        console.log('Export revenue data');
+                        console.log('Revenue data to export:', revenueData);
+                        showInfo('Export functionality coming soon');
                     }}>
                         <i className="fas fa-download"></i>
                         Export Report

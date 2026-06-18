@@ -20,16 +20,52 @@ export const adminService = {
     getRevenueStats: async (filter = 'today') => {
         try {
             const response = await api.get(`/admin/revenue/stats?filter=${filter}`);
+            
+            console.log('Revenue stats response:', response.data);
+            
+            // Handle different response structures
+            let data = response.data;
+            
+            // If the response has a data wrapper
+            if (data && data.data) {
+                data = data.data;
+            }
+            
+            // If the response has a success flag
+            if (data && data.success !== undefined) {
+                return {
+                    success: data.success,
+                    data: data.data || data,
+                    message: data.message
+                };
+            }
+            
+            // Ensure we have the required fields with defaults
             return {
                 success: true,
-                data: response.data
+                data: {
+                    totalRevenue: data?.totalRevenue || data?.total || 0,
+                    orderCount: data?.orderCount || data?.totalOrders || data?.ordersCount || 0,
+                    dailyData: data?.dailyData || data?.daily || [],
+                    topProducts: data?.topProducts || data?.products || [],
+                    recentOrders: data?.recentOrders || data?.orders || [],
+                    maxRevenue: data?.maxRevenue || 0
+                }
             };
         } catch (error) {
             console.error('Revenue stats error:', error);
+            console.error('Error details:', error.response?.data);
             return {
                 success: false,
                 message: error.response?.data?.message || 'Failed to fetch revenue stats',
-                data: { totalRevenue: 0, orderCount: 0, dailyData: [] }
+                data: { 
+                    totalRevenue: 0, 
+                    orderCount: 0, 
+                    dailyData: [],
+                    topProducts: [],
+                    recentOrders: [],
+                    maxRevenue: 0
+                }
             };
         }
     },
@@ -37,16 +73,47 @@ export const adminService = {
     getRevenueStatsByDateRange: async (startDate, endDate) => {
         try {
             const response = await api.get(`/admin/revenue/stats?startDate=${startDate}&endDate=${endDate}`);
+            
+            console.log('Revenue stats by date range response:', response.data);
+            
+            let data = response.data;
+            
+            if (data && data.data) {
+                data = data.data;
+            }
+            
+            if (data && data.success !== undefined) {
+                return {
+                    success: data.success,
+                    data: data.data || data,
+                    message: data.message
+                };
+            }
+            
             return {
                 success: true,
-                data: response.data
+                data: {
+                    totalRevenue: data?.totalRevenue || data?.total || 0,
+                    orderCount: data?.orderCount || data?.totalOrders || data?.ordersCount || 0,
+                    dailyData: data?.dailyData || data?.daily || [],
+                    topProducts: data?.topProducts || data?.products || [],
+                    recentOrders: data?.recentOrders || data?.orders || [],
+                    maxRevenue: data?.maxRevenue || 0
+                }
             };
         } catch (error) {
             console.error('Revenue stats by date error:', error);
             return {
                 success: false,
                 message: error.response?.data?.message || 'Failed to fetch revenue stats',
-                data: { totalRevenue: 0, orderCount: 0, dailyData: [] }
+                data: { 
+                    totalRevenue: 0, 
+                    orderCount: 0, 
+                    dailyData: [],
+                    topProducts: [],
+                    recentOrders: [],
+                    maxRevenue: 0
+                }
             };
         }
     },
@@ -226,12 +293,10 @@ export const adminService = {
         }
     },
 
-    // FIXED: getOrderById - properly handles the response
     getOrderById: async (orderId) => {
         try {
             const response = await api.get(`/admin/orders/${orderId}`);
             
-            // Handle different response structures
             if (response.data && response.data.success !== undefined) {
                 return {
                     success: response.data.success,
@@ -240,7 +305,6 @@ export const adminService = {
                 };
             }
             
-            // If the response is directly the order data
             return {
                 success: true,
                 data: response.data
