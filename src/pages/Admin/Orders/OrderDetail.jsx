@@ -13,6 +13,7 @@ function OrderDetail() {
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
+    const [imageErrors, setImageErrors] = useState({});
 
     // Add class to body to hide global header and footer
     useEffect(() => {
@@ -31,7 +32,22 @@ function OrderDetail() {
         try {
             const response = await adminService.getOrderById(id);
             if (response.success) {
-                setOrder(response.data);
+                const orderData = response.data;
+                
+                // Ensure items array exists and has proper data
+                if (orderData && orderData.items) {
+                    // Log items for debugging
+                    console.log('Order items:', orderData.items);
+                    
+                    // Ensure each item has a size field
+                    orderData.items = orderData.items.map(item => ({
+                        ...item,
+                        // Try to get size from various possible fields
+                        size: item.size || item.selectedSize || item.productSize || item.sizeName || '-'
+                    }));
+                }
+                
+                setOrder(orderData);
             } else {
                 showError(response.message || 'Failed to load order details');
             }
@@ -61,6 +77,33 @@ function OrderDetail() {
         } finally {
             setUpdating(false);
         }
+    };
+
+    const handleImageError = (itemId) => {
+        setImageErrors(prev => ({ ...prev, [itemId]: true }));
+    };
+
+    const getItemImage = (item) => {
+        // Try multiple possible image fields
+        const possibleImages = [
+            item.imageUrl,
+            item.image,
+            item.productImage,
+            item.mainImage,
+            item.images?.[0],
+            item.product?.images?.[0],
+            item.product?.imageUrl,
+            item.product?.image
+        ];
+        
+        // Return the first valid image URL
+        for (const img of possibleImages) {
+            if (img && typeof img === 'string' && img.trim() !== '') {
+                return img;
+            }
+        }
+        
+        return '/placeholder-image.jpg';
     };
 
     const formatPrice = (price) => `KSh ${Number(price).toLocaleString()}`;
@@ -214,7 +257,7 @@ function OrderDetail() {
                         </div>
                     </div>
 
-                    {/* Order Items */}
+                    {/* Order Items - FIXED: Shows size and image properly */}
                     <div className="detail-section full-width">
                         <h2>Order Items</h2>
                         <div className="items-table-container">
@@ -230,25 +273,40 @@ function OrderDetail() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {(order.items || []).map((item, index) => (
-                                        <tr key={index}>
-                                            <td>
-                                                <img 
-                                                    src={item.imageUrl || item.image || '/placeholder-image.jpg'} 
-                                                    alt={item.productName || item.name}
-                                                    className="item-thumb"
-                                                    onError={(e) => {
-                                                        e.target.src = '/placeholder-image.jpg';
-                                                    }}
-                                                />
-                                            </td>
-                                            <td>{item.productName || item.name || 'Product'}</td>
-                                            <td>{item.size || item.selectedSize || '-'}</td>
-                                            <td>{item.quantity}</td>
-                                            <td>{formatPrice(item.price)}</td>
-                                            <td>{formatPrice((item.price || 0) * (item.quantity || 1))}</td>
-                                        </tr>
-                                    ))}
+                                    {(order.items || []).map((item, index) => {
+                                        const imageUrl = getItemImage(item);
+                                        const hasError = imageErrors[item.id || index];
+                                        const itemSize = item.size || item.selectedSize || item.productSize || '-';
+                                        
+                                        return (
+                                            <tr key={item.id || index}>
+                                                <td>
+                                                    {!hasError && imageUrl ? (
+                                                        <img 
+                                                            src={imageUrl} 
+                                                            alt={item.productName || item.name || 'Product'}
+                                                            className="item-thumb"
+                                                            onError={() => handleImageError(item.id || index)}
+                                                        />
+                                                    ) : (
+                                                        <div className="item-thumb-placeholder">
+                                                            <i className="fas fa-image"></i>
+                                                        </div>
+                                                    )}
+                                                </td>
+                                                <td className="product-name-cell">
+                                                    {item.productName || item.name || 'Product'}
+                                                    {item.brand && <span className="product-brand">({item.brand})</span>}
+                                                </td>
+                                                <td className="size-cell">
+                                                    <span className="size-badge">{itemSize}</span>
+                                                </td>
+                                                <td>{item.quantity}</td>
+                                                <td>{formatPrice(item.price)}</td>
+                                                <td className="item-total-cell">{formatPrice((item.price || 0) * (item.quantity || 1))}</td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>

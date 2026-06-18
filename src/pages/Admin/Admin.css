@@ -307,6 +307,55 @@ body.admin-page #root {
     background-color: #f5f5f5;
 }
 
+/* Item thumb placeholder - for missing images */
+.item-thumb-placeholder {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    color: #ccc;
+}
+
+.item-thumb-placeholder i {
+    font-size: 1.2rem;
+}
+
+/* Product name cell with brand */
+.product-name-cell {
+    font-weight: 500;
+}
+
+.product-brand {
+    font-size: 0.7rem;
+    color: #999;
+    margin-left: 0.3rem;
+}
+
+/* Size badge */
+.size-cell {
+    text-align: center;
+}
+
+.size-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #333;
+    min-width: 30px;
+    text-align: center;
+}
+
+.item-total-cell {
+    font-weight: 600;
+    color: #CEABB1;
+}
+
 .order-actions-bottom {
     display: flex;
     gap: 0.8rem;
@@ -1461,9 +1510,29 @@ body.admin-page #root {
         font-size: 0.65rem;
     }
     
+    /* Mobile item thumb and size badge */
     .item-thumb {
         width: 32px;
         height: 32px;
+    }
+    
+    .item-thumb-placeholder {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .item-thumb-placeholder i {
+        font-size: 1rem;
+    }
+    
+    .product-brand {
+        font-size: 0.6rem;
+    }
+    
+    .size-badge {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.4rem;
+        min-width: 25px;
     }
     
     .order-actions-bottom {
@@ -1605,6 +1674,17 @@ body.admin-page #root {
     .item-thumb {
         width: 28px;
         height: 28px;
+    }
+    
+    .item-thumb-placeholder {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .size-badge {
+        font-size: 0.6rem;
+        padding: 0.12rem 0.35rem;
+        min-width: 22px;
     }
     
     .order-actions-bottom .btn-secondary {
