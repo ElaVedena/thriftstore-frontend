@@ -13,12 +13,32 @@ function Revenue() {
     const [customStartDate, setCustomStartDate] = useState('');
     const [customEndDate, setCustomEndDate] = useState('');
     const [showCustomPicker, setShowCustomPicker] = useState(false);
-    const [debugInfo, setDebugInfo] = useState(null);
+    const [rawResponse, setRawResponse] = useState(null);
+    const [orderCount, setOrderCount] = useState(0);
     const { showError, showInfo } = useNotification();
 
     useEffect(() => {
         loadRevenueData();
     }, [filter]);
+
+    // Also load orders count separately for debugging
+    useEffect(() => {
+        loadOrdersCount();
+    }, []);
+
+    const loadOrdersCount = async () => {
+        try {
+            const response = await adminService.getOrders();
+            console.log('Total orders response:', response);
+            if (response.success) {
+                const orders = response.data?.content || response.data || [];
+                setOrderCount(orders.length);
+                console.log('Total orders in system:', orders.length);
+            }
+        } catch (error) {
+            console.error('Error loading orders count:', error);
+        }
+    };
 
     const loadRevenueData = async () => {
         setLoading(true);
@@ -30,33 +50,59 @@ function Revenue() {
                 response = await adminService.getRevenueStats(filter);
             }
             
-            console.log('Revenue response:', response);
+            console.log('Revenue response (raw):', response);
+            setRawResponse(response);
             
             if (response.success) {
                 // Handle different response structures
                 let data = response.data;
                 
+                // Log the actual data structure
+                console.log('Data structure:', data);
+                console.log('Data keys:', data ? Object.keys(data) : 'null');
+                
                 // If data is wrapped in a data property
                 if (data && data.data) {
+                    console.log('Data is wrapped in data.data');
                     data = data.data;
                 }
                 
+                // If the response has a success flag
+                if (data && data.success !== undefined) {
+                    console.log('Data has success flag');
+                    data = data.data || data;
+                }
+                
+                // Check if we have the expected fields
+                console.log('Final data object:', data);
+                console.log('totalRevenue:', data?.totalRevenue);
+                console.log('orderCount:', data?.orderCount);
+                console.log('totalOrders:', data?.totalOrders);
+                console.log('ordersCount:', data?.ordersCount);
+                
+                // Try to find order count in various fields
+                const orderCountValue = data?.orderCount || data?.totalOrders || data?.ordersCount || data?.total || 0;
+                const revenueValue = data?.totalRevenue || data?.total || data?.revenue || 0;
+                
                 // Ensure we have the expected structure
                 const formattedData = {
-                    totalRevenue: data?.totalRevenue || data?.total || 0,
-                    orderCount: data?.orderCount || data?.totalOrders || data?.ordersCount || 0,
+                    totalRevenue: revenueValue,
+                    orderCount: orderCountValue,
                     dailyData: data?.dailyData || data?.daily || [],
                     topProducts: data?.topProducts || data?.products || [],
                     recentOrders: data?.recentOrders || data?.orders || [],
-                    maxRevenue: data?.maxRevenue || 0
+                    maxRevenue: data?.maxRevenue || 0,
+                    rawData: data // Keep raw data for debugging
                 };
                 
                 console.log('Formatted revenue data:', formattedData);
+                console.log('Revenue amount:', formattedData.totalRevenue);
+                console.log('Order count:', formattedData.orderCount);
+                
                 setRevenueData(formattedData);
                 
-                // Show info if no data found
                 if (formattedData.totalRevenue === 0 && formattedData.orderCount === 0) {
-                    showInfo('No revenue data found for the selected period. Try adjusting your filters.');
+                    showInfo('No revenue data found for the selected period. Total orders in system: ' + orderCount);
                 }
             } else {
                 showError(response.message || 'Failed to load revenue data');
@@ -89,17 +135,6 @@ function Revenue() {
         }
     };
 
-    // Add debug button to check orders directly
-    const checkOrders = async () => {
-        try {
-            const response = await adminService.getOrders();
-            console.log('All orders:', response);
-            showInfo(`Found ${response.data?.content?.length || response.data?.length || 0} orders in the system`);
-        } catch (error) {
-            console.error('Error checking orders:', error);
-        }
-    };
-
     if (loading) {
         return (
             <div className="admin-layout">
@@ -122,18 +157,53 @@ function Revenue() {
                 <div className="admin-header">
                     <h1>Revenue Analytics</h1>
                     <p>Track your sales and revenue performance</p>
-                    <button onClick={checkOrders} className="admin-btn secondary" style={{ marginTop: '0.5rem' }}>
-                        <i className="fas fa-database"></i>
-                        Check Orders
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+                        <button 
+                            onClick={loadOrdersCount} 
+                            className="admin-btn secondary"
+                        >
+                            <i className="fas fa-sync"></i>
+                            Refresh Orders Count ({orderCount})
+                        </button>
+                        <button 
+                            onClick={() => {
+                                console.log('Raw response:', rawResponse);
+                                alert('Check console for raw response data');
+                            }} 
+                            className="admin-btn secondary"
+                        >
+                            <i className="fas fa-bug"></i>
+                            Debug Data
+                        </button>
+                    </div>
                 </div>
 
-                {/* Debug Info */}
-                {debugInfo && (
-                    <div className="debug-info" style={{ background: '#f0f0f0', padding: '1rem', borderRadius: '4px', marginBottom: '1rem' }}>
-                        <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.8rem' }}>
-                            {JSON.stringify(debugInfo, null, 2)}
-                        </pre>
+                {/* Debug Info - Show raw data */}
+                {rawResponse && (
+                    <div className="debug-panel" style={{ 
+                        background: '#f8f9fa', 
+                        padding: '1rem', 
+                        borderRadius: '4px', 
+                        marginBottom: '1rem',
+                        border: '1px solid #dee2e6',
+                        maxHeight: '200px',
+                        overflow: 'auto'
+                    }}>
+                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem' }}>Debug Information:</h4>
+                        <div style={{ fontSize: '0.75rem', color: '#666' }}>
+                            <div><strong>Total Orders in System:</strong> {orderCount}</div>
+                            <div><strong>Filter:</strong> {getFilterLabel()}</div>
+                            <div><strong>Revenue Data:</strong> {revenueData ? 'Loaded' : 'Empty'}</div>
+                            {revenueData && (
+                                <>
+                                    <div><strong>Revenue Amount:</strong> {formatPrice(revenueData.totalRevenue)}</div>
+                                    <div><strong>Order Count (filtered):</strong> {revenueData.orderCount}</div>
+                                    <div><strong>Daily Data Points:</strong> {revenueData.dailyData?.length || 0}</div>
+                                    <div><strong>Recent Orders:</strong> {revenueData.recentOrders?.length || 0}</div>
+                                </>
+                            )}
+                            <div><strong>Raw Response Keys:</strong> {rawResponse.data ? Object.keys(rawResponse.data).join(', ') : 'No data'}</div>
+                        </div>
                     </div>
                 )}
 
@@ -234,8 +304,40 @@ function Revenue() {
                     </div>
                 </div>
 
+                {/* No data message when both revenue and orders are zero */}
+                {(!revenueData || (revenueData.totalRevenue === 0 && revenueData.orderCount === 0)) && (
+                    <div className="no-data-message" style={{ 
+                        textAlign: 'center', 
+                        padding: '3rem', 
+                        background: 'white', 
+                        borderRadius: '8px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                        marginBottom: '1.5rem'
+                    }}>
+                        <i className="fas fa-chart-pie" style={{ fontSize: '3rem', color: '#ccc' }}></i>
+                        <h3 style={{ marginTop: '1rem', color: '#333' }}>No Revenue Data</h3>
+                        <p style={{ color: '#666' }}>
+                            {orderCount > 0 
+                                ? `There are ${orderCount} orders in the system but no revenue data for the selected period. Try changing the filter or checking the backend.`
+                                : 'No orders found in the system. Orders need to be PAID to show in revenue.'
+                            }
+                        </p>
+                        <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                            <button onClick={() => setFilter('month')} className="admin-btn primary">
+                                Try This Month
+                            </button>
+                            <button onClick={() => setFilter('week')} className="admin-btn primary">
+                                Try This Week
+                            </button>
+                            <button onClick={() => setFilter('all')} className="admin-btn primary">
+                                Try All Time
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {/* Chart Section */}
-                {revenueData?.dailyData && revenueData.dailyData.length > 0 ? (
+                {revenueData?.dailyData && revenueData.dailyData.length > 0 && (
                     <div className="revenue-chart-section">
                         <h2>Daily Breakdown</h2>
                         <div className="chart-container">
@@ -266,15 +368,10 @@ function Revenue() {
                             </div>
                         </div>
                     </div>
-                ) : (
-                    <div className="no-data-message" style={{ textAlign: 'center', padding: '2rem', background: 'white', borderRadius: '8px' }}>
-                        <i className="fas fa-chart-bar" style={{ fontSize: '2rem', color: '#ccc' }}></i>
-                        <p style={{ marginTop: '0.5rem', color: '#666' }}>No daily data available for this period</p>
-                    </div>
                 )}
 
                 {/* Top Products Section */}
-                {revenueData?.topProducts && revenueData.topProducts.length > 0 ? (
+                {revenueData?.topProducts && revenueData.topProducts.length > 0 && (
                     <div className="top-products-section">
                         <h2>Top Selling Products</h2>
                         <div className="top-products-table">
@@ -305,15 +402,10 @@ function Revenue() {
                             </table>
                         </div>
                     </div>
-                ) : (
-                    <div className="no-data-message" style={{ textAlign: 'center', padding: '1.5rem', background: 'white', borderRadius: '8px' }}>
-                        <i className="fas fa-box" style={{ fontSize: '2rem', color: '#ccc' }}></i>
-                        <p style={{ marginTop: '0.5rem', color: '#666' }}>No product data available</p>
-                    </div>
                 )}
 
                 {/* Recent Transactions */}
-                {revenueData?.recentOrders && revenueData.recentOrders.length > 0 ? (
+                {revenueData?.recentOrders && revenueData.recentOrders.length > 0 && (
                     <div className="recent-transactions">
                         <h2>Recent Transactions</h2>
                         <div className="transactions-table">
@@ -344,11 +436,6 @@ function Revenue() {
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                ) : (
-                    <div className="no-data-message" style={{ textAlign: 'center', padding: '1.5rem', background: 'white', borderRadius: '8px' }}>
-                        <i className="fas fa-receipt" style={{ fontSize: '2rem', color: '#ccc' }}></i>
-                        <p style={{ marginTop: '0.5rem', color: '#666' }}>No recent transactions</p>
                     </div>
                 )}
 
