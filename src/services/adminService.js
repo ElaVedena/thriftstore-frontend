@@ -226,9 +226,21 @@ export const adminService = {
         }
     },
 
+    // FIXED: getOrderById - properly handles the response
     getOrderById: async (orderId) => {
         try {
             const response = await api.get(`/admin/orders/${orderId}`);
+            
+            // Handle different response structures
+            if (response.data && response.data.success !== undefined) {
+                return {
+                    success: response.data.success,
+                    data: response.data.data || response.data,
+                    message: response.data.message
+                };
+            }
+            
+            // If the response is directly the order data
             return {
                 success: true,
                 data: response.data

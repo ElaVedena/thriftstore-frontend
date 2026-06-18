@@ -26,6 +26,8 @@ import ProductList from './pages/Admin/Products/ProductList';
 import AddProduct from './pages/Admin/Products/AddProduct';
 import EditProduct from './pages/Admin/Products/EditProduct';
 import OrderManagement from './pages/Admin/Orders/OrderManagement';
+// Add import for OrderDetail
+import OrderDetail from './pages/Admin/Orders/OrderDetail';
 import UserManagement from './pages/Admin/Users/UserManagement';
 import { NotificationProvider } from './context/NotificationContext';
 import ToastContainer from './components/common/ToastContainer';
@@ -106,11 +108,15 @@ function App() {
               <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
               <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
               <Route path="/order-confirmation" element={<ProtectedRoute><OrderConfirmation /></ProtectedRoute>} />
+              
+              {/* Admin Routes */}
               <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
               <Route path="/admin/products" element={<ProtectedRoute requireAdmin={true}><ProductList /></ProtectedRoute>} />
               <Route path="/admin/products/add" element={<ProtectedRoute requireAdmin={true}><AddProduct /></ProtectedRoute>} />
               <Route path="/admin/products/edit/:id" element={<ProtectedRoute requireAdmin={true}><EditProduct /></ProtectedRoute>} />
               <Route path="/admin/orders" element={<ProtectedRoute requireAdmin={true}><OrderManagement /></ProtectedRoute>} />
+              {/* Add admin order detail route */}
+              <Route path="/admin/orders/:id" element={<ProtectedRoute requireAdmin={true}><OrderDetail /></ProtectedRoute>} />
               <Route path="/admin/users" element={<ProtectedRoute requireAdmin={true}><UserManagement /></ProtectedRoute>} />
               <Route path="/admin/revenue" element={<ProtectedRoute requireAdmin={true}><Revenue /></ProtectedRoute>} />
             </Routes>
