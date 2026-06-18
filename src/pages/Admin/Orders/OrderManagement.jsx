@@ -11,7 +11,6 @@ function OrderManagement() {
     const [filter, setFilter] = useState('all');
     const [updatingOrderId, setUpdatingOrderId] = useState(null);
     const [dateRange, setDateRange] = useState('3days');
-    const [expandedItems, setExpandedItems] = useState({});
     const { showSuccess, showError } = useNotification();
 
     // Add class to body to hide global header and footer
@@ -133,95 +132,7 @@ function OrderManagement() {
         }
     };
 
-    const toggleItemsExpanded = (orderId) => {
-        setExpandedItems(prev => ({
-            ...prev,
-            [orderId]: !prev[orderId]
-        }));
-    };
-
-    // Helper function to render items with all items visible
-    const renderItemsCell = (items, orderId) => {
-        if (!items || items.length === 0) return '-';
-        
-        const isExpanded = expandedItems[orderId];
-        const firstItem = items[0];
-        const itemCount = items.length;
-        const hasMultipleItems = itemCount > 1;
-        
-        return (
-            <div className="items-cell">
-                {firstItem.imageUrl && (
-                    <img 
-                        src={firstItem.imageUrl} 
-                        alt={firstItem.productName || firstItem.name || 'Product'}
-                        className="item-thumbnail"
-                        onError={(e) => {
-                            e.target.style.display = 'none';
-                        }}
-                    />
-                )}
-                <div className="items-info">
-                    {isExpanded ? (
-                        // Show all items when expanded
-                        <div className="items-list-full">
-                            {items.map((item, idx) => (
-                                <div key={idx} className="item-row">
-                                    {item.imageUrl && (
-                                        <img 
-                                            src={item.imageUrl} 
-                                            alt={item.productName || item.name || 'Product'}
-                                            className="item-row-thumbnail"
-                                            onError={(e) => {
-                                                e.target.style.display = 'none';
-                                            }}
-                                        />
-                                    )}
-                                    <span className="item-row-name">
-                                        {item.productName || item.name || 'Product'}
-                                    </span>
-                                    {item.size && (
-                                        <span className="item-row-size">({item.size})</span>
-                                    )}
-                                    <span className="item-row-qty">x{item.quantity}</span>
-                                </div>
-                            ))}
-                            {hasMultipleItems && (
-                                <button 
-                                    className="show-less-btn"
-                                    onClick={() => toggleItemsExpanded(orderId)}
-                                >
-                                    <i className="fas fa-chevron-up"></i> Show Less
-                                </button>
-                            )}
-                        </div>
-                    ) : (
-                        // Show condensed view with option to expand
-                        <>
-                            <div className="items-compact">
-                                <span className="items-name">
-                                    {firstItem.productName || firstItem.name || 'Product'}
-                                </span>
-                                {firstItem.size && (
-                                    <span className="items-size">({firstItem.size})</span>
-                                )}
-                                <span className="items-qty">x{firstItem.quantity}</span>
-                            </div>
-                            {hasMultipleItems && (
-                                <button 
-                                    className="show-more-btn"
-                                    onClick={() => toggleItemsExpanded(orderId)}
-                                >
-                                    <i className="fas fa-chevron-down"></i> +{itemCount - 1} more item(s)
-                                </button>
-                            )}
-                        </>
-                    )}
-                </div>
-            </div>
-        );
-    };
-
+    // SIMPLIFIED COLUMNS - Only Order ID, Customer, Phone, and Status
     const columns = [
         {
             key: 'orderNumber',
@@ -237,21 +148,6 @@ function OrderManagement() {
             key: 'phone',
             label: 'Phone',
             render: (_, item) => item.userPhone || item.user?.phone || item.phone || '-'
-        },
-        {
-            key: 'createdAt',
-            label: 'Date',
-            render: (date) => date ? new Date(date).toLocaleDateString() : '-'
-        },
-        {
-            key: 'total',
-            label: 'Total',
-            render: (total) => total ? formatPrice(total) : '-'
-        },
-        {
-            key: 'items',
-            label: 'Items',
-            render: (_, item) => renderItemsCell(item.items, item.id)
         },
         {
             key: 'status',
@@ -290,8 +186,7 @@ function OrderManagement() {
                 orderNumber: o.orderNumber,
                 status: o.status,
                 date: o.createdAt,
-                customer: o.userName,
-                items: o.items?.length
+                customer: o.userName
             })));
         }
     }, [orders]);
