@@ -164,11 +164,11 @@ body.admin-page #root {
     text-decoration: underline;
 }
 
-/* ===== ORDER DETAIL PAGE STYLES ===== */
+/* ===== ORDER DETAIL PAGE STYLES - REDUCED TEXT SIZE & SPACING ===== */
 .header-left {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
     flex-wrap: wrap;
 }
 
@@ -177,8 +177,8 @@ body.admin-page #root {
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
+    gap: 0.4rem;
+    font-size: 0.8rem;
     transition: color 0.3s ease;
 }
 
@@ -189,33 +189,33 @@ body.admin-page #root {
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.8rem;
 }
 
 .status-control {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.6rem;
 }
 
 .status-control .label {
     font-weight: 600;
     color: #666;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
 }
 
 .order-detail-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .detail-section {
     background: white;
-    border-radius: 8px;
-    padding: 1.2rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    padding: 0.8rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .detail-section.full-width {
@@ -223,11 +223,11 @@ body.admin-page #root {
 }
 
 .detail-section h2 {
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: #2d2d2d;
-    margin: 0 0 1rem 0;
+    margin: 0 0 0.6rem 0;
     position: relative;
-    padding-bottom: 0.4rem;
+    padding-bottom: 0.3rem;
 }
 
 .detail-section h2::after {
@@ -235,7 +235,7 @@ body.admin-page #root {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 30px;
+    width: 25px;
     height: 2px;
     background: #CEABB1;
 }
@@ -243,7 +243,7 @@ body.admin-page #root {
 .detail-row {
     display: flex;
     justify-content: space-between;
-    padding: 0.5rem 0;
+    padding: 0.35rem 0;
     border-bottom: 1px solid #f0f0f0;
 }
 
@@ -252,18 +252,20 @@ body.admin-page #root {
 }
 
 .detail-row .label {
-    color: #666;
+    color: #888;
     font-weight: 500;
+    font-size: 0.75rem;
 }
 
 .detail-row .value {
     color: #2d2d2d;
     font-weight: 400;
+    font-size: 0.75rem;
     text-align: right;
 }
 
 .detail-row.total {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 700;
 }
 
@@ -271,7 +273,7 @@ body.admin-page #root {
     color: #CEABB1;
 }
 
-/* Items Table */
+/* Items Table - Compact */
 .items-table-container {
     overflow-x: auto;
 }
@@ -283,23 +285,23 @@ body.admin-page #root {
 
 .items-table th {
     text-align: left;
-    padding: 0.6rem;
+    padding: 0.4rem;
     background: #f9f9f9;
     color: #666;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     border-bottom: 2px solid #f0f0f0;
 }
 
 .items-table td {
-    padding: 0.6rem;
+    padding: 0.4rem;
     border-bottom: 1px solid #f0f0f0;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
 }
 
 .item-thumb {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     object-fit: cover;
     border-radius: 4px;
     background-color: #f5f5f5;
@@ -307,23 +309,23 @@ body.admin-page #root {
 
 .order-actions-bottom {
     display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
     border-top: 1px solid #f0f0f0;
 }
 
 .order-actions-bottom .btn-secondary {
-    padding: 0.6rem 1.2rem;
+    padding: 0.5rem 1rem;
     border-radius: 4px;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.3rem;
     background: white;
     color: #666;
     border: 1px solid #ddd;
@@ -335,38 +337,40 @@ body.admin-page #root {
 
 .order-not-found {
     text-align: center;
-    padding: 3rem;
+    padding: 2rem;
     background: white;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 .order-not-found i {
-    font-size: 3rem;
+    font-size: 2.5rem;
     color: #CEABB1;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
     opacity: 0.5;
 }
 
 .order-not-found h2 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     color: #2d2d2d;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
 }
 
 .order-not-found p {
     color: #666;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
 }
 
 .order-not-found .back-btn {
     display: inline-block;
-    padding: 0.6rem 1.5rem;
+    padding: 0.5rem 1.2rem;
     background: #CEABB1;
     color: white;
     text-decoration: none;
     border-radius: 4px;
     font-weight: 600;
     transition: all 0.3s ease;
+    font-size: 0.8rem;
 }
 
 .order-not-found .back-btn:hover {
@@ -1385,59 +1389,95 @@ body.admin-page #root {
         gap: 0.5rem;
     }
     
-    /* Order detail mobile responsive */
+    /* Order detail mobile responsive - FURTHER REDUCED */
     .order-detail-grid {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: 0.8rem;
     }
     
     .detail-section {
-        padding: 1rem;
+        padding: 0.6rem;
+        border-radius: 4px;
+    }
+    
+    .detail-section h2 {
+        font-size: 0.75rem;
+        margin-bottom: 0.4rem;
+        padding-bottom: 0.2rem;
+    }
+    
+    .detail-section h2::after {
+        width: 20px;
+        height: 1.5px;
     }
     
     .header-left {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.5rem;
+        gap: 0.4rem;
     }
     
     .header-left h1 {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
     
     .status-control {
         flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+    
+    .status-control .label {
+        font-size: 0.65rem;
     }
     
     .detail-row {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.2rem;
+        gap: 0.15rem;
+        padding: 0.25rem 0;
+    }
+    
+    .detail-row .label {
+        font-size: 0.65rem;
     }
     
     .detail-row .value {
+        font-size: 0.65rem;
         text-align: left;
         word-break: break-word;
     }
     
-    .items-table th,
+    .detail-row.total {
+        font-size: 0.85rem;
+    }
+    
+    .items-table th {
+        padding: 0.3rem;
+        font-size: 0.6rem;
+    }
+    
     .items-table td {
-        padding: 0.4rem;
-        font-size: 0.75rem;
+        padding: 0.3rem;
+        font-size: 0.65rem;
     }
     
     .item-thumb {
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
     }
     
     .order-actions-bottom {
         flex-direction: column;
+        gap: 0.6rem;
+        margin-top: 0.8rem;
+        padding-top: 0.8rem;
     }
     
     .order-actions-bottom .btn-secondary {
         width: 100%;
         justify-content: center;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.7rem;
     }
 }
 
@@ -1533,5 +1573,42 @@ body.admin-page #root {
     
     .image-placeholder i {
         font-size: 10px;
+    }
+    
+    /* Order detail small mobile */
+    .detail-section {
+        padding: 0.5rem;
+    }
+    
+    .detail-section h2 {
+        font-size: 0.7rem;
+    }
+    
+    .detail-row .label {
+        font-size: 0.6rem;
+    }
+    
+    .detail-row .value {
+        font-size: 0.6rem;
+    }
+    
+    .items-table th {
+        font-size: 0.55rem;
+        padding: 0.2rem;
+    }
+    
+    .items-table td {
+        font-size: 0.6rem;
+        padding: 0.2rem;
+    }
+    
+    .item-thumb {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .order-actions-bottom .btn-secondary {
+        font-size: 0.65rem;
+        padding: 0.35rem 0.7rem;
     }
 }
