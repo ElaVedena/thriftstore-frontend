@@ -123,9 +123,49 @@ export default function Navbar() {
         )}
       </ul>
 
-      {/* Mobile Navigation - Only visible on mobile */}
+      {/* Mobile Navigation - Visible on mobile */}
       <div className="mobile-nav">
-        {/* Hamburger Button - Only visible on mobile */}
+        {/* Essential links visible outside hamburger */}
+        <div className="mobile-core-links">
+          <Link 
+            to="/" 
+            className={`mobile-core-link ${location.pathname === '/' ? 'active' : ''}`}
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <i className="fas fa-home"></i>
+            <span className="mobile-link-label">Home</span>
+          </Link>
+          <Link 
+            to="/shop" 
+            className={`mobile-core-link ${location.pathname === '/shop' ? 'active' : ''}`}
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <i className="fas fa-store"></i>
+            <span className="mobile-link-label">Shop</span>
+          </Link>
+          
+          {!isAuthenticated ? (
+            <Link 
+              to="/login" 
+              className="mobile-core-link" 
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <i className="fas fa-sign-in-alt"></i>
+              <span className="mobile-link-label">Login</span>
+            </Link>
+          ) : (
+            <Link 
+              to="/orders" 
+              className="mobile-core-link" 
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <i className="fas fa-shopping-bag"></i>
+              <span className="mobile-link-label">Orders</span>
+            </Link>
+          )}
+        </div>
+        
+        {/* Hamburger Button for remaining links */}
         <button 
           className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`} 
           onClick={toggleMobileMenu}
@@ -137,7 +177,7 @@ export default function Navbar() {
         </button>
       </div>
       
-      {/* Mobile Dropdown Menu - All links appear here when hamburger is clicked */}
+      {/* Mobile Dropdown Menu - Secondary links */}
       <div className={`mobile-dropdown-menu ${isMobileMenuOpen ? 'active' : ''}`}>
         <div className="mobile-menu-header">
           <h3>Menu</h3>
@@ -146,19 +186,6 @@ export default function Navbar() {
           </button>
         </div>
         <ul>
-          {/* All links in the hamburger menu */}
-          <li>
-            <Link to="/" onClick={toggleMobileMenu}>
-              <i className="fas fa-home"></i>
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/shop" onClick={toggleMobileMenu}>
-              <i className="fas fa-store"></i>
-              Shop
-            </Link>
-          </li>
           <li>
             <Link to="/beauty" onClick={toggleMobileMenu}>
               <i className="fas fa-spa"></i>
@@ -196,12 +223,6 @@ export default function Navbar() {
                 </Link>
               </li>
               <li>
-                <Link to="/orders" onClick={toggleMobileMenu}>
-                  <i className="fas fa-shopping-bag"></i>
-                  My Orders
-                </Link>
-              </li>
-              <li>
                 <Link to="/wishlist" onClick={toggleMobileMenu}>
                   <i className="fas fa-heart"></i>
                   Wishlist
@@ -216,12 +237,6 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <li>
-                <Link to="/login" onClick={toggleMobileMenu}>
-                  <i className="fas fa-sign-in-alt"></i>
-                  Login
-                </Link>
-              </li>
               <li>
                 <Link to="/register" onClick={toggleMobileMenu}>
                   <i className="fas fa-user-plus"></i>
