@@ -8,6 +8,7 @@ import SortBar from '../components/products/SortBar';
 import ProductGrid from '../components/products/ProductGrid';
 import Pagination from '../components/common/Pagination';
 import Filters from '../components/products/Filters';
+import CartFloatingIcon from '../components/common/CartFloatingIcon';
 import { getSearchParamsFromURL, filterProducts, sortProducts } from '../utils/searchHelpers';
 import '../components/css/Shop.css';
 
@@ -375,6 +376,9 @@ function Shop() {
           </main>
         </div>
       </div>
+
+      {/* Floating Cart Icon */}
+      <CartFloatingIcon />
     </>
   );
 }
