@@ -12,33 +12,19 @@ function Revenue() {
     const [revenueData, setRevenueData] = useState(null);
     const [customStartDate, setCustomStartDate] = useState('');
     const [customEndDate, setCustomEndDate] = useState('');
-    const [showCustomPicker, setShowCustomPicker] = useState(false);
-    const [rawResponse, setRawResponse] = useState(null);
-    const [orderCount, setOrderCount] = useState(0);
     const { showError, showInfo } = useNotification();
+
+    // Add class to body to hide global header and footer
+    useEffect(() => {
+        document.body.classList.add('admin-page');
+        return () => {
+            document.body.classList.remove('admin-page');
+        };
+    }, []);
 
     useEffect(() => {
         loadRevenueData();
     }, [filter]);
-
-    // Also load orders count separately for debugging
-    useEffect(() => {
-        loadOrdersCount();
-    }, []);
-
-    const loadOrdersCount = async () => {
-        try {
-            const response = await adminService.getOrders();
-            console.log('Total orders response:', response);
-            if (response.success) {
-                const orders = response.data?.content || response.data || [];
-                setOrderCount(orders.length);
-                console.log('Total orders in system:', orders.length);
-            }
-        } catch (error) {
-            console.error('Error loading orders count:', error);
-        }
-    };
 
     const loadRevenueData = async () => {
         setLoading(true);
@@ -50,35 +36,19 @@ function Revenue() {
                 response = await adminService.getRevenueStats(filter);
             }
             
-            console.log('Revenue response (raw):', response);
-            setRawResponse(response);
-            
             if (response.success) {
                 // Handle different response structures
                 let data = response.data;
                 
-                // Log the actual data structure
-                console.log('Data structure:', data);
-                console.log('Data keys:', data ? Object.keys(data) : 'null');
-                
                 // If data is wrapped in a data property
                 if (data && data.data) {
-                    console.log('Data is wrapped in data.data');
                     data = data.data;
                 }
                 
                 // If the response has a success flag
                 if (data && data.success !== undefined) {
-                    console.log('Data has success flag');
                     data = data.data || data;
                 }
-                
-                // Check if we have the expected fields
-                console.log('Final data object:', data);
-                console.log('totalRevenue:', data?.totalRevenue);
-                console.log('orderCount:', data?.orderCount);
-                console.log('totalOrders:', data?.totalOrders);
-                console.log('ordersCount:', data?.ordersCount);
                 
                 // Try to find order count in various fields
                 const orderCountValue = data?.orderCount || data?.totalOrders || data?.ordersCount || data?.total || 0;
@@ -95,15 +65,7 @@ function Revenue() {
                     rawData: data // Keep raw data for debugging
                 };
                 
-                console.log('Formatted revenue data:', formattedData);
-                console.log('Revenue amount:', formattedData.totalRevenue);
-                console.log('Order count:', formattedData.orderCount);
-                
                 setRevenueData(formattedData);
-                
-                if (formattedData.totalRevenue === 0 && formattedData.orderCount === 0) {
-                    showInfo('No revenue data found for the selected period. Total orders in system: ' + orderCount);
-                }
             } else {
                 showError(response.message || 'Failed to load revenue data');
             }
@@ -156,56 +118,7 @@ function Revenue() {
             <main className="admin-main">
                 <div className="admin-header">
                     <h1>Revenue Analytics</h1>
-                    <p>Track your sales and revenue performance</p>
-                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
-                        <button 
-                            onClick={loadOrdersCount} 
-                            className="admin-btn secondary"
-                        >
-                            <i className="fas fa-sync"></i>
-                            Refresh Orders Count ({orderCount})
-                        </button>
-                        <button 
-                            onClick={() => {
-                                console.log('Raw response:', rawResponse);
-                                alert('Check console for raw response data');
-                            }} 
-                            className="admin-btn secondary"
-                        >
-                            <i className="fas fa-bug"></i>
-                            Debug Data
-                        </button>
-                    </div>
                 </div>
-
-                {/* Debug Info - Show raw data */}
-                {rawResponse && (
-                    <div className="debug-panel" style={{ 
-                        background: '#f8f9fa', 
-                        padding: '1rem', 
-                        borderRadius: '4px', 
-                        marginBottom: '1rem',
-                        border: '1px solid #dee2e6',
-                        maxHeight: '200px',
-                        overflow: 'auto'
-                    }}>
-                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem' }}>Debug Information:</h4>
-                        <div style={{ fontSize: '0.75rem', color: '#666' }}>
-                            <div><strong>Total Orders in System:</strong> {orderCount}</div>
-                            <div><strong>Filter:</strong> {getFilterLabel()}</div>
-                            <div><strong>Revenue Data:</strong> {revenueData ? 'Loaded' : 'Empty'}</div>
-                            {revenueData && (
-                                <>
-                                    <div><strong>Revenue Amount:</strong> {formatPrice(revenueData.totalRevenue)}</div>
-                                    <div><strong>Order Count (filtered):</strong> {revenueData.orderCount}</div>
-                                    <div><strong>Daily Data Points:</strong> {revenueData.dailyData?.length || 0}</div>
-                                    <div><strong>Recent Orders:</strong> {revenueData.recentOrders?.length || 0}</div>
-                                </>
-                            )}
-                            <div><strong>Raw Response Keys:</strong> {rawResponse.data ? Object.keys(rawResponse.data).join(', ') : 'No data'}</div>
-                        </div>
-                    </div>
-                )}
 
                 {/* Filter Tabs */}
                 <div className="revenue-filters-container">
@@ -317,10 +230,7 @@ function Revenue() {
                         <i className="fas fa-chart-pie" style={{ fontSize: '3rem', color: '#ccc' }}></i>
                         <h3 style={{ marginTop: '1rem', color: '#333' }}>No Revenue Data</h3>
                         <p style={{ color: '#666' }}>
-                            {orderCount > 0 
-                                ? `There are ${orderCount} orders in the system but no revenue data for the selected period. Try changing the filter or checking the backend.`
-                                : 'No orders found in the system. Orders need to be PAID to show in revenue.'
-                            }
+                            No paid orders found for the selected period. Only orders with status PAID, COMPLETED, SUCCESS, or DELIVERED are counted in revenue.
                         </p>
                         <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                             <button onClick={() => setFilter('month')} className="admin-btn primary">
@@ -329,8 +239,8 @@ function Revenue() {
                             <button onClick={() => setFilter('week')} className="admin-btn primary">
                                 Try This Week
                             </button>
-                            <button onClick={() => setFilter('all')} className="admin-btn primary">
-                                Try All Time
+                            <button onClick={() => setFilter('today')} className="admin-btn primary">
+                                Try Today
                             </button>
                         </div>
                     </div>
