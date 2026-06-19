@@ -49,7 +49,8 @@ export const adminService = {
                     dailyData: data?.dailyData || data?.daily || [],
                     topProducts: data?.topProducts || data?.products || [],
                     recentOrders: data?.recentOrders || data?.orders || [],
-                    maxRevenue: data?.maxRevenue || 0
+                    maxRevenue: data?.maxRevenue || 0,
+                    debugStatusCounts: data?.debugStatusCounts || {}
                 }
             };
         } catch (error) {
@@ -64,7 +65,8 @@ export const adminService = {
                     dailyData: [],
                     topProducts: [],
                     recentOrders: [],
-                    maxRevenue: 0
+                    maxRevenue: 0,
+                    debugStatusCounts: {}
                 }
             };
         }
@@ -72,7 +74,24 @@ export const adminService = {
 
     getRevenueStatsByDateRange: async (startDate, endDate) => {
         try {
-            const response = await api.get(`/admin/revenue/stats?startDate=${startDate}&endDate=${endDate}`);
+            // Format dates to YYYY-MM-DD if they are Date objects
+            const formattedStartDate = startDate instanceof Date 
+                ? startDate.toISOString().split('T')[0] 
+                : startDate;
+            const formattedEndDate = endDate instanceof Date 
+                ? endDate.toISOString().split('T')[0] 
+                : endDate;
+            
+            console.log('Date range request:', { startDate: formattedStartDate, endDate: formattedEndDate });
+            
+            // CRITICAL FIX: Add filter=custom parameter
+            const response = await api.get('/admin/revenue/stats', {
+                params: {
+                    filter: 'custom',
+                    startDate: formattedStartDate,
+                    endDate: formattedEndDate
+                }
+            });
             
             console.log('Revenue stats by date range response:', response.data);
             
@@ -98,11 +117,13 @@ export const adminService = {
                     dailyData: data?.dailyData || data?.daily || [],
                     topProducts: data?.topProducts || data?.products || [],
                     recentOrders: data?.recentOrders || data?.orders || [],
-                    maxRevenue: data?.maxRevenue || 0
+                    maxRevenue: data?.maxRevenue || 0,
+                    debugStatusCounts: data?.debugStatusCounts || {}
                 }
             };
         } catch (error) {
             console.error('Revenue stats by date error:', error);
+            console.error('Error details:', error.response?.data);
             return {
                 success: false,
                 message: error.response?.data?.message || 'Failed to fetch revenue stats',
@@ -112,7 +133,8 @@ export const adminService = {
                     dailyData: [],
                     topProducts: [],
                     recentOrders: [],
-                    maxRevenue: 0
+                    maxRevenue: 0,
+                    debugStatusCounts: {}
                 }
             };
         }
