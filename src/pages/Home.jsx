@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import ProductCard from "../components/products/ProductCard";
 import CategoryCard from "../components/products/CategoryCard";
+import CartFloatingIcon from '../components/common/CartFloatingIcon';
 import { productService } from '../services/productService';
 import { categoryService } from '../services/categoryService';
 import '../components/css/Home.css';
@@ -418,6 +419,9 @@ function Home() {
           </section>
         )}
       </div>
+
+      {/* Floating Cart Icon */}
+      <CartFloatingIcon />
     </>
   );
 }
