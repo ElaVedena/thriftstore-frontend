@@ -125,62 +125,7 @@ export default function Navbar() {
 
       {/* Mobile Navigation - Only visible on mobile */}
       <div className="mobile-nav">
-        {/* Core Links - Always visible on mobile */}
-        <div className="mobile-core-links">
-          <Link 
-            to="/" 
-            className={`mobile-core-link ${location.pathname === '/' ? 'active' : ''}`}
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Home
-          </Link>
-          <Link 
-            to="/shop" 
-            className={`mobile-core-link ${location.pathname === '/shop' ? 'active' : ''}`}
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Shop
-          </Link>
-          <Link 
-            to="/beauty" 
-            className={`mobile-core-link ${location.pathname === '/beauty' ? 'active' : ''}`}
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Beauty
-          </Link>
-          <Link 
-            to="/cart" 
-            className="mobile-core-link" 
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <span className="cart-icon">
-              <i className="fas fa-shopping-cart"></i>
-              {totalItems > 0 && (
-                <span className="cart-badge">{totalItems}</span>
-              )}
-            </span>
-          </Link>
-          
-          {!isAuthenticated ? (
-            <Link 
-              to="/login" 
-              className="mobile-core-link" 
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Login
-            </Link>
-          ) : (
-            <div 
-              className="mobile-user-icon" 
-              onClick={() => setShowUserMenu(!showUserMenu)}
-              aria-label="User menu"
-            >
-              <i className="fas fa-user-circle"></i>
-            </div>
-          )}
-        </div>
-        
-        {/* Hamburger Button */}
+        {/* Hamburger Button - Only visible on mobile */}
         <button 
           className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`} 
           onClick={toggleMobileMenu}
@@ -192,8 +137,7 @@ export default function Navbar() {
         </button>
       </div>
       
-      {/* Mobile Dropdown Menu - Only for extra links (About, Contact, and account links if logged in) */}
-      {/* Note: Home, Shop, Beauty, Cart, Login are already visible on the navbar */}
+      {/* Mobile Dropdown Menu - All links appear here when hamburger is clicked */}
       <div className={`mobile-dropdown-menu ${isMobileMenuOpen ? 'active' : ''}`}>
         <div className="mobile-menu-header">
           <h3>Menu</h3>
@@ -202,7 +146,25 @@ export default function Navbar() {
           </button>
         </div>
         <ul>
-          {/* Additional pages that are not in the core navbar */}
+          {/* All links in the hamburger menu */}
+          <li>
+            <Link to="/" onClick={toggleMobileMenu}>
+              <i className="fas fa-home"></i>
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/shop" onClick={toggleMobileMenu}>
+              <i className="fas fa-store"></i>
+              Shop
+            </Link>
+          </li>
+          <li>
+            <Link to="/beauty" onClick={toggleMobileMenu}>
+              <i className="fas fa-spa"></i>
+              Beauty
+            </Link>
+          </li>
           <li>
             <Link to="/about" onClick={toggleMobileMenu}>
               <i className="fas fa-info-circle"></i>
@@ -215,8 +177,17 @@ export default function Navbar() {
               Contact
             </Link>
           </li>
+          <li>
+            <Link to="/cart" onClick={toggleMobileMenu}>
+              <i className="fas fa-shopping-cart"></i>
+              Cart
+              {totalItems > 0 && (
+                <span className="mobile-menu-badge">{totalItems}</span>
+              )}
+            </Link>
+          </li>
           
-          {isAuthenticated && (
+          {isAuthenticated ? (
             <>
               <li>
                 <Link to="/profile" onClick={toggleMobileMenu}>
@@ -243,16 +214,21 @@ export default function Navbar() {
                 </button>
               </li>
             </>
-          )}
-          
-          {/* Show Register link when not logged in (Login is already on navbar) */}
-          {!isAuthenticated && (
-            <li>
-              <Link to="/register" onClick={toggleMobileMenu}>
-                <i className="fas fa-user-plus"></i>
-                Sign Up
-              </Link>
-            </li>
+          ) : (
+            <>
+              <li>
+                <Link to="/login" onClick={toggleMobileMenu}>
+                  <i className="fas fa-sign-in-alt"></i>
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link to="/register" onClick={toggleMobileMenu}>
+                  <i className="fas fa-user-plus"></i>
+                  Sign Up
+                </Link>
+              </li>
+            </>
           )}
         </ul>
       </div>
