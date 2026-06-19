@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { productService } from '../services/productService';
+import CartFloatingIcon from '../components/common/CartFloatingIcon';
 import '../components/css/Beauty.css';
 
 function Beauty() {
@@ -504,6 +505,9 @@ function Beauty() {
                     )}
                 </div>
             )}
+
+            {/* Floating Cart Icon */}
+            <CartFloatingIcon />
         </div>
     );
 }
