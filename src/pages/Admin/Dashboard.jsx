@@ -9,6 +9,8 @@ import './Admin.css';
 function Dashboard() {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [totalRevenue, setTotalRevenue] = useState(0);
+    const [paidOrderCount, setPaidOrderCount] = useState(0);
     const { showError } = useNotification();
 
     // Add class to body to hide global header and footer
@@ -21,9 +23,13 @@ function Dashboard() {
 
     const loadDashboardStats = useCallback(async () => {
         try {
+            // Load dashboard stats
             const response = await adminService.getDashboardStats();
             if (response.success) {
                 setStats(response.data);
+                
+                // Also fetch revenue stats to get accurate paid order count
+                await loadRevenueStats();
             } else {
                 showError(response.message);
             }
@@ -33,6 +39,19 @@ function Dashboard() {
             setLoading(false);
         }
     }, [showError]);
+
+    const loadRevenueStats = useCallback(async () => {
+        try {
+            // Fetch revenue stats for all time (or use a broader filter)
+            const revenueResponse = await adminService.getRevenueStats('month');
+            if (revenueResponse.success && revenueResponse.data) {
+                setTotalRevenue(revenueResponse.data.totalRevenue || 0);
+                setPaidOrderCount(revenueResponse.data.orderCount || 0);
+            }
+        } catch (error) {
+            console.error('Failed to load revenue stats:', error);
+        }
+    }, []);
 
     useEffect(() => {
         loadDashboardStats();
@@ -64,11 +83,11 @@ function Dashboard() {
                     <p className="admin-welcome">Welcome back, Admin</p>
                 </div>
 
-                {/* Stats Cards - Now showing active products count */}
+                {/* Stats Cards - Shows accurate revenue from paid orders */}
                 <div className="stats-grid">
                     <StatsCard
                         title="Total Revenue"
-                        value={formatPrice(stats?.totalRevenue)}
+                        value={formatPrice(totalRevenue || stats?.totalRevenue || 0)}
                         icon="fas fa-money-bill-wave"
                         color="#4caf50"
                     />
@@ -79,8 +98,8 @@ function Dashboard() {
                         color="#2196f3"
                     />
                     <StatsCard
-                        title="Total Orders"
-                        value={stats?.totalOrders || 0}
+                        title="Paid Orders"
+                        value={paidOrderCount || stats?.totalOrders || 0}
                         icon="fas fa-shopping-cart"
                         color="#ff9800"
                     />
@@ -90,6 +109,26 @@ function Dashboard() {
                         icon="fas fa-users"
                         color="#CEABB1"
                     />
+                </div>
+
+                {/* Revenue Details Section */}
+                <div className="dashboard-section">
+                    <div className="section-header">
+                        <h2>Revenue Overview</h2>
+                        <Link to="/admin/revenue" className="view-all">
+                            View Details <i className="fas fa-arrow-right"></i>
+                        </Link>
+                    </div>
+                    <div className="revenue-overview">
+                        <div className="revenue-stat">
+                            <span className="revenue-label">Total Revenue (Paid Orders)</span>
+                            <span className="revenue-value">{formatPrice(totalRevenue || stats?.totalRevenue || 0)}</span>
+                        </div>
+                        <div className="revenue-stat">
+                            <span className="revenue-label">Paid Orders Count</span>
+                            <span className="revenue-value">{paidOrderCount || stats?.totalOrders || 0}</span>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Recent Orders */}
@@ -130,6 +169,13 @@ function Dashboard() {
                                         </td>
                                     </tr>
                                 ))}
+                                {(!stats?.recentOrders || stats.recentOrders.length === 0) && (
+                                    <tr>
+                                        <td colSpan="5" className="no-data">
+                                            No recent orders found
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>
