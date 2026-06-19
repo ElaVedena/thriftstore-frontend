@@ -8,7 +8,7 @@
   background: #CEABB1;
   color: white;
   border-radius: 50%;
-  display: flex;
+  display: none; /* Hidden by default on desktop */
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
@@ -46,9 +46,10 @@
   border: 2px solid white;
 }
 
-/* Mobile responsiveness */
+/* Show only on mobile devices - Tablet and below */
 @media (max-width: 768px) {
   .cart-floating-icon {
+    display: flex; /* Show on mobile */
     width: 50px;
     height: 50px;
     font-size: 1.2rem;
@@ -65,6 +66,7 @@
   }
 }
 
+/* Small mobile devices */
 @media (max-width: 480px) {
   .cart-floating-icon {
     width: 45px;
@@ -80,5 +82,12 @@
     font-size: 0.5rem;
     top: -5px;
     right: -5px;
+  }
+}
+
+/* Optional: Adjust for tablets in landscape mode */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+  .cart-floating-icon {
+    display: none; /* Keep hidden on tablet landscape */
   }
 }
