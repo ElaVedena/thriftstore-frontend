@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import '../../components/css/PaymentSection.css';
 
-function PaymentSection({ onPaymentComplete, total }) {
+function PaymentSection({ onPaymentComplete, total, shippingCost }) {
     const [isProcessing, setIsProcessing] = useState(false);
     const [mpesaCode, setMpesaCode] = useState('');
     const [error, setError] = useState('');
@@ -53,6 +53,13 @@ function PaymentSection({ onPaymentComplete, total }) {
                         <span>Amount to Pay:</span>
                         <strong>{formatPrice(total)}</strong>
                     </div>
+                    
+                    {shippingCost !== undefined && (
+                        <div className="shipping-display">
+                            <span>Shipping Cost:</span>
+                            <strong>{formatPrice(shippingCost)}</strong>
+                        </div>
+                    )}
 
                     {!mpesaCode ? (
                         <button 

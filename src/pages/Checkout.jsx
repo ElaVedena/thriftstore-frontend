@@ -33,16 +33,15 @@ function Checkout() {
         };
     }, []);
 
-    // TESTING SHIPPING COSTS - All counties between 1-5 shillings
+    // UPDATED: Shipping costs - Nairobi = 200, all other counties = 300
     const getShippingCost = (county) => {
         if (!county) return 0;
         
-        // For testing purposes, return random shipping between 1-5 shillings
-        // Using county name to determine consistent shipping for same county
-        const countyHash = county.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        const shippingAmount = (countyHash % 5) + 1; // Returns 1, 2, 3, 4, or 5
-        
-        return shippingAmount;
+        // Nairobi gets 200, all other counties get 300
+        if (county.toLowerCase() === 'nairobi') {
+            return 200;
+        }
+        return 300;
     };
 
     const handleShippingSubmit = (data) => {
