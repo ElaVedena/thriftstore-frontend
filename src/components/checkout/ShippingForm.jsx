@@ -15,6 +15,7 @@ function ShippingForm({ onSubmit, initialData = {} }) {
 
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
+    const [shippingCost, setShippingCost] = useState(0);
     const nameInputRef = useRef(null);
 
     // Focus name input on mount
@@ -23,6 +24,25 @@ function ShippingForm({ onSubmit, initialData = {} }) {
             nameInputRef.current.focus();
         }
     }, []);
+
+    // Calculate shipping cost when county changes
+    useEffect(() => {
+        if (formData.county) {
+            const cost = getShippingCost(formData.county);
+            setShippingCost(cost);
+        } else {
+            setShippingCost(0);
+        }
+    }, [formData.county]);
+
+    // Shipping cost function
+    const getShippingCost = (county) => {
+        if (!county) return 0;
+        if (county.toLowerCase() === 'nairobi') {
+            return 200;
+        }
+        return 300;
+    };
 
     // Format phone number as user types
     const formatPhoneNumber = (value) => {
@@ -322,6 +342,20 @@ function ShippingForm({ onSubmit, initialData = {} }) {
                     )}
                 </div>
             </div>
+
+            {/* Shipping Cost Display */}
+            {formData.county && (
+                <div className="form-row shipping-cost-display">
+                    <div className="shipping-cost-info">
+                        <i className="fas fa-truck"></i>
+                        <span>Shipping Cost: </span>
+                        <strong>KSh {shippingCost.toFixed(2)}</strong>
+                        <span className="shipping-note">
+                            ({formData.county.toLowerCase() === 'nairobi' ? 'Nairobi rate' : 'Standard rate'})
+                        </span>
+                    </div>
+                </div>
+            )}
 
             <div className="form-row">
                 <div className="form-group">
